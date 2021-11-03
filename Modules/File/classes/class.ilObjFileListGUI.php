@@ -2,6 +2,8 @@
 
 /* Copyright (c) 1998-2011 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+use ILIAS\DI\Container;
+
 include_once "Services/Object/classes/class.ilObjectListGUI.php";
 
 /**
