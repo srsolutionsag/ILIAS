@@ -167,3 +167,34 @@ if (!$ilDB->indexExistsByFields('file_data', ['rid'])) {
     $ilDB->addIndex('file_data', ['rid'], 'i1');
 }
 ?>
+<#8>
+<?php
+/** @var $ilDB ilDBInterface */
+$ilDB->modifyTableColumn(
+    'il_resource_revision',
+    'available',
+    [
+        'default' => 1,
+    ]
+);
+$ilDB->modifyTableColumn(
+    'il_resource_stkh_u',
+    'stakeholder_id',
+    ['length' => 64]
+);
+$ilDB->modifyTableColumn(
+    'il_resource_stkh',
+    'id',
+    ['length' => 64]
+);
+$ilDB->modifyTableColumn(
+    'il_resource_info',
+    'title',
+    ['length' => 255]
+);
+$ilDB->modifyTableColumn(
+    'il_resource_revision',
+    'title',
+    ['length' => 255]
+);
+?>

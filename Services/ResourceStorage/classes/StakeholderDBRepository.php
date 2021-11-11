@@ -37,10 +37,21 @@ class StakeholderDBRepository implements StakeholderRepository
 
     public function register(ResourceIdentification $i, ResourceStakeholder $s) : bool
     {
+        $identification = $i->serialize();
+        $stakeholder_id = $s->getId();
+        $stakeholder_class_name = $s->getFullyQualifiedClassName();
+
+        if (strlen($stakeholder_id) > 64) {
+            throw new \InvalidArgumentException('stakeholder ids MUST be shorter or equal to than 64 characters');
+        }
+        if (strlen($stakeholder_class_name) > 250) {
+            throw new \InvalidArgumentException('stakeholder classnames MUST be shorter or equal to than 250 characters');
+        }
+
         $r = $this->db->queryF(
             "SELECT " . self::IDENTIFICATION . " FROM " . self::TABLE_NAME . " WHERE " . self::IDENTIFICATION . " = %s AND stakeholder_id = %s",
             ['text', 'text'],
-            [$i->serialize(), $s->getId()]
+            [$identification, $stakeholder_id]
         );
 
         if ($r->numRows() === 0) {
@@ -48,8 +59,8 @@ class StakeholderDBRepository implements StakeholderRepository
             $this->db->insert(
                 self::TABLE_NAME,
                 [
-                    self::IDENTIFICATION => ['text', $i->serialize()],
-                    'stakeholder_id' => ['text', $s->getId()],
+                    self::IDENTIFICATION => ['text', $identification],
+                    'stakeholder_id' => ['text', $stakeholder_id],
                 ]
             );
         }
@@ -57,19 +68,20 @@ class StakeholderDBRepository implements StakeholderRepository
         $r = $this->db->queryF(
             "SELECT id FROM " . self::TABLE_NAME_REL . " WHERE id = %s",
             ['text',],
-            [$s->getId()]
+            [$stakeholder_id]
         );
         if ($r->numRows() === 0) {
+
             $this->db->insert(
                 self::TABLE_NAME_REL,
                 [
-                    'id' => ['text', $s->getId()],
-                    'class_name' => ['text', $s->getFullyQualifiedClassName()],
+                    'id' => ['text', $stakeholder_id],
+                    'class_name' => ['text', $stakeholder_class_name],
                 ]
             );
         }
 
-        $this->cache[$i->serialize()][$s->getId()] = $s;
+        $this->cache[$identification][$stakeholder_id] = $s;
 
         return true;
     }
