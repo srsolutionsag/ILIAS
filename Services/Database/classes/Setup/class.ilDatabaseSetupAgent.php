@@ -61,7 +61,8 @@ class ilDatabaseSetupAgent implements Setup\Agent
             false,
             new ilDatabaseConfigStoredObjective($config),
             new \ilDatabasePopulatedObjective($config),
-            new \ilDatabaseUpdatedObjective()
+            new \ilDatabaseUpdatedObjective(),
+            new ilDatabaseCollationSetObjective()
         );
     }
 
@@ -75,6 +76,7 @@ class ilDatabaseSetupAgent implements Setup\Agent
             $p[] = new \ilDatabaseConfigStoredObjective($config);
         }
         $p[] = new \ilDatabaseUpdatedObjective();
+        $p[] = new ilDatabaseCollationSetObjective();
         return new Setup\ObjectiveCollection(
             "Complete objectives from Services\Database",
             false,
