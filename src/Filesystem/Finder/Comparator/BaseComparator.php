@@ -25,10 +25,8 @@ use InvalidArgumentException;
  */
 abstract class BaseComparator
 {
-    /** @var string */
-    private $target = '';
-    /** @var string */
-    private $operator = '==';
+    private string $target = '';
+    private string $operator = '==';
 
     /**
      * @return string

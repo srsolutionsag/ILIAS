@@ -30,10 +30,9 @@ use Iterator as PhpIterator;
  */
 class DateRangeFilterIterator extends FilterIterator
 {
-    /** @var FileSystem */
-    private $filesystem;
+    private FileSystem $filesystem;
     /** @var DateComparator[] */
-    private $comparators = [];
+    private array $comparators = [];
 
     /**
      * @param Filesystem $filesystem
@@ -43,7 +42,7 @@ class DateRangeFilterIterator extends FilterIterator
      */
     public function __construct(Filesystem $filesystem, PhpIterator $iterator, array $comparators)
     {
-        array_walk($comparators, function ($comparator) {
+        array_walk($comparators, function ($comparator): void {
             if (!($comparator instanceof DateComparator)) {
                 if (is_object($comparator)) {
                     throw new InvalidArgumentException(sprintf(
@@ -65,7 +64,7 @@ class DateRangeFilterIterator extends FilterIterator
     /**
      * @inheritdoc
      */
-    public function accept()
+    public function accept(): bool
     {
         /** @var Metadata $metadata */
         $metadata = $this->current();

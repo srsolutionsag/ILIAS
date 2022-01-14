@@ -40,18 +40,9 @@ use ILIAS\Filesystem\Stream\FileStream;
 final class FilesystemFacade implements Filesystem
 {
 
-    /**
-     * @var FileStreamAccess $fileStreamAccess
-     */
-    private $fileStreamAccess;
-    /**
-     * @var FileAccess $fileAccess
-     */
-    private $fileAccess;
-    /**
-     * @var DirectoryAccess $directoryAccess
-     */
-    private $directoryAccess;
+    private FileStreamAccess $fileStreamAccess;
+    private FileAccess $fileAccess;
+    private DirectoryAccess $directoryAccess;
 
 
     /**
@@ -92,7 +83,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function createDir(string $path, string $visibility = Visibility::PUBLIC_ACCESS)
+    public function createDir(string $path, string $visibility = Visibility::PUBLIC_ACCESS): void
     {
         $this->directoryAccess->createDir($path, $visibility);
     }
@@ -101,7 +92,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function copyDir(string $source, string $destination)
+    public function copyDir(string $source, string $destination): void
     {
         $this->directoryAccess->copyDir($source, $destination);
     }
@@ -110,7 +101,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function deleteDir(string $path)
+    public function deleteDir(string $path): void
     {
         $this->directoryAccess->deleteDir($path);
     }
@@ -191,7 +182,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function writeStream(string $path, FileStream $stream)
+    public function writeStream(string $path, FileStream $stream): void
     {
         $this->fileStreamAccess->writeStream($path, $stream);
     }
@@ -200,7 +191,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function putStream(string $path, FileStream $stream)
+    public function putStream(string $path, FileStream $stream): void
     {
         $this->fileStreamAccess->putStream($path, $stream);
     }
@@ -209,7 +200,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function updateStream(string $path, FileStream $stream)
+    public function updateStream(string $path, FileStream $stream): void
     {
         $this->fileStreamAccess->updateStream($path, $stream);
     }
@@ -218,7 +209,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function write(string $path, string $content)
+    public function write(string $path, string $content): void
     {
         $this->fileAccess->write($path, $content);
     }
@@ -227,16 +218,16 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function update(string $path, string $newContent)
+    public function update(string $path, string $new_content): void
     {
-        $this->fileAccess->update($path, $newContent);
+        $this->fileAccess->update($path, $new_content);
     }
 
 
     /**
      * @inheritDoc
      */
-    public function put(string $path, string $content)
+    public function put(string $path, string $content): void
     {
         $this->fileAccess->put($path, $content);
     }
@@ -245,7 +236,7 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function delete(string $path)
+    public function delete(string $path): void
     {
         $this->fileAccess->delete($path);
     }
@@ -263,18 +254,18 @@ final class FilesystemFacade implements Filesystem
     /**
      * @inheritDoc
      */
-    public function rename(string $path, string $newPath)
+    public function rename(string $path, string $new_path): void
     {
-        $this->fileAccess->rename($path, $newPath);
+        $this->fileAccess->rename($path, $new_path);
     }
 
 
     /**
      * @inheritDoc
      */
-    public function copy(string $path, string $copyPath)
+    public function copy(string $path, string $copy_path): void
     {
-        $this->fileAccess->copy($path, $copyPath);
+        $this->fileAccess->copy($path, $copy_path);
     }
 
     /**

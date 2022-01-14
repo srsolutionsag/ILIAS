@@ -30,8 +30,7 @@ class FileTypeFilterIterator extends \FilterIterator
     public const ONLY_FILES = 1;
     public const ONLY_DIRECTORIES = 2;
 
-    /** @var int */
-    private $mode = self::ALL;
+    private int $mode = self::ALL;
 
     /**
      * @param PhpIterator $iterator The Iterator to filter
@@ -46,7 +45,7 @@ class FileTypeFilterIterator extends \FilterIterator
     /**
      * @inheritdoc
      */
-    public function accept()
+    public function accept(): bool
     {
         /** @var Metadata $metadata */
         $metadata = $this->current();

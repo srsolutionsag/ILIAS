@@ -37,7 +37,7 @@ final class FilenameSanitizerImpl implements FilenameSanitizer
      *
      * @var string[] $whitelist
      */
-    private $whitelist;
+    private array $whitelist;
 
 
     /**
@@ -96,7 +96,7 @@ final class FilenameSanitizerImpl implements FilenameSanitizer
      * @param string $filename The filename which should be used to extract the file suffix.
      * @return string The file name suffix in lowercase.
      */
-    private function extractFileSuffix($filename)
+    private function extractFileSuffix(string $filename): string
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     }

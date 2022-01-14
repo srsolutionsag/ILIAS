@@ -35,11 +35,8 @@ use ILIAS\Filesystem\Security\Sanitizing\FilenameSanitizer;
  */
 final class DelegatingFilesystemFactory implements FilesystemFactory
 {
-    private $implementation;
-    /**
-     * @var FilenameSanitizer $sanitizer
-     */
-    private $sanitizer;
+    private FlySystemFilesystemFactory $implementation;
+    private FilenameSanitizer $sanitizer;
 
 
     /**

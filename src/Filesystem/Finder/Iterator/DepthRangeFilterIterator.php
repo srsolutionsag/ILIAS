@@ -27,8 +27,7 @@ use RecursiveIteratorIterator;
  */
 class DepthRangeFilterIterator extends \FilterIterator
 {
-    /** @var int */
-    private $minDepth = 0;
+    private int $minDepth = 0;
 
     /**
      * DepthRangeFilterIterator constructor.
@@ -38,7 +37,7 @@ class DepthRangeFilterIterator extends \FilterIterator
      */
     public function __construct(RecursiveIteratorIterator $iterator, array $comparators)
     {
-        array_walk($comparators, function ($comparator) {
+        array_walk($comparators, function ($comparator): void {
             if (!($comparator instanceof NumberComparator)) {
                 if (is_object($comparator)) {
                     throw new InvalidArgumentException(sprintf(
@@ -82,7 +81,7 @@ class DepthRangeFilterIterator extends \FilterIterator
     /**
      * @inheritdoc
      */
-    public function accept()
+    public function accept(): bool
     {
         return $this->getInnerIterator()->getDepth() >= $this->minDepth;
     }

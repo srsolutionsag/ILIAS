@@ -35,10 +35,10 @@ interface Visibility
      * Public file visibility.
      * @since 5.3
      */
-    const PUBLIC_ACCESS = 'public';
+    public const PUBLIC_ACCESS = 'public';
     /**
      * Private file visibility.
      * @since 5.3
      */
-    const PRIVATE_ACCESS = 'private';
+    public const PRIVATE_ACCESS = 'private';
 }

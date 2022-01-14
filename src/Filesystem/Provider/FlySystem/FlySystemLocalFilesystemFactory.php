@@ -41,10 +41,8 @@ final class FlySystemLocalFilesystemFactory
      * Creates a new instance of the local filesystem adapter used by fly system.
      *
      * @param LocalConfig $config The configuration which should be used to initialise the adapter.
-     *
-     * @return Filesystem
      */
-    public function getInstance(LocalConfig $config)
+    public function getInstance(LocalConfig $config): \ILIAS\Filesystem\FilesystemFacade
     {
         $this->validateFileLockMode($config->getLockMode());
 
@@ -97,7 +95,7 @@ final class FlySystemLocalFilesystemFactory
      *
      * @return int The mapped code of the Local filesystem adapter.
      */
-    private function mapConfigLinkToLocalLinks($configLinkBehaviour)
+    private function mapConfigLinkToLocalLinks(int $configLinkBehaviour) : int
     {
         switch ($configLinkBehaviour) {
             case LocalConfig::DISALLOW_LINKS:
@@ -122,7 +120,7 @@ final class FlySystemLocalFilesystemFactory
      * @see LOCK_SH
      * @see LOCK_EX
      */
-    private function validateFileLockMode($code)
+    private function validateFileLockMode(int $code): void
     {
         if ($code === LOCK_EX || $code === LOCK_SH) {
             return;

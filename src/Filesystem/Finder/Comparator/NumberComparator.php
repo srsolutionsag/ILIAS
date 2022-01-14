@@ -52,7 +52,7 @@ class NumberComparator extends BaseComparator
                     break;
 
                 case 'm':
-                    $target *= 1000000;
+                    $target *= 1_000_000;
                     break;
 
                 case 'mi':
@@ -60,7 +60,7 @@ class NumberComparator extends BaseComparator
                     break;
 
                 case 'g':
-                    $target *= 1000000000;
+                    $target *= 1_000_000_000;
                     break;
 
                 case 'gi':

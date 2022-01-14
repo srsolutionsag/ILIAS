@@ -31,12 +31,10 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
 {
     /** @var PhpIterator|RecursiveIterator */
     private $iterator;
-    /** @var bool */
-    private $isRecursive = false;
+    private bool $isRecursive = false;
     /** @var string[] */
-    private $excludedDirs = [];
-    /** @var string */
-    private $excludedPattern = '';
+    private array $excludedDirs = [];
+    private string $excludedPattern = '';
 
     /**
      * @param PhpIterator $iterator The Iterator to filter
@@ -45,7 +43,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
      */
     public function __construct(PhpIterator $iterator, array $directories)
     {
-        array_walk($directories, function ($directory) {
+        array_walk($directories, function ($directory): void {
             if (!is_string($directory)) {
                 if (is_object($directory)) {
                     throw new InvalidArgumentException(sprintf('Invalid directory given: %s', get_class($directory)));
@@ -78,7 +76,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
     /**
      * @inheritdoc
      */
-    public function accept()
+    public function accept(): bool
     {
         /** @var Metadata $metadata */
         $metadata = $this->current();
@@ -100,7 +98,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
     /**
      * @inheritdoc
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return $this->isRecursive && $this->iterator->hasChildren();
     }
@@ -108,7 +106,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
     /**
      * @inheritdoc
      */
-    public function getChildren()
+    public function getChildren(): \ILIAS\Filesystem\Finder\Iterator\ExcludeDirectoryFilterIterator
     {
         $children = new self($this->iterator->getChildren(), []);
         $children->excludedDirs = $this->excludedDirs;

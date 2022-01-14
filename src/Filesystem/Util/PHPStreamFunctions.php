@@ -35,7 +35,7 @@ final class PHPStreamFunctions
     /**
      * ftell wrapper
      *
-     * @param $handle
+     * @param resource $handle
      *
      * @return bool|int
      *
@@ -54,7 +54,7 @@ final class PHPStreamFunctions
      *
      * @see fclose()
      */
-    public static function fclose($handle)
+    public static function fclose($handle): void
     {
         fclose($handle);
     }
@@ -69,7 +69,7 @@ final class PHPStreamFunctions
      *
      * @return int 0 or -1
      */
-    public static function fseek($stream, $offset, $whence)
+    public static function fseek($stream, $offset, $whence): int
     {
         return fseek($stream, $offset, $whence);
     }

@@ -33,14 +33,11 @@ final class StreamOptions
 {
     const UNKNOWN_STREAM_SIZE = -1;
 
-    /**
-     * @var int $size
-     */
-    private $size;
+    private int $size;
     /**
      * @var string[] $metadata
      */
-    private $metadata;
+    private array $metadata;
 
 
     /**
