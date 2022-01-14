@@ -17,6 +17,19 @@ use LogicException;
 use RecursiveIteratorIterator;
 use Traversable;
 
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class Finder
  * Port of the Symfony2 bundle to work with the ILIAS FileSystem abstraction
