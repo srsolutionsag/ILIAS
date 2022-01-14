@@ -31,7 +31,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
 {
     /** @var PhpIterator|RecursiveIterator */
     private $iterator;
-    private bool $isRecursive = false;
+    private bool $isRecursive;
     /** @var string[] */
     private array $excludedDirs = [];
     private string $excludedPattern = '';
@@ -67,7 +67,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator implements Recursive
         }
 
         if ($patterns) {
-            $this->excludedPattern = '#(?:^|/)(?:' . implode('|', $patterns) . ')(?:/|$)#';
+            $this->excludedPattern = '#(?:^|/)(' . implode('|', $patterns) . ')(?:/|$)#';
         }
 
         parent::__construct($iterator);

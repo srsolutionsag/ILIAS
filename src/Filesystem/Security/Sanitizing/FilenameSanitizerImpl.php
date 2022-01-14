@@ -49,7 +49,7 @@ final class FilenameSanitizerImpl implements FilenameSanitizer
 
         // the secure file ending must be valid, therefore add it if it got removed from the white list.
         if (!in_array(FilenameSanitizer::CLEAN_FILE_SUFFIX, $this->whitelist, true)) {
-            array_push($this->whitelist, FilenameSanitizer::CLEAN_FILE_SUFFIX);
+            $this->whitelist[] = FilenameSanitizer::CLEAN_FILE_SUFFIX;
         }
     }
 

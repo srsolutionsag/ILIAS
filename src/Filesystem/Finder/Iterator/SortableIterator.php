@@ -106,7 +106,7 @@ class SortableIterator implements IteratorAggregate
     /**
      * @inheritdoc
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): \Traversable
     {
         if (1 === $this->sort) {
             return $this->iterator;

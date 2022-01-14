@@ -43,12 +43,8 @@ use ILIAS\Filesystem\Visibility;
 final class FilesystemWhitelistDecorator implements Filesystem
 {
 
-    private \ILIAS\Filesystem\Filesystem $filesystem;
-    /**
-     * @var string[] $whitelist
-     */
-    private array $whitelist = [];
-    private \ILIAS\Filesystem\Security\Sanitizing\FilenameSanitizer $sanitizer;
+    private Filesystem $filesystem;
+    private FilenameSanitizer $sanitizer;
 
 
     /**
@@ -61,7 +57,6 @@ final class FilesystemWhitelistDecorator implements Filesystem
     {
         $this->filesystem = $filesystem;
         $this->sanitizer = $sanitizer;
-        $this->whitelist = ilFileUtils::getValidExtensions();
     }
 
 
