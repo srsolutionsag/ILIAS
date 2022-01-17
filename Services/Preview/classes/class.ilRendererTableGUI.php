@@ -1,10 +1,17 @@
 <?php
-/* Copyright (c) 1998-2012 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-require_once("Services/Table/classes/class.ilTable2GUI.php");
-require_once("Services/Preview/classes/class.ilPreviewRenderer.php");
-require_once("Services/Preview/classes/class.ilFilePreviewRenderer.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Displays an overview of all loaded preview renderers.
  *
@@ -15,7 +22,6 @@ require_once("Services/Preview/classes/class.ilFilePreviewRenderer.php");
  */
 class ilRendererTableGUI extends ilTable2GUI
 {
-    
     public function __construct(ilObjFileAccessSettingsGUI $a_parent_obj, string $a_parent_cmd)
     {
         global $DIC;

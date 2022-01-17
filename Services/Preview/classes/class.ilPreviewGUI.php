@@ -1,9 +1,17 @@
 <?php
-/* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-require_once("./Services/Preview/classes/class.ilPreviewSettings.php");
-require_once("./Services/Preview/classes/class.ilPreview.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * User interface class for previewing objects.
  *
@@ -14,39 +22,17 @@ require_once("./Services/Preview/classes/class.ilPreview.php");
  */
 class ilPreviewGUI implements ilCtrlBaseClassInterface
 {
-
-    /**
-     * @var int|null
-     */
-    private $node_id = null;
-    /**
-     * @var int|null
-     */
-    private $obj_id = null;
-    /**
-     * @var \ilPreview|null
-     */
-    private $preview = null;
+    private ?int $node_id = null;
+    private ?int $obj_id = null;
+    private ?\ilPreview $preview = null;
     /**
      * @var \ilWorkspaceAccessHandler|null|object
      */
     private $access_handler = null;
-    /**
-     * @var int|null
-     */
-    private $context = null;
-    /**
-     * @var ilCtrl
-     */
-    private $ctrl = null;
-    /**
-     * @var \ilLanguage
-     */
-    private $lng = null;
-    /**
-     * @var bool
-     */
-    private static $initialized = false;
+    private ?int $context = null;
+    private ?\ilCtrl $ctrl = null;
+    private ?\ilLanguage $lng = null;
+    private static bool $initialized = false;
 
     const CONTEXT_REPOSITORY = 1;
     const CONTEXT_WORKSPACE = 2;
@@ -82,7 +68,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         // access handler NOT provided?
         if ($a_access_handler == null) {
             if ($this->context == self::CONTEXT_WORKSPACE) {
-                include_once("./Services/PersonalWorkspace/classes/class.ilWorkspaceAccessHandler.php");
                 $a_access_handler = new ilWorkspaceAccessHandler();
             } else {
                 $a_access_handler = $ilAccess;
@@ -130,7 +115,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param $a_html_id string The id of the HTML element that contains the preview.
      * @return string The JavaScript code to show the preview.
      */
-    public function getJSCall($a_html_id)
+    public function getJSCall($a_html_id) : string
     {
         $status = $this->preview->getRenderStatus();
         $command = $status == ilPreview::RENDER_STATUS_NONE ? "renderPreview" : "";
@@ -147,7 +132,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      */
     public function getPreviewHTML()
     {
-        require_once('./Services/WebAccessChecker/classes/class.ilWACSignedPath.php');
         // load the template
         $tmpl = new ilTemplate("tpl.preview.html", true, true, "Services/Preview");
         $tmpl->setVariable("PREVIEW_ID", $this->getHtmlId());
@@ -192,8 +176,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         
         // output
         if ($this->ctrl->isAsynch()) {
-            include_once("./Services/JSON/classes/class.ilJsonUtil.php");
-            
             $response = new stdClass();
             $response->html = $tmpl->get();
             $response->status = $preview_status;
@@ -214,7 +196,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * Gets the HTML that is used for displaying the preview inline.
      * @return string The HTML that is used for displaying the preview inline.
      */
-    public function getInlineHTML()
+    public function getInlineHTML() : string
     {
         $tmpl = new ilTemplate("tpl.preview_inline.html", true, true, "Services/Preview");
         $tmpl->setVariable("PREVIEW", $this->getPreviewHTML());
@@ -252,7 +234,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param $loading_topic string The topic to get the loading text.
      * @param $a_display_status array An array containing the statuses when the command should be visible.
      */
-    private function renderCommand($tmpl, $a_cmd, $btn_topic, $loading_topic, $a_display_status)
+    private function renderCommand($tmpl, $a_cmd, string $btn_topic, string $loading_topic, $a_display_status) : void
     {
         $preview_html_id = $this->getHtmlId();
         $preview_status = $this->preview->getRenderStatus();
@@ -278,7 +260,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * Renders the preview and returns the HTML code that displays the preview.
      * @return string The HTML code that displays the preview.
      */
-    public function renderPreview()
+    public function renderPreview() : string
     {
         // has read access?
         if ($this->access_handler->checkAccess("read", "", $this->node_id)) {
@@ -294,12 +276,10 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * Deletes the preview and returns the HTML code that displays the preview.
      * @return string The HTML code that displays the preview.
      */
-    public function deletePreview()
+    public function deletePreview() : string
     {
         // has read access?
         if ($this->access_handler->checkAccess("write", "", $this->node_id)) {
-            // get the preview
-            require_once("./Services/Preview/classes/class.ilPreview.php");
             $this->preview->delete();
         }
 
@@ -310,7 +290,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * Gets the HTML id for the preview.
      * @return string The HTML id to use for the preview.
      */
-    private function getHtmlId()
+    private function getHtmlId() : string
     {
         return "preview_" . $this->node_id;
     }
@@ -321,7 +301,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param $a_async bool true, to create a URL to call asynchronous; otherwise, false.
      * @return string The created URL.
      */
-    private function buildUrl($a_cmd = "", $a_async = true)
+    private function buildUrl($a_cmd = "", $a_async = true) : string
     {
         $link = "ilias.php?baseClass=ilPreviewGUI&node_id={$this->node_id}&context={$this->context}&obj_id={$this->obj_id}";
         
@@ -340,7 +320,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
     /**
      * Initializes the preview and loads the needed javascripts and styles.
      */
-    public static function initPreview()
+    public static function initPreview() : void
     {
         if (self::$initialized) {
             return;
@@ -392,7 +372,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param string $text The text to make JSON safe.
      * @return string The JSON safe text.
      */
-    private static function jsonSafeString($text)
+    private static function jsonSafeString(string $text) : string
     {
         if (!is_string($text)) {
             return $text;

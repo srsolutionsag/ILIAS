@@ -1,8 +1,17 @@
 <?php
-/* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-require_once("./Services/Preview/classes/class.ilPreview.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Factory that provides access to all available preview renderers.
  *
@@ -15,16 +24,15 @@ final class ilRendererFactory
 {
     /**
      * The available renderers.
-     * @var array
      */
-    private static $renderers = null;
+    private static ?array $renderers = null;
     
     /**
      * Gets an array containing all available preview renderers.
      *
      * @return array All available preview renderers.
      */
-    public static function getRenderers()
+    public static function getRenderers() : array
     {
         self::loadAvailableRenderers();
         return self::$renderers;
@@ -36,7 +44,7 @@ final class ilRendererFactory
      * @param ilPReview $preview The preview to get the renderer for.
      * @return ilPreviewRenderer A renderer or null if no renderer matches the preview object.
      */
-    public static function getRenderer($preview)
+    public static function getRenderer(\ilPReview $preview)
     {
         $renderers = self::getRenderers();
         
@@ -56,7 +64,7 @@ final class ilRendererFactory
      *
      * @return array The available renderers.
      */
-    private static function loadAvailableRenderers()
+    private static function loadAvailableRenderers() : void
     {
         // already loaded?
         if (self::$renderers != null) {
@@ -68,16 +76,7 @@ final class ilRendererFactory
         // get registered and active plugins
         global $DIC;
         $component_factory = $DIC["component.factory"];
-        /* this slot seems to be non-existent
-        foreach ($component_factory->getActivePluginsInSlot("prve") as $plugin) {
-            $r[] = $plugin->getRendererClassInstance();
-        }*/
-        
-        // add default renderers
-        include_once("./Services/Preview/classes/class.ilImageMagickRenderer.php");
         $r[] = new ilImageMagickRenderer();
-        
-        include_once("./Services/Preview/classes/class.ilGhostscriptRenderer.php");
         if (ilGhostscriptRenderer::isGhostscriptInstalled()) {
             $r[] = new ilGhostscriptRenderer();
         }

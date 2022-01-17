@@ -1,8 +1,17 @@
 <?php
-/* Copyright (c) 1998-2012 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-require_once("./Services/Preview/classes/class.ilPreviewSettings.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Abstract parent class for all preview renderer classes.
  *
@@ -49,7 +58,7 @@ abstract class ilPreviewRenderer
      *
      * @return array An array containing the supported repository types.
      */
-    abstract public function getSupportedRepositoryTypes();
+    abstract public function getSupportedRepositoryTypes() : array;
     
     /**
      * Determines whether the specified preview object is supported by the renderer.
@@ -57,7 +66,7 @@ abstract class ilPreviewRenderer
      * @param ilPreview $preview The preview object to check.
      * @return bool true, if the renderer supports the specified preview object; otherwise, false.
      */
-    public function supports($preview)
+    public function supports(\ilPreview $preview)
     {
         // contains type?
         return in_array($preview->getObjType(), $this->getSupportedRepositoryTypes());
@@ -71,16 +80,11 @@ abstract class ilPreviewRenderer
      * @param bool $async true, if the rendering should be done asynchronously; otherwise, false.
      * @return bool true, if the preview was successfully rendered; otherwise, false.
      */
-    final public function render($preview, $obj, $async)
+    final public function render(\ilPreview $preview, \ilObject $obj, bool $async)
     {
         $preview->setRenderDate(ilUtil::now());
         $preview->setRenderStatus(ilPreview::RENDER_STATUS_PENDING);
         $preview->save();
-        
-        // TODO: this should be done in background if $async is true
-        
-        // the deriving renderer should deliver images
-        require_once("./Services/Preview/classes/class.ilRenderedImage.php");
         $images = $this->renderImages($obj);
         
         // process each image
@@ -116,7 +120,7 @@ abstract class ilPreviewRenderer
      * @param string $dest_img_path The destination image path.
      * @return bool true, if the preview was created; otherwise, false.
      */
-    private function createPreviewImage($src_img_path, $dest_img_path)
+    private function createPreviewImage(string $src_img_path, string $dest_img_path)
     {
         // create resize argument
         $imgSize = $this->getImageSize();
@@ -143,7 +147,7 @@ abstract class ilPreviewRenderer
      * @param ilObject $obj The object to create images from.
      * @return array An array of ilRenderedImage containing the absolute file paths to the images.
      */
-    abstract protected function renderImages($obj);
+    abstract protected function renderImages(\ilObject $obj);
     
     /**
      * Gets the size of the preview images in pixels.

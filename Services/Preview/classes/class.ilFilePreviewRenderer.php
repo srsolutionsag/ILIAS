@@ -1,8 +1,17 @@
 <?php
-/* Copyright (c) 1998-2012 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-include_once("./Services/Preview/classes/class.ilPreviewRenderer.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Abstract parent class for all file preview renderer classes.
  *
@@ -18,7 +27,7 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
      *
      * @return array An array containing the supported repository types.
      */
-    final public function getSupportedRepositoryTypes()
+    final public function getSupportedRepositoryTypes() : array
     {
         return array("file");
     }
@@ -29,23 +38,19 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
      * @param ilPreview $preview The preview object to check.
      * @return bool true, if the renderer supports the specified preview object; otherwise, false.
      */
-    public function supports($preview)
+    public function supports(\ilPreview $preview) : bool
     {
         // let parent check first
         if (!parent::supports($preview)) {
             return false;
         }
-        
-        // get file extension
-        require_once("./Modules/File/classes/class.ilObjFile.php");
-        include_once './Modules/File/classes/class.ilObjFileAccess.php';
         // bugfix mantis 23293
         if (isset($_FILES['file']['name'])) {
             $filename = $_FILES['file']['name'];
         } elseif (isset($_FILES['upload_files']['name'])) {
             $filename = $_FILES['upload_files']['name'];
         }
-        if(empty($filename)) {
+        if (empty($filename)) {
             return false;
         }
         $ext = ilObjFileAccess::_getFileExtension($filename);
@@ -62,7 +67,7 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
      * @param string $filepath The path of the file to check.
      * @return string The specified file path if conform with exec(); otherwise, the path to a temporary copy of the file.
      */
-    public function prepareFileForExec($filepath)
+    public function prepareFileForExec(string $filepath) : string
     {
         $filepath = ilFileUtils::getValidFilename($filepath);
 
@@ -87,5 +92,5 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
      *
      * @return array An array containing the supported file formats.
      */
-    abstract public function getSupportedFileFormats();
+    abstract public function getSupportedFileFormats() : array;
 }

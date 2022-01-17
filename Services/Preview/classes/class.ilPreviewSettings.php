@@ -1,6 +1,17 @@
 <?php
-/* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * This class encapsulates accesses to settings which are relevant for the
  * preview functionality of ILIAS.
@@ -26,39 +37,33 @@ class ilPreviewSettings
     
     /**
      * The instance of the ilPreviewSettings.
-     * @var ilPreviewSettings
      */
-    private static $instance = null;
+    private static ?\ilPreviewSettings $instance = null;
     
     /**
      * Settings object
-     * @var ilSetting
      */
-    private $settings = null;
+    private ?\ilSetting $settings = null;
 
     /**
      * Indicates whether the preview functionality is enabled.
-     * @var bool
      */
-    private $preview_enabled = true;
+    private bool $preview_enabled = true;
 
     /**
      * Defines the maximum number of previews pictures per object.
-     * @var int
      */
-    private $max_previews = self::MAX_PREVIEWS_DEFAULT;
+    private int $max_previews = self::MAX_PREVIEWS_DEFAULT;
     
     /**
      * Defines the maximum width and height of the preview images.
-     * @var int
      */
-    private $image_size = self::IMAGE_SIZE_DEFAULT;
+    private int $image_size = self::IMAGE_SIZE_DEFAULT;
 
     /**
      * Defines the quality (compression) of the preview images (1-100).
-     * @var int
      */
-    private $image_quality = self::IMAGE_QUALITY_DEFAULT;
+    private int $image_quality = self::IMAGE_QUALITY_DEFAULT;
 
     /**
      * Private constructor
@@ -75,7 +80,7 @@ class ilPreviewSettings
      *
      * @param bool $a_value The new value
      */
-    public static function setPreviewEnabled($a_value)
+    public static function setPreviewEnabled(bool $a_value) : void
     {
         $instance = self::getInstance();
         $instance->preview_enabled = $a_value == true;
@@ -87,7 +92,7 @@ class ilPreviewSettings
      *
      * @return bool The current value
      */
-    public static function isPreviewEnabled()
+    public static function isPreviewEnabled() : bool
     {
         return self::getInstance()->preview_enabled;
     }
@@ -97,7 +102,7 @@ class ilPreviewSettings
      *
      * @param int $a_value The new value
      */
-    public static function setMaximumPreviews($a_value)
+    public static function setMaximumPreviews(int $a_value) : void
     {
         $instance = self::getInstance();
         $instance->max_previews = self::adjustNumeric($a_value, self::MAX_PREVIEWS_MIN, self::MAX_PREVIEWS_MAX, self::MAX_PREVIEWS_DEFAULT);
@@ -109,7 +114,7 @@ class ilPreviewSettings
      *
      * @return int The current value
      */
-    public static function getMaximumPreviews()
+    public static function getMaximumPreviews() : int
     {
         return self::getInstance()->max_previews;
     }
@@ -119,7 +124,7 @@ class ilPreviewSettings
      *
      * @param int $a_value The new value
      */
-    public static function setImageSize($a_value)
+    public static function setImageSize(int $a_value) : void
     {
         $instance = self::getInstance();
         $instance->image_size = self::adjustNumeric($a_value, self::IMAGE_SIZE_MIN, self::IMAGE_SIZE_MAX, self::IMAGE_SIZE_DEFAULT);
@@ -131,7 +136,7 @@ class ilPreviewSettings
      *
      * @return int The current value
      */
-    public static function getImageSize()
+    public static function getImageSize() : int
     {
         return self::getInstance()->image_size;
     }
@@ -141,7 +146,7 @@ class ilPreviewSettings
      *
      * @param int $a_value The new value
      */
-    public static function setImageQuality($a_value)
+    public static function setImageQuality(int $a_value) : void
     {
         $instance = self::getInstance();
         $instance->image_quality = self::adjustNumeric($a_value, self::IMAGE_QUALITY_MIN, self::IMAGE_QUALITY_MAX, self::IMAGE_QUALITY_DEFAULT);
@@ -153,16 +158,15 @@ class ilPreviewSettings
      *
      * @return int The current value
      */
-    public static function getImageQuality()
+    public static function getImageQuality() : int
     {
         return self::getInstance()->image_quality;
     }
 
     /**
      * Gets the instance of the ilPreviewSettings.
-     * @return ilPreviewSettings
      */
-    private static function getInstance()
+    private static function getInstance() : \ilPreviewSettings
     {
         if (self::$instance == null) {
             self::$instance = new ilPreviewSettings();
@@ -175,13 +179,12 @@ class ilPreviewSettings
      * Adjusts the numeric value to fit between the specified minimum and maximum.
      * If the value is not numeric the default value is returned.
      *
-     * @param object $value The value to adjust.
      * @param int $min The allowed minimum (inclusive).
      * @param int $max The allowed maximum (inclusive).
      * @param int $default The default value if the specified value is not numeric.
      * @return The adjusted value.
      */
-    private static function adjustNumeric($value, $min, $max, $default)
+    private static function adjustNumeric(object $value, int $min, int $max, int $default) : int
     {
         // is number?
         if (is_numeric($value)) {
