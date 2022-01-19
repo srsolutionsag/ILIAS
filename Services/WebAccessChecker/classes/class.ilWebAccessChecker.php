@@ -52,9 +52,6 @@ class ilWebAccessChecker
 
     /**
      * ilWebAccessChecker constructor.
-     *
-     * @param Services      $httpState
-     * @param CookieFactory $cookieFactory
      */
     public function __construct(Services $httpState, CookieFactory $cookieFactory)
     {
@@ -68,7 +65,7 @@ class ilWebAccessChecker
      */
     public function check() : bool
     {
-        if (!$this->getPathObject()) {
+        if ($this->getPathObject() === null) {
             throw new ilWACException(ilWACException::CODE_NO_PATH);
         }
 

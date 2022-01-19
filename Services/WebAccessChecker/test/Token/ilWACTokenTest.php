@@ -188,11 +188,6 @@ class ilWACTokenTest extends MockeryTestCase
     public function testCookieGeneration(): void
     {
         $this->markTestSkipped('unable to use http cookies at this point');
-        $expected_cookies = [
-            '19ab58dae37d8d8cf931727c35514642',
-            '19ab58dae37d8d8cf931727c35514642ts',
-            '19ab58dae37d8d8cf931727c35514642ttl',
-        ];
 
         $cookieJar = Mockery::mock(CookieJar::class);
 

@@ -49,10 +49,6 @@ class ilWACSignedPath
 
     /**
      * ilWACSignedPath constructor.
-     *
-     * @param \ilWACPath      $ilWACPath
-     * @param GlobalHttpState $httpState
-     * @param CookieFactory   $cookieFactory
      */
     public function __construct(ilWACPath $ilWACPath, GlobalHttpState $httpState, CookieFactory $cookieFactory)
     {
@@ -69,7 +65,7 @@ class ilWACSignedPath
         if ($this->getType() !== PathType::FILE) {
             throw new ilWACException(ilWACException::WRONG_PATH_TYPE);
         }
-        if (!$this->getPathObject()->getOriginalRequest()) {
+        if ($this->getPathObject()->getOriginalRequest() === '' || $this->getPathObject()->getOriginalRequest() === '0') {
             return '';
         }
         if (!$this->getPathObject()->fileExists()) {
@@ -85,15 +81,14 @@ class ilWACSignedPath
         }
 
         $path = $path . '&' . self::WAC_TTL_ID . '=' . $this->getTokenInstance()->getTTL();
-        $path = $path . '&' . self::WAC_TIMESTAMP_ID . '='
-            . $this->getTokenInstance()->getTimestamp();
 
-        return $path;
+        return $path . '&' . self::WAC_TIMESTAMP_ID . '='
+            . $this->getTokenInstance()->getTimestamp();
     }
 
     public function isFolderSigned() : bool
     {
-        $jar = $this->httpService->cookieJar();
+        $this->httpService->cookieJar();
 
         $this->setType(PathType::FOLDER);
         $plain_token = $this->buildTokenInstance();
@@ -105,11 +100,11 @@ class ilWACSignedPath
         // Timestamp
         $default_timestamp = 0;
         $timestamp_cookie_value = $this->httpService->request()->getCookieParams()[$name . self::TS_SUFFIX] ?? $default_timestamp;
-        $timestamp_cookie_value = intval($timestamp_cookie_value);
+        $timestamp_cookie_value = (int) $timestamp_cookie_value;
         // TTL
         $default_ttl = 0;
         $ttl_cookie_value = $this->httpService->request()->getCookieParams()[$name . self::TTL_SUFFIX] ?? $default_ttl;
-        $ttl_cookie_value = intval($ttl_cookie_value);
+        $ttl_cookie_value = (int) $ttl_cookie_value;
 
         $this->getPathObject()->setToken($token_cookie_value);
         $this->getPathObject()->setTimestamp($timestamp_cookie_value);
@@ -212,11 +207,11 @@ class ilWACSignedPath
      */
     public static function signFile(string $path_to_file) : string
     {
-        if (!$path_to_file) {
+        if ($path_to_file === '' || $path_to_file === '0') {
             return '';
         }
         $ilWACPath = new ilWACPath($path_to_file);
-        if (!$ilWACPath->getClient()) {
+        if ($ilWACPath->getClient() === '' || $ilWACPath->getClient() === '0') {
             return $path_to_file;
         }
         $obj = new self($ilWACPath, self::http(), new CookieFactoryImpl());
@@ -239,9 +234,6 @@ class ilWACSignedPath
         return $this->token_instance;
     }
 
-    /**
-     * @param ilWACToken $token_instance
-     */
     public function setTokenInstance(ilWACToken $token_instance) : void
     {
         $this->token_instance = $token_instance;
@@ -287,7 +279,7 @@ class ilWACSignedPath
 
         $simulated_token = $this->buildTokenInstance($request_timestamp, $request_ttl);
         $simulated_token_string = $simulated_token->getToken();
-        $token_valid = ($simulated_token_string == $request_token_string);
+        $token_valid = ($simulated_token_string === $request_token_string);
 
         if (!$token_valid) {
             $this->setChecked(true);
@@ -304,7 +296,7 @@ class ilWACSignedPath
      */
     protected function buildTokenInstance(int $timestamp = 0, int $ttl = 0) : \ilWACToken
     {
-        if (!$this->getType()) {
+        if ($this->getType() === 0) {
             throw new ilWACException(ilWACException::CODE_NO_TYPE);
         }
 

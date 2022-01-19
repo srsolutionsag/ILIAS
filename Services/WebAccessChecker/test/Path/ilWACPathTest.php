@@ -31,19 +31,8 @@ class ilWACPathTest //extends MockeryTestCase
     /**
      * Setup
      */
-    protected function setUp() : void
+    protected function setUp(): void
     {
-        //setup container for HttpServiceAware classes
-        /*
-        $container = new \ILIAS\DI\Container();
-        $container['http'] = function ($c) {
-            return Mockery::mock(GlobalHttpState::class);
-        };
-
-
-        $GLOBALS["DIC"] = $container; */
-
-        parent::setUp();
     }
 
 

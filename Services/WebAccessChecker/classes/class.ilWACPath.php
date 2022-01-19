@@ -106,7 +106,7 @@ class ilWACPath
         $this->setModuleIdentifier($moduleId);
         $this->setModuleType(!isset($result['module_type']) || is_null($result['module_type']) ? '' : $result['module_type']);
 
-        if ($this->getModuleIdentifier()) {
+        if ($this->getModuleIdentifier() !== '' && $this->getModuleIdentifier() !== '0') {
             $module_path = strstr(
                 !isset($result['module_path']) || is_null($result['module_path']) ? '' : $result['module_path'],
                 $this->getModuleIdentifier(),
@@ -147,10 +147,10 @@ class ilWACPath
             $this->setToken($param[ilWACSignedPath::WAC_TOKEN_ID]);
         }
         if (isset($param[ilWACSignedPath::WAC_TIMESTAMP_ID])) {
-            $this->setTimestamp(intval($param[ilWACSignedPath::WAC_TIMESTAMP_ID]));
+            $this->setTimestamp((int) $param[ilWACSignedPath::WAC_TIMESTAMP_ID]);
         }
         if (isset($param[ilWACSignedPath::WAC_TTL_ID])) {
-            $this->setTTL(intval($param[ilWACSignedPath::WAC_TTL_ID]));
+            $this->setTTL((int) $param[ilWACSignedPath::WAC_TTL_ID]);
         }
     }
 

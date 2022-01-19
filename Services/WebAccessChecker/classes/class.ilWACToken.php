@@ -35,11 +35,6 @@ class ilWACToken
 
     /**
      * ilWACToken constructor.
-     *
-     * @param string $path
-     * @param string $client
-     * @param int $timestamp
-     * @param int $ttl
      */
     public function __construct(
         string $path,
@@ -80,7 +75,7 @@ class ilWACToken
 
     protected function initSalt(): void
     {
-        if (self::getSALT()) {
+        if (self::getSALT() !== '' && self::getSALT() !== '0') {
             return;
         }
         $salt = '';

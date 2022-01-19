@@ -28,10 +28,6 @@ class ilWebAccessCheckerDelivery
     private Services $http;
 
 
-    /**
-     * @param Services $httpState
-     * @param CookieFactory   $cookieFactory
-     */
     public static function run(Services $httpState, CookieFactory $cookieFactory): void
     {
         $obj = new self($httpState, $cookieFactory);
@@ -41,9 +37,6 @@ class ilWebAccessCheckerDelivery
 
     /**
      * ilWebAccessCheckerDelivery constructor.
-     *
-     * @param Services $httpState
-     * @param CookieFactory   $cookieFactory
      */
     public function __construct(Services $httpState, CookieFactory $cookieFactory)
     {
@@ -121,9 +114,6 @@ class ilWebAccessCheckerDelivery
     }
 
 
-    /**
-     * @param ilWACException $e
-     */
     protected function handleAccessErrors(ilWACException $e): void
     {
 
@@ -146,7 +136,6 @@ class ilWebAccessCheckerDelivery
 
 
     /**
-     * @param ilWACException $e
      * @throws ilWACException
      */
     protected function handleErrors(ilWACException $e): void

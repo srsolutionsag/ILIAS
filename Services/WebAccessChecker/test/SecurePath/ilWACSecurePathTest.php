@@ -37,7 +37,6 @@ class ilWACSecurePathTest //extends MockeryTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
     }
 
 

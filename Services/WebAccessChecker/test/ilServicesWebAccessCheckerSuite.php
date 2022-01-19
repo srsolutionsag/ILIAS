@@ -25,8 +25,6 @@ class ilServicesWebAccessCheckerSuite extends TestSuite
 
     public static function suite(): \ilServicesWebAccessCheckerSuite
     {
-        $suite = new self();
-
         //require_once('./Services/WebAccessChecker/test/Token/ilWACTokenTest.php');
         //$suite->addTestSuite('ilWACTokenTest');
 
@@ -36,6 +34,6 @@ class ilServicesWebAccessCheckerSuite extends TestSuite
         //require_once('./Services/WebAccessChecker/test/Path/ilWACPathTest.php');
         //$suite->addTestSuite('ilWACPathTest');
 
-        return $suite;
+        return new self();
     }
 }

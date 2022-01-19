@@ -22,7 +22,6 @@ class ilWACSecurePath extends ActiveRecord
 {
 
     /**
-     * @return string
      * @description Return the Name of your Database Table
      * @deprecated
      */
@@ -48,7 +47,7 @@ class ilWACSecurePath extends ActiveRecord
          * @var $obj ilWACSecurePath
          */
         $obj = self::find($ilWACPath->getModuleType());
-        if (!$obj) {
+        if ($obj === null) {
             throw new ilWACException(ilWACException::CODE_NO_PATH,
                 'No Checking Instance found for id: ' . $ilWACPath->getSecurePathId());
         }
