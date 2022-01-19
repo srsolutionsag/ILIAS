@@ -24,13 +24,12 @@
  */
 class ilShibbolethRoleAssignmentRules
 {
-    protected static $active_plugins = null;
-
+    protected static array $active_plugins = [];
 
     /**
-     * @return array
+     * @return array<int|string, \ilShibbolethRoleAssignmentRule>
      */
-    public static function getAllRules()
+    public static function getAllRules() : array
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
@@ -47,28 +46,17 @@ class ilShibbolethRoleAssignmentRules
         return $rules;
     }
 
-
-    public static function getCountRules()
+    public static function getCountRules() : int
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
         $query = "SELECT COUNT(*) num FROM shib_role_assignment ";
         $res = $ilDB->query($query);
-        while ($row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT)) {
-            return $row->num;
-        }
-
-        return 0;
+        $row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT);
+        return (int) $row->num ?? 0;
     }
 
-
-    /**
-     * @param $a_usr_id
-     * @param $a_data
-     *
-     * @return bool
-     */
-    public static function updateAssignments($a_usr_id, $a_data)
+    public static function updateAssignments(int $a_usr_id, array $a_data) : bool
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
@@ -80,11 +68,11 @@ class ilShibbolethRoleAssignmentRules
         while ($row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT)) {
             $rule = new ilShibbolethRoleAssignmentRule($row->rule_id);
             //			$matches = $rule->matches($a_data);
-            if ($rule->doesMatch($a_data) and $row->add_on_update) {
+            if ($rule->doesMatch($a_data) && $row->add_on_update) {
                 $ilLog->write(__METHOD__ . ': Assigned to role ' . ilObject::_lookupTitle($rule->getRoleId()));
                 $rbacadmin->assignUser($rule->getRoleId(), $a_usr_id);
             }
-            if (!$rule->doesMatch($a_data) and $row->remove_on_update) {
+            if (!$rule->doesMatch($a_data) && $row->remove_on_update) {
                 $ilLog->write(__METHOD__ . ': Deassigned from role ' . ilObject::_lookupTitle($rule->getRoleId()));
                 $rbacadmin->deassignUser($rule->getRoleId(), $a_usr_id);
             }
@@ -99,14 +87,7 @@ class ilShibbolethRoleAssignmentRules
         return true;
     }
 
-
-    /**
-     * @param $a_usr_id
-     * @param $a_data
-     *
-     * @return bool
-     */
-    public static function doAssignments($a_usr_id, $a_data)
+    public static function doAssignments(int $a_usr_id, array $a_data) : bool
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
@@ -124,7 +105,7 @@ class ilShibbolethRoleAssignmentRules
             }
         }
         // Assign to default if no matching found
-        if (!$num_matches) {
+        if ($num_matches === 0) {
             $default_role = shibConfig::getInstance()->getUserDefaultRole();
             $ilLog->write(__METHOD__ . ': Assigned to default role ' . ilObject::_lookupTitle($default_role));
             $rbacadmin->assignUser($default_role, $a_usr_id);
@@ -133,18 +114,10 @@ class ilShibbolethRoleAssignmentRules
         return true;
     }
 
-
-    /**
-     * @param $a_plugin_id
-     * @param $a_user_data
-     *
-     * @return bool
-     */
-    public static function callPlugin($a_plugin_id, $a_user_data)
+    public static function callPlugin(string $a_plugin_id, array $a_user_data) : bool
     {
         global $DIC;
-        $component_factory = $DIC['component.factory'];
-        foreach ($component->getActivePluginsInSlot('shibhk') as $plugin) {
+        foreach ($DIC['component.factory']->getActivePluginsInSlot('shibhk') as $plugin) {
             if ($plugin->checkRoleAssignment($a_plugin_id, $a_user_data)) {
                 return true;
             }

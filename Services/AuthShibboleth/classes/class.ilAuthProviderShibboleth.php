@@ -19,32 +19,17 @@
  */
 class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderInterface
 {
-    private $migration_account = '';
-
-
-    /**
-     * Constructor
-     * @param \ilAuthCredentials $credentials
-     */
-    public function __construct(\ilAuthCredentials $credentials)
-    {
-        parent::__construct($credentials);
-    }
-
     /**
      * Do apache auth
-     * @param \ilAuthStatus $status
      */
     public function doAuthentication(\ilAuthStatus $status)
     {
-        global $DIC; // for backword compatibility of hook environment variables
+        global $DIC; // for backwards compatibility of hook environment variables
         $ilias = $DIC['ilias'];
         $ilSetting = $DIC['ilSetting'];
         $shibServerData = shibServerData::getInstance();
 
-        //$this->getLogger()->dump($shibServerData);
-
-        if ($shibServerData->getLogin()) {
+        if ($shibServerData->getLogin() !== '' && $shibServerData->getLogin() !== '0') {
             $shibUser = shibUser::buildInstance($shibServerData);
             // for backword compatibility of hook environment variables
             $userObj = &$shibUser; // For shib_data_conv included Script
@@ -56,8 +41,7 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
                 // Modify user data before creating the user
                 // Include custom code that can be used to further modify
                 // certain Shibboleth user attributes
-                if ($ilias->getSetting('shib_data_conv') and $ilias->getSetting('shib_data_conv') != ''
-                    and is_readable($ilias->getSetting('shib_data_conv'))
+                if ($ilias->getSetting('shib_data_conv') && $ilias->getSetting('shib_data_conv') != '' && is_readable($ilias->getSetting('shib_data_conv'))
                 ) {
                     /** @noRector */
                     include($ilias->getSetting('shib_data_conv'));
@@ -73,8 +57,7 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
                 $shibUser->updateFields();
                 // Include custom code that can be used to further modify
                 // certain Shibboleth user attributes
-                if ($ilias->getSetting('shib_data_conv') and $ilias->getSetting('shib_data_conv') != ''
-                    and is_readable($ilias->getSetting('shib_data_conv'))
+                if ($ilias->getSetting('shib_data_conv') && $ilias->getSetting('shib_data_conv') != '' && is_readable($ilias->getSetting('shib_data_conv'))
                 ) {
                     /** @noRector */
                     include($ilias->getSetting('shib_data_conv'));

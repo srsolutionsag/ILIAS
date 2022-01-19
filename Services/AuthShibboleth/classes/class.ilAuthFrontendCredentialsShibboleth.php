@@ -21,36 +21,28 @@
  */
 class ilAuthFrontendCredentialsShibboleth extends ilAuthFrontendCredentials implements ilAuthCredentials
 {
-    /**
-     * @var ilSetting
-     */
-    private $settings = null;
-    
+    private \ilSetting $settings;
 
     /**
      * Constructor
      */
     public function __construct()
     {
+        global $DIC;
         parent::__construct();
-        $this->settings = $GLOBALS['DIC']['ilSetting'];
+        $this->settings = $DIC->settings();
     }
-    
-    
-    /**
-     * @return \ilSetting
-     */
-    protected function getSettings()
+
+    protected function getSettings() : \ilSetting
     {
         return $this->settings;
     }
-    
+
     /**
      * Init credentials from request
      */
-    public function initFromRequest()
+    public function initFromRequest() : void
     {
-        //$this->getLogger()->dump($_SERVER, ilLogLevel::DEBUG);
         $this->setUsername($this->settings->get('shib_login', ''));
         $this->setPassword('');
     }

@@ -21,66 +21,26 @@
 interface ilShibbolethAuthenticationPluginInt
 {
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeLogin(ilObjUser $user);
+    public function beforeLogin(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterLogin(ilObjUser $user);
+    public function afterLogin(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeLogout(ilObjUser $user);
+    public function beforeLogout(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterLogout(ilObjUser $user);
+    public function afterLogout(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeCreateUser(ilObjUser $user);
+    public function beforeCreateUser(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterCreateUser(ilObjUser $user);
+    public function afterCreateUser(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeUpdateUser(ilObjUser $user);
+    public function beforeUpdateUser(ilObjUser $user) : ilObjUser;
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterUpdateUser(ilObjUser $user);
+    public function afterUpdateUser(ilObjUser $user) : ilObjUser;
 }

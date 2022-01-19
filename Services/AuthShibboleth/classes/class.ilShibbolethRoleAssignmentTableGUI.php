@@ -23,17 +23,8 @@
  */
 class ilShibbolethRoleAssignmentTableGUI extends ilTable2GUI
 {
-    /**
-     * constructor
-     *
-     * @access   public
-     *
-     * @param        $a_parent_obj
-     * @param string $a_parent_cmd
-     *
-     * @internal param $
-     */
-    public function __construct($a_parent_obj, $a_parent_cmd = '')
+
+    public function __construct(ilAuthShibbolethSettingsGUI $a_parent_obj, string $a_parent_cmd = '')
     {
         global $DIC;
         $lng = $DIC['lng'];
@@ -53,9 +44,6 @@ class ilShibbolethRoleAssignmentTableGUI extends ilTable2GUI
     }
 
 
-    /**
-     * @param array $a_set
-     */
     public function fillRow(array $a_set) : void
     {
         $this->tpl->setVariable('VAL_ID', $a_set['id']);
@@ -82,11 +70,9 @@ class ilShibbolethRoleAssignmentTableGUI extends ilTable2GUI
     }
 
 
-    /**
-     * @param $rule_objs
-     */
-    public function parse($rule_objs)
+    public function parse(array $rule_objs): void
     {
+        $records_arr = [];
         foreach ($rule_objs as $rule) {
             $tmp_arr['id'] = $rule->getRuleId();
             $tmp_arr['type'] = $rule->isPluginActive() ? $this->lng->txt('shib_role_by_plugin') : $this->lng->txt('shib_role_by_attribute');
@@ -96,6 +82,6 @@ class ilShibbolethRoleAssignmentTableGUI extends ilTable2GUI
             $tmp_arr['role'] = ilObject::_lookupTitle($rule->getRoleId());
             $records_arr[] = $tmp_arr;
         }
-        $this->setData($records_arr ? $records_arr : array());
+        $this->setData($records_arr);
     }
 }

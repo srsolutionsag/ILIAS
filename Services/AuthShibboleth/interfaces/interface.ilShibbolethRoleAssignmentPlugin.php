@@ -32,5 +32,5 @@ interface ilShibbolethRoleAssignmentPlugin
      * @param array $a_user_data	Array with user data ($_SERVER)
      * @return bool whether the condition is fullfilled or not
      */
-    public function checkRoleAssignment($a_plugin_id, $a_user_data);
+    public function checkRoleAssignment(int $a_plugin_id, array $a_user_data);
 }

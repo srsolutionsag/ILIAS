@@ -23,20 +23,15 @@
  */
 abstract class ilShibbolethAuthenticationPlugin extends ilPlugin implements ilShibbolethAuthenticationPluginInt
 {
+    /**
+     * @var ilShibbolethAuthenticationPlugin[]
+     */
+    protected array $active_plugins = [];
 
     /**
-     * @var array
+     * @param mixed $a_value
      */
-    protected $active_plugins = array();
-
-    /**
-     * @param $a_user_data
-     * @param $a_keyword
-     * @param $a_value
-     *
-     * @return bool
-     */
-    protected function checkValue($a_user_data, $a_keyword, $a_value)
+    protected function checkValue(array $a_user_data, string $a_keyword, $a_value): bool
     {
         if (!$a_user_data[$a_keyword]) {
             return false;
@@ -50,97 +45,53 @@ abstract class ilShibbolethAuthenticationPlugin extends ilPlugin implements ilSh
 
             return false;
         }
-        if (strcasecmp(trim($a_user_data[$a_keyword]), trim($a_value)) == 0) {
-            return true;
-        }
-
-        return false;
+        return strcasecmp(trim($a_user_data[$a_keyword]), trim($a_value)) == 0;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeLogin(ilObjUser $user)
+    public function beforeLogin(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterLogin(ilObjUser $user)
+    public function afterLogin(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeCreateUser(ilObjUser $user)
+    public function beforeCreateUser(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterCreateUser(ilObjUser $user)
+    public function afterCreateUser(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeLogout(ilObjUser $user)
+    public function beforeLogout(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterLogout(ilObjUser $user)
+    public function afterLogout(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function beforeUpdateUser(ilObjUser $user)
+    public function beforeUpdateUser(ilObjUser $user): ilObjUser
     {
         return $user;
     }
 
 
-    /**
-     * @param ilObjUser $user
-     *
-     * @return ilObjUser
-     */
-    public function afterUpdateUser(ilObjUser $user)
+    public function afterUpdateUser(ilObjUser $user): ilObjUser
     {
         return $user;
     }
