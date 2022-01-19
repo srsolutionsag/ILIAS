@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * Preview renderer class that is able to create previews from PDF, PS and EPS by using GhostScript.
  *

@@ -26,7 +26,7 @@ final class ilRendererFactory
      * The available renderers.
      */
     private static ?array $renderers = null;
-    
+
     /**
      * Gets an array containing all available preview renderers.
      *
@@ -35,52 +35,45 @@ final class ilRendererFactory
     public static function getRenderers() : array
     {
         self::loadAvailableRenderers();
-        return self::$renderers;
+        return self::$renderers ?? [];
     }
-    
+
     /**
      * Gets the renderer that is able to create a preview for the specified preview object.
      *
      * @param ilPReview $preview The preview to get the renderer for.
      * @return ilPreviewRenderer A renderer or null if no renderer matches the preview object.
      */
-    public static function getRenderer(\ilPReview $preview)
+    public static function getRenderer(\ilPReview $preview) : ?ilPreviewRenderer
     {
         $renderers = self::getRenderers();
-        
+
         // check each renderer if it supports that preview object
         foreach ($renderers as $renderer) {
             if ($renderer->supports($preview)) {
                 return $renderer;
             }
         }
-        
+
         // no matching renderer was found
         return null;
     }
-    
-    /**
-     * Loads the available preview renderers. That is built in renderers and plugins.
-     *
-     * @return array The available renderers.
-     */
+
     private static function loadAvailableRenderers() : void
     {
         // already loaded?
         if (self::$renderers != null) {
             return;
         }
-        
-        $r = array();
-        
+
+        $r = [];
+
         // get registered and active plugins
-        global $DIC;
-        $component_factory = $DIC["component.factory"];
         $r[] = new ilImageMagickRenderer();
         if (ilGhostscriptRenderer::isGhostscriptInstalled()) {
             $r[] = new ilGhostscriptRenderer();
         }
-        
+
         self::$renderers = $r;
     }
 }

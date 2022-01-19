@@ -29,9 +29,9 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
      */
     final public function getSupportedRepositoryTypes() : array
     {
-        return array("file");
+        return ["file"];
     }
-    
+
     /**
      * Determines whether the specified preview object is supported by the renderer.
      *
@@ -54,11 +54,11 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
             return false;
         }
         $ext = ilObjFileAccess::_getFileExtension($filename);
-        
+
         // contains that extension?
         return in_array($ext, $this->getSupportedFileFormats());
     }
-    
+
     /**
      * Checks whether the specified file path can be used with exec() commands.
      * If the file name is not conform with exec() commands, a temporary file is
@@ -73,7 +73,7 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
 
         $pos = strrpos($filepath, "/");
         $name = $pos !== false ? substr($filepath, $pos + 1) : $filepath;
-        
+
         // if the file path contains any characters that could cause problems
         // we copy the file to a temporary file
         // $normName = preg_replace("/[^A-Za-z0-9.\- +_&]/", "", $name);
@@ -86,7 +86,7 @@ abstract class ilFilePreviewRenderer extends ilPreviewRenderer
         //
         return $filepath;
     }
-    
+
     /**
      * Gets an array containing the file formats that are supported by the renderer.
      *

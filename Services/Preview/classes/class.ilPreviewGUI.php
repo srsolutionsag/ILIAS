@@ -44,11 +44,17 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param int $a_obj_id The object id.
      * @param object $a_access_handler The access handler to use.
      */
-    public function __construct($a_node_id = null, $a_context = self::CONTEXT_REPOSITORY, $a_obj_id = null, $a_access_handler = null)
+    public function __construct(
+        ?int $a_node_id = null,
+        ?int $a_context = self::CONTEXT_REPOSITORY,
+        ?int $a_obj_id = null,
+        $a_access_handler = null
+    )
     {
         global $DIC;
-        $ilCtrl = $DIC['ilCtrl'];
-        $lng = $DIC['lng'];
+        // assign values
+        $this->ctrl = $DIC->ctrl();
+        $this->lng = $DIC->language();
         $ilAccess = $DIC['ilAccess'];
 
         $query = $DIC->http()->wrapper()->query();
@@ -72,13 +78,11 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
             $this->context = $a_context;
         }
 
-        // assign values
-        $this->ctrl = $ilCtrl;
-        $this->lng = $lng;
+
 
         // access handler NOT provided?
-        if ($a_access_handler == null) {
-            if ($this->context == self::CONTEXT_WORKSPACE) {
+        if ($a_access_handler === null) {
+            if ($this->context === self::CONTEXT_WORKSPACE) {
                 $a_access_handler = new ilWorkspaceAccessHandler();
             } else {
                 $a_access_handler = $ilAccess;
@@ -100,7 +104,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $this->preview = new ilPreview($this->obj_id);
 
         // if the call is NOT async initialize our stuff
-        if (!$ilCtrl->isAsynch()) {
+        if (!$this->ctrl->isAsynch()) {
             ilPreviewGUI::initPreview();
         }
     }

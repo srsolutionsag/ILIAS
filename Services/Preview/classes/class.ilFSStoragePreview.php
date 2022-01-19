@@ -31,11 +31,11 @@ class ilFSStoragePreview extends ilFileSystemStorage
      * @param int object id of container (e.g file_id or mob_id)
      *
      */
-    public function __construct($a_container_id = 0)
+    public function __construct(int $a_container_id = 0)
     {
         parent::__construct(self::STORAGE_WEB, true, $a_container_id);
     }
-    
+
     /**
      * Get directory name. E.g for files => file
      * Only relative path, no trailing slash
@@ -49,7 +49,7 @@ class ilFSStoragePreview extends ilFileSystemStorage
     {
         return "preview";
     }
-    
+
     /**
      * Get path prefix. Prefix that will be prepended to the path
      * No trailing slash. E.g ilFiles for files

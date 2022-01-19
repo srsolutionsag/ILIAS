@@ -381,7 +381,7 @@ class ilPreview
      *
      * @return int The id of the object the preview is for.
      */
-    public function getObjId() : int
+    public function getObjId() : ?int
     {
         return $this->obj_id;
     }

@@ -51,7 +51,7 @@ class ilRenderedImage
      *
      * @return string The absolute path to the rendered image.
      */
-    public function getImagePath() : string
+    public function getImagePath() : ?string
     {
         return $this->img_path;
     }
