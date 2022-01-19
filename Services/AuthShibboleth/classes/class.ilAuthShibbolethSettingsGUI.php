@@ -12,6 +12,7 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * Class ilAuthShibbolethSettingsGUI
  *
@@ -23,25 +24,19 @@
  */
 class ilAuthShibbolethSettingsGUI
 {
-
-    public int $obj_id;
-    public $ilias;
-    /**
-     * @var \ilPropertyFormGUI|mixed
-     */
-    public $form;
-    /**
-     * @var \ilShibbolethRoleAssignmentRule|mixed
-     */
-    public $rule;
+    private ?\ilPropertyFormGUI $form = null;
+    private ?ilShibbolethRoleAssignmentRule $rule = null;
     private \ilCtrl $ctrl;
     private \ilTabsGUI $tabs_gui;
     private \ilLanguage $lng;
     private \ilGlobalTemplateInterface $tpl;
     private int $ref_id;
     protected ilComponentRepository $component_repository;
-    private ilAccess $access;
-
+    private \ILIAS\DI\RBACServices $rbac;
+    private ilSetting $settings;
+    private ilAccessHandler $access;
+    private \ILIAS\HTTP\Wrapper\WrapperFactory $wrapper;
+    private \ILIAS\Refinery\Factory $refinery;
 
     /**
      *
@@ -49,64 +44,52 @@ class ilAuthShibbolethSettingsGUI
      *
      * @return \ilAuthShibbolethSettingsGUI
      */
-    public function __construct($a_auth_ref_id)
+    public function __construct(int $a_auth_ref_id)
     {
         global $DIC;
-        $lng = $DIC['lng'];
-        $ilCtrl = $DIC['ilCtrl'];
-        $tpl = $DIC['tpl'];
-        $ilTabs = $DIC['ilTabs'];
-        $this->ctrl = $ilCtrl;
-        $this->access = $DIC['ilAccess'];
-        $this->tabs_gui = $ilTabs;
-        $this->lng = $lng;
+        $this->ctrl = $DIC->ctrl();
+        $this->wrapper = $DIC->http()->wrapper();
+        $this->refinery = $DIC->refinery();
+        $this->rbac = $DIC->rbac();
+        $this->access = $DIC->access();
+        $this->settings = $DIC->settings();
+        $this->tabs_gui = $DIC->tabs();
+        $this->lng = $DIC->language();
         $this->lng->loadLanguageModule('shib');
-        $this->tpl = $tpl;
+        $this->tpl = $DIC->ui()->mainTemplate();
         $this->ref_id = $a_auth_ref_id;
-        $this->obj_id = ilObject::_lookupObjId($this->ref_id);
         $this->component_repository = $DIC["component.repository"];
     }
-
 
     /**
      * Execute Command
      */
-    public function executeCommand(): bool
+    public function executeCommand() : void
     {
-        global $DIC;
-        $ilAccess = $DIC['ilAccess'];
-        $ilErr = $DIC['ilErr'];
-        $ilCtrl = $DIC['ilCtrl'];
         $next_class = $this->ctrl->getNextClass($this);
         $cmd = $this->ctrl->getCmd();
-        if (!$ilAccess->checkAccess('read', '', $this->ref_id)) {
-            $ilErr->raiseError($this->lng->txt('msg_no_perm_read'), $ilErr->WARNING);
+        if (!$this->access->checkAccess('read', '', $this->ref_id)) {
+            throw new ilException('Permission denied');
         }
-        if (!$ilAccess->checkAccess('write', '', $this->ref_id) && $cmd != "settings") {
+        if (!$this->access->checkAccess('write', '', $this->ref_id) && $cmd != "settings") {
             ilUtil::sendFailure($this->lng->txt('msg_no_perm_write'), true);
-            $ilCtrl->redirect($this, "settings");
+            $this->ctrl->redirect($this, "settings");
         }
         $this->setSubTabs();
         if (!$cmd) {
             $cmd = "settings";
         }
         $this->$cmd();
-        break;
-
-        return true;
     }
 
-
-    public function settings(): void
+    public function settings() : void
     {
-        global $DIC;
-        $rbacreview = $DIC['rbacreview'];
         $this->tabs_gui->setSubTabActive('shib_settings');
         // set already saved data or default value for port
-        $settings = $this->ilias->getAllSettings();
+        $settings = $this->settings->getAll();
         // Compose role list
-        $role_list = $rbacreview->getRolesByFilter(2);
-        $role = array();
+        $role_list = $this->rbac->review()->getRolesByFilter(ilRbacReview::FILTER_ALL_GLOBAL);
+        $role = [];
         if (!isset($settings["shib_user_default_role"])) {
             $settings["shib_user_default_role"] = 4;
         }
@@ -158,12 +141,12 @@ class ilAuthShibbolethSettingsGUI
         $info = "<a href='" . $read_me_link . "' target='_blank'>" . $this->lng->txt("auth_shib_instructions") . "</a>";
         $enable->setInfo($info);
         $enable->setPostVar("shib[active]");
-        $enable->setChecked($settings["shib_active"]);
+        $enable->setChecked($settings["shib_active"] ?? false);
         //set allow local authentication
         $local = new ilCheckboxInputGUI();
         $local->setTitle($this->lng->txt("auth_allow_local"));
         $local->setPostVar("shib[auth_allow_local]");
-        $local->setChecked($settings['shib_auth_allow_local']);
+        $local->setChecked($settings['shib_auth_allow_local'] ?? false);
         //set user default role
         $defaultrole = new ilSelectInputGUI();
         $defaultrole->setTitle($this->lng->txt("shib_user_default_role"));
@@ -174,7 +157,7 @@ class ilAuthShibbolethSettingsGUI
         // Administrator must activate new user accounts
         $activate_new = new ilCheckboxInputGUI($this->lng->txt("shib_activate_new"), "shib[activate_new]");
         $activate_new->setInfo($this->lng->txt("shib_activate_new_info"));
-        $activate_new->setChecked($settings["shib_activate_new"]);
+        $activate_new->setChecked($settings["shib_activate_new"] ?? false);
         //set name of federation
         $name = new ilTextInputGUI();
         $name->setTitle($this->lng->txt("shib_federation_name"));
@@ -242,14 +225,14 @@ class ilAuthShibbolethSettingsGUI
             $checkinput = new ilCheckboxInputGUI("");
             $checkinput->setOptionTitle($this->lng->txt("shib_update"));
             $checkinput->setPostVar("shib[update_" . $field . "]");
-            $checkinput->setChecked($settings["shib_update_" . $field]);
+            $checkinput->setChecked($settings["shib_update_" . $field] ?? false);
             if ($setting == 'shib_login' || $setting == 'shib_firstname'
                 || $setting == 'shib_lastname'
                 || $setting == 'shib_email'
             ) {
                 $textinput->setRequired(true);
             }
-            $fields[$setting] = array( "text" => $textinput, "check" => $checkinput );
+            $fields[$setting] = array("text" => $textinput, "check" => $checkinput);
         }
         $propertys->addItem($enable);
         $propertys->addItem($local);
@@ -273,19 +256,36 @@ class ilAuthShibbolethSettingsGUI
         $this->tpl->setContent($propertys->getHTML());
     }
 
-
-    public function save(): void
+    public function save() : void
     {
-        $required = array("login", "hos_type", "firstname", "lastname", "email", "user_default_role", "federation_name");
-        array_walk($required, function (&$item): void {
-            if (!$_POST["shib"][$item]) {
+        $post = $this->wrapper->post()->has('shib')
+            ? $this->wrapper->post()->retrieve('shib',
+                $this->refinery->kindlyTo()->dictOf($this->refinery->kindlyTo()->string()))
+            : [];
+
+        $retriever = function (string $key) use ($post) : string {
+            return $post[$key] ?? '';
+        };
+
+        $required = [
+            "login",
+            "hos_type",
+            "firstname",
+            "lastname",
+            "email",
+            "user_default_role",
+            "federation_name"
+        ];
+        array_walk($required, function (&$item) use($retriever) : void {
+            if (!$retriever($item)) {
                 ilUtil::sendFailure($this->lng->txt("fill_out_all_required_fields"), true);
                 $this->ctrl->redirect($this, 'settings');
             }
         });
 
         // validate api
-        if ($_POST["shib"]["data_conv"] && $_POST["shib"]["data_conv"] != '' && !is_readable($_POST["shib"]["data_conv"])) {
+        $data_conv = $retriever("data_conv");
+        if ($data_conv !== '' && !is_readable($data_conv)) {
             ilUtil::sendFailure($this->lng->txt("shib_data_conv_warning"), true);
             $this->ctrl->redirect($this, 'settings');
         }
@@ -311,39 +311,36 @@ class ilAuthShibbolethSettingsGUI
         );
         foreach ($shib_settings as $setting) {
             $field = str_replace('shib_', '', $setting);
-            if ($_POST["shib"]["update_" . $field] != "1") {
-                $_POST["shib"]["update_" . $field] = "0";
-            }
-            $this->ilias->setSetting($setting, trim($_POST["shib"][$field]));
-            $this->ilias->setSetting("shib_update_" . $field, $_POST["shib"]["update_" . $field]);
+            $this->settings->set($setting, trim($retriever($field)));
+            $this->settings->set("shib_update_" . $field, $retriever("update_" . $field));
         }
-        if ($_POST["shib"]["active"] != "1") {
-            $this->ilias->setSetting("shib_active", "0");
-            $this->ilias->setSetting("shibboleth_active", "0");
+        if ($retriever("active") != "1") {
+            $this->settings->set("shib_active", "0");
+            $this->settings->set("shibboleth_active", "0");
         } else {
-            $this->ilias->setSetting("shib_active", "1");
-            $this->ilias->setSetting("shibboleth_active", "1");
+            $this->settings->set("shib_active", "1");
+            $this->settings->set("shibboleth_active", "1");
         }
-        $this->ilias->setSetting("shib_user_default_role", $_POST["shib"]["user_default_role"]);
-        $this->ilias->setSetting("shib_hos_type", $_POST["shib"]["hos_type"]);
-        $this->ilias->setSetting("shib_federation_name", $_POST["shib"]["federation_name"]);
-        $this->ilias->setSetting("shib_idp_list", $_POST["shib"]["idp_list"]);
-        $this->ilias->setSetting("shib_login_instructions", $_POST["shib"]["login_instructions"]);
-        $this->ilias->setSetting("shib_login_button", $_POST["shib"]["login_button"]);
-        $this->ilias->setSetting("shib_data_conv", $_POST["shib"]["data_conv"]);
-        $this->ilias->setSetting("shib_auth_allow_local", ($_POST['shib']['auth_allow_local'] == '1') ? '1' : '0');
-        $this->ilias->setSetting("shib_activate_new", ($_POST['shib']['activate_new'] == '1') ? '1' : '0');
+        $this->settings->set("shib_user_default_role", $retriever("user_default_role"));
+        $this->settings->set("shib_hos_type", $retriever("hos_type"));
+        $this->settings->set("shib_federation_name", $retriever("federation_name"));
+        $this->settings->set("shib_idp_list", $retriever("idp_list"));
+        $this->settings->set("shib_login_instructions", $retriever("login_instructions"));
+        $this->settings->set("shib_login_button", $retriever("login_button"));
+        $this->settings->set("shib_data_conv", $retriever("data_conv"));
+        $this->settings->set("shib_auth_allow_local", $retriever('auth_allow_local'));
+        $this->settings->set("shib_activate_new", $retriever('activate_new'));
 
         ilUtil::sendSuccess($this->lng->txt("shib_settings_saved"), true);
         $this->ctrl->redirect($this, 'settings');
     }
 
-
-    protected function roleAssignment(): bool
+    protected function roleAssignment() : bool
     {
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
         $this->initFormRoleAssignment('default');
-        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html', 'Services/AuthShibboleth');
+        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
+            'Services/AuthShibboleth');
         $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
         if (strlen($html = $this->parseRulesTable()) !== 0) {
             $this->tpl->setVariable('RULE_TABLE', $html);
@@ -352,8 +349,7 @@ class ilAuthShibbolethSettingsGUI
         return true;
     }
 
-
-    protected function parseRulesTable(): string
+    protected function parseRulesTable() : string
     {
         if (ilShibbolethRoleAssignmentRules::getCountRules() == 0) {
             return '';
@@ -366,7 +362,6 @@ class ilAuthShibbolethSettingsGUI
 
         return $rules_table->getHTML();
     }
-
 
     /**
      * Confirm delete rules
@@ -402,14 +397,13 @@ class ilAuthShibbolethSettingsGUI
         $this->tpl->setContent($c_gui->getHTML());
     }
 
-
     /**
      * delete role assignment rule
      *
      * @access public
      *
      */
-    protected function deleteRules(): bool
+    protected function deleteRules() : bool
     {
         if (!is_array($_POST['rule_ids'])) {
             ilUtil::sendFailure($this->lng->txt('select_once'));
@@ -427,8 +421,7 @@ class ilAuthShibbolethSettingsGUI
         return true;
     }
 
-
-    protected function initFormRoleAssignment($a_mode = 'default'): void
+    protected function initFormRoleAssignment($a_mode = 'default') : void
     {
         $this->form = new ilPropertyFormGUI();
         $this->form->setFormAction($this->ctrl->getFormAction($this, 'cancel'));
@@ -452,7 +445,7 @@ class ilAuthShibbolethSettingsGUI
         $global->addSubItem($role_select);
         $local = new ilRadioOption($this->lng->txt('shib_local_role'), 1);
         $role->addOption($local);
-        $role_search = new ilRoleAutoCompleteInputGUI('', 'role_search', $this, 'addRoleAutoCompleteObject');
+        $role_search = new ilRoleAutoCompleteInputGUI('', 'role_search', self::class, 'addRoleAutoCompleteObject');
         $role_search->setSize(40);
         $local->addSubItem($role_search);
         $role->setInfo($this->lng->txt('shib_role_name_info'));
@@ -497,21 +490,17 @@ class ilAuthShibbolethSettingsGUI
         $this->form->addItem($kind);
     }
 
-
     /**
      * Add Member for autoComplete
      */
-    public function addRoleAutoCompleteObject(): void
+    public function addRoleAutoCompleteObject() : void
     {
         ilRoleAutoCompleteInputGUI::echoAutoCompleteList();
     }
 
-
-    protected function addRoleAssignmentRule(): bool
+    protected function addRoleAssignmentRule() : bool
     {
-        global $DIC;
-        $ilAccess = $DIC['ilAccess'];
-        if (!$ilAccess->checkAccess('write', '', $this->ref_id)) {
+        if (!$this->access->checkAccess('write', '', $this->ref_id)) {
             ilUtil::sendFailure($this->lng->txt('permission_denied'), true);
             $this->roleAssignment();
 
@@ -519,12 +508,13 @@ class ilAuthShibbolethSettingsGUI
         }
         $this->initFormRoleAssignment();
         if (!$this->form->checkInput() || ($err = $this->checkInput())) {
-            if ($err) {
+            if (isset($err)) {
                 ilUtil::sendFailure($this->lng->txt($err));
             }
             $this->tabs_gui->setSubTabActive('shib_role_assignment');
             $this->form->setValuesByPost();
-            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html', 'Services/AuthShibboleth');
+            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
+                'Services/AuthShibboleth');
             $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
             if (strlen($html = $this->parseRulesTable()) !== 0) {
                 $this->tpl->setVariable('RULE_TABLE', $html);
@@ -541,26 +531,25 @@ class ilAuthShibbolethSettingsGUI
         return true;
     }
 
-
     /**
      * Edit Role Assignment
      *
      * @return
      */
-    protected function editRoleAssignment(): bool
+    protected function editRoleAssignment() : bool
     {
         $this->ctrl->setParameter($this, 'rule_id', (int) $_GET['rule_id']);
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
         $this->initFormRoleAssignment('update');
         $this->getRuleValues();
-        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html', 'Services/AuthShibboleth');
+        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
+            'Services/AuthShibboleth');
         $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
 
         return true;
     }
 
-
-    protected function updateRoleAssignmentRule(): bool
+    protected function updateRoleAssignmentRule() : bool
     {
         global $DIC;
         $ilAccess = $DIC['ilAccess'];
@@ -577,7 +566,8 @@ class ilAuthShibbolethSettingsGUI
             }
             $this->tabs_gui->setSubTabActive('shib_role_assignment');
             $this->form->setValuesByPost();
-            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html', 'Services/AuthShibboleth');
+            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
+                'Services/AuthShibboleth');
             $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
 
             return true;
@@ -590,8 +580,7 @@ class ilAuthShibbolethSettingsGUI
         return true;
     }
 
-
-    private function loadRule($a_rule_id = 0): \ilShibbolethRoleAssignmentRule
+    private function loadRule($a_rule_id = 0) : \ilShibbolethRoleAssignmentRule
     {
         $this->rule = new ilShibbolethRoleAssignmentRule($a_rule_id);
         if ($this->form->getInput('role_name') == 0) {
@@ -603,7 +592,7 @@ class ilAuthShibbolethSettingsGUI
             $parser->setCombination(ilQueryParser::QP_COMBINATION_AND);
             $parser->parse();
             $object_search = new ilLikeObjectSearch($parser);
-            $object_search->setFilter(array( 'role' ));
+            $object_search->setFilter(array('role'));
             $res = $object_search->performSearch();
             $entries = $res->getEntries();
             if (count($entries) == 1) {
@@ -623,8 +612,7 @@ class ilAuthShibbolethSettingsGUI
         return $this->rule;
     }
 
-
-    private function getRuleValues(): void
+    private function getRuleValues() : void
     {
         global $DIC;
         $rbacreview = $DIC['rbacreview'];
@@ -650,14 +638,12 @@ class ilAuthShibbolethSettingsGUI
         $this->form->setValuesByArray($values);
     }
 
-
     private function checkInput($a_rule_id = 0)
     {
         $this->loadRule($a_rule_id);
 
         return $this->rule->validate();
     }
-
 
     private function showLocalRoleSelection()
     {
@@ -675,8 +661,7 @@ class ilAuthShibbolethSettingsGUI
         $this->ctrl->redirect($this, 'chooseRole');
     }
 
-
-    protected function chooseRole(): bool
+    protected function chooseRole() : bool
     {
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
         $parser = new ilQueryParser($_SESSION['shib_role_ass']['search']);
@@ -684,7 +669,7 @@ class ilAuthShibbolethSettingsGUI
         $parser->setCombination(ilQueryParser::QP_COMBINATION_AND);
         $parser->parse();
         $object_search = new ilLikeObjectSearch($parser);
-        $object_search->setFilter(array( 'role' ));
+        $object_search->setFilter(array('role'));
         $res = $object_search->performSearch();
         $entries = $res->getEntries();
         $table = new ilRoleSelectionTableGUI($this, 'chooseRole');
@@ -697,8 +682,7 @@ class ilAuthShibbolethSettingsGUI
         return true;
     }
 
-
-    protected function saveRoleSelection(): void
+    protected function saveRoleSelection() : void
     {
         $rule = new ilShibbolethRoleAssignmentRule($_SESSION['shib_role_ass']['rule_id']);
         $rule->setRoleId((int) $_POST['role_id']);
@@ -721,7 +705,7 @@ class ilAuthShibbolethSettingsGUI
     /**
      * @return array<int|string, string>
      */
-    private function prepareRoleSelect(): array
+    private function prepareRoleSelect() : array
     {
         global $DIC;
         $rbacreview = $DIC['rbacreview'];
@@ -733,8 +717,7 @@ class ilAuthShibbolethSettingsGUI
         return $select;
     }
 
-
-    protected function setSubTabs(): bool
+    protected function setSubTabs() : bool
     {
         global $DIC;
         $ilSetting = $DIC['ilSetting'];

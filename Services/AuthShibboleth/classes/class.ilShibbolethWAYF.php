@@ -1,4 +1,5 @@
 <?php
+
 use ILIAS\HTTP\Wrapper\WrapperFactory;
 
 /******************************************************************************
@@ -14,6 +15,7 @@ use ILIAS\HTTP\Wrapper\WrapperFactory;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * Class ShibbolethWAYF
  *
@@ -166,8 +168,11 @@ class ilShibbolethWAYF
      * @description Generates an array of IDPs using the cookie value
      * @return bool[]|string[]
      */
-    public function generateCookieArray(string $value) : array
+    public function generateCookieArray(?string $value) : array
     {
+        if (null === $value) {
+            return [];
+        }
         $arr_cookie = explode(' ', $value);
         return array_map('base64_decode', $arr_cookie);
     }
