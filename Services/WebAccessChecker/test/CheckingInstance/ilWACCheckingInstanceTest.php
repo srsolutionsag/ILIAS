@@ -1,8 +1,4 @@
 <?php
-// declare(strict_types=1);
-
-require_once('./libs/composer/vendor/autoload.php');
-
 use ILIAS\HTTP\Cookies\CookieFactory;
 use ILIAS\HTTP\Services;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -11,6 +7,19 @@ use org\bovigo\vfs;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * TestCase for the ilWACCheckingInstanceTest
  *
@@ -46,10 +55,6 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
     {
         //error_reporting(E_ALL);
         parent::setUp();
-        require_once('./Services/WebAccessChecker/classes/class.ilWebAccessChecker.php');
-        require_once('./Services/WebAccessChecker/classes/class.ilWACSignedPath.php');
-        require_once('./Services/WebAccessChecker/classes/class.ilWACToken.php');
-        require_once('./Services/WebAccessChecker/classes/class.ilWebAccessCheckerDelivery.php');
         $this->root = vfs\vfsStream::setup('ilias.de');
         $this->file_one = vfs\vfsStream::newFile('data/trunk/mobs/mm_123/dummy.jpg')
                                        ->at($this->root)->setContent('dummy');
@@ -82,8 +87,6 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
         $image = vfs\vfsStream::newFile('data/trunk/mobs/mm_123/dummy.png')->at($this->root)
                               ->setContent($base64);
         $this->assertEquals($base64, $image->getContent());
-
-        require_once('./Services/PHPUnit/classes/class.ilUnitUtil.php');
         try {
             $GLOBALS['DIC']['ilAuthSession']->setAuthenticated(true, ANONYMOUS_USER_ID);
             ilUnitUtil::performInitialisation();
@@ -146,8 +149,6 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
         self::markTestSkipped("Can't run test without db.");
 
         return;
-
-        require_once('./Services/User/classes/class.ilObjUser.php');
         $ilWebAccessChecker = new ilWebAccessChecker($this->file_one->url());
         $check = false;
         try {
@@ -230,7 +231,6 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
             }
             session_id('phpunittest');
             $_SESSION = array();
-            include 'Services/PHPUnit/config/cfg.phpunit.php';
 
             $check = $ilWebAccessChecker->check();
         } catch (ilWACException $ilWACException) {

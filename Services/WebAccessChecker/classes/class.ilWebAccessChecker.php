@@ -6,12 +6,19 @@ use ILIAS\HTTP\Cookies\CookieWrapper;
 use ILIAS\HTTP\Services;
 use Psr\Http\Message\UriInterface;
 
-require_once('./Services/WebAccessChecker/classes/class.ilWACSignedPath.php');
-require_once('./Services/WebAccessChecker/classes/class.ilWACPath.php');
-require_once('./Services/WebAccessChecker/classes/class.ilWACSecurePath.php');
-require_once('./Services/Init/classes/class.ilInitialisation.php');
-require_once('./Services/FileDelivery/classes/class.ilFileDelivery.php');
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilWebAccessChecker
  *
@@ -462,10 +469,8 @@ class ilWebAccessChecker
     protected function initAnonymousSession()
     {
         global $DIC;
-        include_once './Services/Context/classes/class.ilContext.php';
         session_destroy();
         ilContext::init(ilContext::CONTEXT_WAC);
-        require_once("Services/Init/classes/class.ilInitialisation.php");
         ilInitialisation::reinitILIAS();
         /**
          * @var $ilAuthSession \ilAuthSession

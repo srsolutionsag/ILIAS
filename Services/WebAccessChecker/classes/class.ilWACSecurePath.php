@@ -1,9 +1,17 @@
 <?php
-// declare(strict_types=1);
-
-require_once './Services/ActiveRecord/class.ActiveRecord.php';
-require_once './Services/WebAccessChecker/class.ilWACException.php';
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilWACSecurePath
  *
@@ -49,8 +57,6 @@ class ilWACSecurePath extends ActiveRecord
         if (!file_exists($secure_path_checking_class)) {
             throw new ilWACException(ilWACException::CODE_NO_PATH, 'Checking Instance not found in path: ' . $secure_path_checking_class);
         }
-
-        require_once($secure_path_checking_class);
         $class_name = $obj->getCheckingClass();
 
         return new $class_name();

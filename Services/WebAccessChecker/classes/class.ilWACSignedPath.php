@@ -8,12 +8,19 @@ use ILIAS\WebAccessChecker\HttpServiceAware;
 use ILIAS\WebAccessChecker\PathType;
 use ILIAS\HTTP\GlobalHttpState;
 
-require_once('./Services/WebAccessChecker/class.ilWACException.php');
-require_once('class.ilWACToken.php');
-require_once('./Services/WebAccessChecker/classes/class.ilWebAccessChecker.php');
-require_once './Services/WebAccessChecker/interfaces/PathType.php';
-require_once './Services/WebAccessChecker/classes/HttpServiceAware.php';
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilWACSignedPath
  *

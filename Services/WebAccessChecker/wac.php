@@ -8,7 +8,8 @@
 use ILIAS\HTTP\Cookies\CookieFactoryImpl;
 
 chdir('../../');
-require_once('./Services/WebAccessChecker/classes/class.ilWebAccessCheckerDelivery.php');
+/** @noRector */
+require_once('./libs/composer/vendor/autoload.php');
 
 $container = new \ILIAS\DI\Container();
 

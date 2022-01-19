@@ -1,14 +1,21 @@
 <?php
-// declare(strict_types=1);
-
-require_once('./Services/WebAccessChecker/classes/class.ilWebAccessChecker.php');
-require_once('./Services/FileDelivery/classes/Delivery.php');
-require_once('./Services/FileDelivery/classes/class.ilFileDelivery.php');
-
 use ILIAS\FileDelivery\Delivery;
 use ILIAS\HTTP\Cookies\CookieFactory;
 use ILIAS\HTTP\Services;
 
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilWebAccessCheckerDelivery
  *
