@@ -12,10 +12,11 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * Preview renderer class that is able to create previews from PDF, PS and EPS by using GhostScript.
  *
- * @author Stefan Born <stefan.born@phzh.ch>
+ * @author  Stefan Born <stefan.born@phzh.ch>
  * @version $Id$
  *
  * @ingroup ServicesPreview
@@ -23,20 +24,20 @@
 class ilGhostscriptRenderer extends ilFilePreviewRenderer
 {
     // constants
-    const SUPPORTED_FORMATS = "eps,pdf,pdfa,ps";
+    private const SUPPORTED_FORMATS = "eps,pdf,pdfa,ps";
 
     // variables
-    private static $supported_formats = null;
+    private static ?array $supported_formats = null;
 
     /**
      * Gets an array containing the file formats that are supported by the renderer.
      *
      * @return array An array containing the supported file formats.
      */
-    public function getSupportedFileFormats():array
+    public function getSupportedFileFormats() : array
     {
         // build formats only once
-        if (self::$supported_formats == null) {
+        if (!isset(self::$supported_formats)) {
             self::$supported_formats = explode(",", self::SUPPORTED_FORMATS);
         }
 
@@ -48,7 +49,7 @@ class ilGhostscriptRenderer extends ilFilePreviewRenderer
      */
     public static function isGhostscriptInstalled() : bool
     {
-        return (PATH_TO_GHOSTSCRIPT != "");
+        return (defined('PATH_TO_GHOSTSCRIPT') && PATH_TO_GHOSTSCRIPT !== "");
     }
 
     /**

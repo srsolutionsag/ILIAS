@@ -23,10 +23,10 @@
 class ilImageMagickRenderer extends ilFilePreviewRenderer
 {
     // constants
-    const SUPPORTED_FORMATS = "jpg,jpeg,jp2,png,gif,bmp,tif,tiff,cur,ico,pict,tga,psd";
+    private const SUPPORTED_FORMATS = "jpg,jpeg,jp2,png,gif,bmp,tif,tiff,cur,ico,pict,tga,psd";
 
     // variables
-    private static $supported_formats = null;
+    private static ?array $supported_formats = null;
 
     /**
      * Gets an array containing the file formats that are supported by the renderer.
@@ -36,7 +36,7 @@ class ilImageMagickRenderer extends ilFilePreviewRenderer
     public function getSupportedFileFormats() : array
     {
         // build formats only once
-        if (self::$supported_formats == null) {
+        if (!isset(self::$supported_formats)) {
             self::$supported_formats = self::evaluateSupportedFileFormats();
         }
 
@@ -50,8 +50,7 @@ class ilImageMagickRenderer extends ilFilePreviewRenderer
      */
     public static function evaluateSupportedFileFormats() : array
     {
-        $formats = explode(",", self::SUPPORTED_FORMATS);
-        return $formats;
+        return explode(",", self::SUPPORTED_FORMATS) ?? [];
     }
 
     /**

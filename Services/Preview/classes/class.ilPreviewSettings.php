@@ -26,20 +26,20 @@ class ilPreviewSettings
     const MAX_PREVIEWS_DEFAULT = 5;
     const MAX_PREVIEWS_MIN = 1;
     const MAX_PREVIEWS_MAX = 20;
-    
+
     const IMAGE_SIZE_DEFAULT = 280;
     const IMAGE_SIZE_MIN = 50;
     const IMAGE_SIZE_MAX = 600;
-    
+
     const IMAGE_QUALITY_DEFAULT = 85;
     const IMAGE_QUALITY_MIN = 20;
     const IMAGE_QUALITY_MAX = 100;
-    
+
     /**
      * The instance of the ilPreviewSettings.
      */
     private static ?\ilPreviewSettings $instance = null;
-    
+
     /**
      * Settings object
      */
@@ -54,7 +54,7 @@ class ilPreviewSettings
      * Defines the maximum number of previews pictures per object.
      */
     private int $max_previews = self::MAX_PREVIEWS_DEFAULT;
-    
+
     /**
      * Defines the maximum width and height of the preview images.
      */
@@ -86,7 +86,7 @@ class ilPreviewSettings
         $instance->preview_enabled = $a_value == true;
         $instance->settings->set('preview_enabled', $instance->preview_enabled);
     }
-    
+
     /**
      * Gets whether the preview functionality is enabled.
      *
@@ -96,7 +96,7 @@ class ilPreviewSettings
     {
         return self::getInstance()->preview_enabled;
     }
-    
+
     /**
      * Sets the maximum number of preview pictures per object.
      *
@@ -108,7 +108,7 @@ class ilPreviewSettings
         $instance->max_previews = self::adjustNumeric($a_value, self::MAX_PREVIEWS_MIN, self::MAX_PREVIEWS_MAX, self::MAX_PREVIEWS_DEFAULT);
         $instance->settings->set('max_previews_per_object', $instance->max_previews);
     }
-    
+
     /**
      * Gets the maximum number of preview pictures per object.
      *
@@ -118,7 +118,7 @@ class ilPreviewSettings
     {
         return self::getInstance()->max_previews;
     }
-    
+
     /**
      * Sets the size of the preview images in pixels.
      *
@@ -130,7 +130,7 @@ class ilPreviewSettings
         $instance->image_size = self::adjustNumeric($a_value, self::IMAGE_SIZE_MIN, self::IMAGE_SIZE_MAX, self::IMAGE_SIZE_DEFAULT);
         $instance->settings->set('preview_image_size', $instance->image_size);
     }
-    
+
     /**
      * Gets the size of the preview images in pixels.
      *
@@ -140,7 +140,7 @@ class ilPreviewSettings
     {
         return self::getInstance()->image_size;
     }
-    
+
     /**
      * Sets the quality (compression) of the preview images (1-100).
      *
@@ -152,7 +152,7 @@ class ilPreviewSettings
         $instance->image_quality = self::adjustNumeric($a_value, self::IMAGE_QUALITY_MIN, self::IMAGE_QUALITY_MAX, self::IMAGE_QUALITY_DEFAULT);
         $instance->settings->set('preview_image_quality', $instance->image_quality);
     }
-    
+
     /**
      * Gets the quality (compression) of the preview images (1-100).
      *
@@ -171,20 +171,11 @@ class ilPreviewSettings
         if (self::$instance == null) {
             self::$instance = new ilPreviewSettings();
         }
-        
+
         return self::$instance;
     }
-    
-    /**
-     * Adjusts the numeric value to fit between the specified minimum and maximum.
-     * If the value is not numeric the default value is returned.
-     *
-     * @param int $min The allowed minimum (inclusive).
-     * @param int $max The allowed maximum (inclusive).
-     * @param int $default The default value if the specified value is not numeric.
-     * @return The adjusted value.
-     */
-    private static function adjustNumeric(object $value, int $min, int $max, int $default) : int
+
+    private static function adjustNumeric($value, int $min, int $max, int $default) : int
     {
         // is number?
         if (is_numeric($value)) {
@@ -198,7 +189,7 @@ class ilPreviewSettings
         } else {
             $value = $default;
         }
-        
+
         return $value;
     }
 }

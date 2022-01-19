@@ -30,36 +30,35 @@ abstract class ilPreviewRenderer
     public function getName()
     {
         $name = get_class($this);
-        
+
         if (strpos($name, "il") === 0) {
             $name = substr($name, 2);
         }
-        
+
         if (strpos($name, "Renderer") === (strlen($name) - 8)) {
             $name = substr($name, 0, strlen($name) - 8) . " Renderer";
         }
-        
+
         return $name;
     }
-    
+
     /**
      * Determines whether the renderer is a plugin or a built in one.
      *
      * @return bool true, if the renderer is a plugin; otherwise, false.
      */
-    final public function isPlugin()
+    final public function isPlugin() : bool
     {
-        $filepath = "./Services/Preview/classes/class." . get_class($this) . ".php";
-        return !is_file($filepath);
+        return !is_file("./Services/Preview/classes/class." . get_class($this) . ".php");
     }
-    
+
     /**
      * Gets an array containing the repository types (e.g. 'file' or 'crs') that are supported by the renderer.
      *
      * @return array An array containing the supported repository types.
      */
     abstract public function getSupportedRepositoryTypes() : array;
-    
+
     /**
      * Determines whether the specified preview object is supported by the renderer.
      *
@@ -71,7 +70,7 @@ abstract class ilPreviewRenderer
         // contains type?
         return in_array($preview->getObjType(), $this->getSupportedRepositoryTypes());
     }
-    
+
     /**
      * Creates the preview of the specified preview object.
      *
@@ -86,7 +85,7 @@ abstract class ilPreviewRenderer
         $preview->setRenderStatus(ilPreview::RENDER_STATUS_PENDING);
         $preview->save();
         $images = $this->renderImages($obj);
-        
+
         // process each image
         if (is_array($images) && count($images) > 0) {
             $success = false;
@@ -112,7 +111,7 @@ abstract class ilPreviewRenderer
             return false;
         }
     }
-    
+
     /**
      * Creates a preview image path from the specified source image.
      *
@@ -125,7 +124,7 @@ abstract class ilPreviewRenderer
         // create resize argument
         $imgSize = $this->getImageSize();
         $resizeArg = $imgSize . "x" . $imgSize . (ilUtil::isWindows() ? "^" : "\\") . ">";
-        
+
         // cmd: convert $src_img_path -background white -flatten -resize 280x280 -quality 85 -sharpen 0x0.5 $dest_img_path
         $args = sprintf(
             "%s -background white -flatten -resize %s -quality %d -sharpen 0x0.5 %s",
@@ -134,12 +133,12 @@ abstract class ilPreviewRenderer
             $this->getImageQuality(),
             ilUtil::escapeShellArg($dest_img_path)
         );
-    
+
         ilUtil::execQuoted(PATH_TO_CONVERT, $args);
-        
+
         return is_file($dest_img_path);
     }
-    
+
     /**
      * Renders the specified object into images.
      * The images do not need to be of the preview image size.
@@ -148,7 +147,7 @@ abstract class ilPreviewRenderer
      * @return array An array of ilRenderedImage containing the absolute file paths to the images.
      */
     abstract protected function renderImages(\ilObject $obj);
-    
+
     /**
      * Gets the size of the preview images in pixels.
      *
@@ -158,7 +157,7 @@ abstract class ilPreviewRenderer
     {
         return ilPreviewSettings::getImageSize();
     }
-    
+
     /**
      * Gets the quality (compression) of the preview images (1-100).
      *
@@ -168,7 +167,7 @@ abstract class ilPreviewRenderer
     {
         return ilPreviewSettings::getImageQuality();
     }
-    
+
     /**
      * Gets the maximum number of preview pictures per object.
      *

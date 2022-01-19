@@ -56,6 +56,7 @@ class ilPreviewSetupAgent implements Setup\Agent
      */
     public function getInstallObjective(Setup\Config $config = null) : Setup\Objective
     {
+        /** @noinspection PhpParamsInspection */
         return new ilPreviewConfigStoredObjective($config);
     }
 
@@ -65,6 +66,7 @@ class ilPreviewSetupAgent implements Setup\Agent
     public function getUpdateObjective(Setup\Config $config = null) : Setup\Objective
     {
         if ($config !== null) {
+            /** @noinspection PhpParamsInspection */
             return new ilPreviewConfigStoredObjective($config);
         }
         return new Setup\Objective\NullObjective();
