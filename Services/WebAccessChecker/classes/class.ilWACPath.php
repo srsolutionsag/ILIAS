@@ -203,7 +203,7 @@ class ilWACPath
     }
 
 
-    protected function handleParameters()
+    protected function handleParameters(): void
     {
         $param = $this->getParameters();
         if (isset($param[ilWACSignedPath::WAC_TOKEN_ID])) {
@@ -219,9 +219,9 @@ class ilWACPath
 
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return (array) $this->parameters;
     }
@@ -230,16 +230,16 @@ class ilWACPath
     /**
      * @param array $parameters
      */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): void
     {
         $this->parameters = $parameters;
     }
 
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public static function getAudioSuffixes()
+    public static function getAudioSuffixes(): array
     {
         return (array) self::$audio_suffixes;
     }
@@ -248,16 +248,16 @@ class ilWACPath
     /**
      * @param array $audio_suffixes
      */
-    public static function setAudioSuffixes(array $audio_suffixes)
+    public static function setAudioSuffixes(array $audio_suffixes): void
     {
         self::$audio_suffixes = $audio_suffixes;
     }
 
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public static function getImageSuffixes()
+    public static function getImageSuffixes(): array
     {
         return (array) self::$image_suffixes;
     }
@@ -266,16 +266,16 @@ class ilWACPath
     /**
      * @param array $image_suffixes
      */
-    public static function setImageSuffixes(array $image_suffixes)
+    public static function setImageSuffixes(array $image_suffixes): void
     {
         self::$image_suffixes = $image_suffixes;
     }
 
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public static function getVideoSuffixes()
+    public static function getVideoSuffixes(): array
     {
         return (array) self::$video_suffixes;
     }
@@ -284,201 +284,138 @@ class ilWACPath
     /**
      * @param array $video_suffixes
      */
-    public static function setVideoSuffixes(array $video_suffixes)
+    public static function setVideoSuffixes(array $video_suffixes): void
     {
         self::$video_suffixes = $video_suffixes;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return (string) $this->prefix;
     }
 
 
-    /**
-     * @param string $prefix
-     */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix): void
     {
         assert(is_string($prefix));
         $this->prefix = $prefix;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getAppendix()
+    public function getAppendix(): string
     {
         return (string) $this->appendix;
     }
 
 
-    /**
-     * @param string $appendix
-     */
-    public function setAppendix($appendix)
+    public function setAppendix(string $appendix): void
     {
         assert(is_string($appendix));
         $this->appendix = $appendix;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getModulePath()
+    public function getModulePath(): string
     {
         return (string) $this->module_path;
     }
 
 
-    /**
-     * @param string $module_path
-     */
-    public function setModulePath($module_path)
+    public function setModulePath(string $module_path): void
     {
         assert(is_string($module_path));
         $this->module_path = $module_path;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getDirName()
+    public function getDirName(): string
     {
         return (string) dirname($this->getPathWithoutQuery());
     }
 
 
-    /**
-     * @return string
-     */
-    public function getPathWithoutQuery()
+    public function getPathWithoutQuery(): string
     {
         return (string) $this->path_without_query;
     }
 
 
-    /**
-     * @param string $path_without_query
-     */
-    public function setPathWithoutQuery($path_without_query)
+    public function setPathWithoutQuery(string $path_without_query): void
     {
         assert(is_string($path_without_query));
         $this->path_without_query = $path_without_query;
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isImage()
+    public function isImage(): bool
     {
         return (bool) in_array(strtolower($this->getSuffix()), self::$image_suffixes);
     }
 
 
-    /**
-     * @return string
-     */
-    public function getSuffix()
+    public function getSuffix(): string
     {
         return (string) $this->suffix;
     }
 
 
-    /**
-     * @param string $suffix
-     */
-    public function setSuffix($suffix)
+    public function setSuffix(string $suffix): void
     {
         assert(is_string($suffix));
         $this->suffix = $suffix;
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isStreamable()
+    public function isStreamable(): bool
     {
         return (bool) ($this->isAudio() || $this->isVideo());
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isAudio()
+    public function isAudio(): bool
     {
         return (bool) in_array(strtolower($this->getSuffix()), self::$audio_suffixes);
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isVideo()
+    public function isVideo(): bool
     {
         return (bool) in_array(strtolower($this->getSuffix()), self::$video_suffixes);
     }
 
 
-    /**
-     * @return bool
-     */
-    public function fileExists()
+    public function fileExists(): bool
     {
         return (bool) is_file($this->getPathWithoutQuery());
     }
 
 
-    /**
-     * @return bool
-     */
-    public function hasToken()
+    public function hasToken(): bool
     {
         return (bool) ($this->token !== '');
     }
 
 
-    /**
-     * @return bool
-     */
-    public function hasTimestamp()
+    public function hasTimestamp(): bool
     {
         return (bool) ($this->timestamp !== 0);
     }
 
 
-    /**
-     * @return bool
-     */
-    public function hasTTL()
+    public function hasTTL(): bool
     {
         return (bool) ($this->ttl !== 0);
     }
 
 
-    /**
-     * @return string
-     */
-    public function getToken()
+    public function getToken(): string
     {
         return (string) $this->token;
     }
 
 
-    /**
-     * @param string $token
-     */
-    public function setToken($token)
+    public function setToken(string $token): void
     {
         assert(is_string($token));
         $this->parameters[ilWACSignedPath::WAC_TOKEN_ID] = $token;
@@ -486,19 +423,13 @@ class ilWACPath
     }
 
 
-    /**
-     * @return int
-     */
-    public function getTimestamp()
+    public function getTimestamp(): int
     {
         return (int) $this->timestamp;
     }
 
 
-    /**
-     * @param int $timestamp
-     */
-    public function setTimestamp($timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         assert(is_int($timestamp));
         $this->parameters[ilWACSignedPath::WAC_TIMESTAMP_ID] = $timestamp;
@@ -506,67 +437,46 @@ class ilWACPath
     }
 
 
-    /**
-     * @return int
-     */
-    public function getTTL()
+    public function getTTL(): int
     {
         return (int) $this->ttl;
     }
 
 
-    /**
-     * @param int $ttl
-     */
-    public function setTTL($ttl)
+    public function setTTL(int $ttl): void
     {
         $this->parameters[ilWACSignedPath::WAC_TTL_ID] = $ttl;
         $this->ttl = $ttl;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getClient()
+    public function getClient(): string
     {
         return (string) $this->client;
     }
 
 
-    /**
-     * @param string $client
-     */
-    public function setClient($client)
+    public function setClient(string $client): void
     {
         assert(is_string($client));
         $this->client = $client;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getSecurePathId()
+    public function getSecurePathId(): string
     {
         return (string) $this->secure_path_id;
     }
 
 
-    /**
-     * @param string $secure_path_id
-     */
-    public function setSecurePathId($secure_path_id)
+    public function setSecurePathId(string $secure_path_id): void
     {
         assert(is_string($secure_path_id));
         $this->secure_path_id = $secure_path_id;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return (string) $this->path;
     }
@@ -574,10 +484,8 @@ class ilWACPath
 
     /**
      * Returns a clean (everything behind ? is removed and rawurldecoded path
-     *
-     * @return string
      */
-    public function getCleanURLdecodedPath()
+    public function getCleanURLdecodedPath(): string
     {
         $path = explode("?", (string) $this->path); // removing everything behind ?
         $path_to_file = rawurldecode($path[0]);
@@ -586,143 +494,98 @@ class ilWACPath
     }
 
 
-    /**
-     * @param string $path
-     */
-    public function setPath($path)
+    public function setPath(string $path): void
     {
         assert(is_string($path));
         $this->path = $path;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getQuery()
+    public function getQuery(): string
     {
         return (string) $this->query;
     }
 
 
-    /**
-     * @param string $query
-     */
-    public function setQuery($query)
+    public function setQuery(string $query): void
     {
         assert(is_string($query));
         $this->query = $query;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getFileName()
+    public function getFileName(): string
     {
         return (string) $this->file_name;
     }
 
 
-    /**
-     * @param string $file_name
-     */
-    public function setFileName($file_name)
+    public function setFileName(string $file_name): void
     {
         assert(is_string($file_name));
         $this->file_name = $file_name;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getOriginalRequest()
+    public function getOriginalRequest(): string
     {
         return (string) $this->original_request;
     }
 
 
-    /**
-     * @param string $original_request
-     */
-    public function setOriginalRequest($original_request)
+    public function setOriginalRequest(string $original_request): void
     {
         assert(is_string($original_request));
         $this->original_request = $original_request;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getSecurePath()
+    public function getSecurePath(): string
     {
         return (string) $this->secure_path;
     }
 
 
-    /**
-     * @param string $secure_path
-     */
-    public function setSecurePath($secure_path)
+    public function setSecurePath(string $secure_path): void
     {
         assert(is_string($secure_path));
         $this->secure_path = $secure_path;
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isInSecFolder()
+    public function isInSecFolder(): bool
     {
         return (bool) $this->in_sec_folder;
     }
 
 
-    /**
-     * @param bool $in_sec_folder
-     */
-    public function setInSecFolder($in_sec_folder)
+    public function setInSecFolder(bool $in_sec_folder): void
     {
         assert(is_bool($in_sec_folder));
         $this->in_sec_folder = $in_sec_folder;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getModuleType()
+    public function getModuleType(): string
     {
         return (string) $this->module_type;
     }
 
 
-    /**
-     * @param string $module_type
-     */
-    public function setModuleType($module_type)
+    public function setModuleType(string $module_type): void
     {
         assert(is_string($module_type));
         $this->module_type = $module_type;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getModuleIdentifier()
+    public function getModuleIdentifier(): string
     {
         return (string) $this->module_identifier;
     }
 
 
-    /**
-     * @param string $module_identifier
-     */
-    public function setModuleIdentifier($module_identifier)
+    public function setModuleIdentifier(string $module_identifier): void
     {
         assert(is_string($module_identifier));
         $this->module_identifier = $module_identifier;

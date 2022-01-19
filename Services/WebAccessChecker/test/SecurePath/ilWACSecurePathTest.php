@@ -35,13 +35,13 @@ class ilWACSecurePathTest //extends MockeryTestCase
     protected $backupGlobals = false;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
 
-    public function testPath()
+    public function testPath(): void
     {
         /**
          * @var $obj ilWACSecurePath

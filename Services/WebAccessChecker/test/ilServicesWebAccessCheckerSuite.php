@@ -23,10 +23,7 @@ use PHPUnit\Framework\TestSuite;
 class ilServicesWebAccessCheckerSuite extends TestSuite
 {
 
-    /**
-     * @return \ilServicesWebAccessCheckerSuite
-     */
-    public static function suite()
+    public static function suite(): \ilServicesWebAccessCheckerSuite
     {
         $suite = new self();
 

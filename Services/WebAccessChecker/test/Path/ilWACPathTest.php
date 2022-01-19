@@ -47,7 +47,7 @@ class ilWACPathTest //extends MockeryTestCase
     }
 
 
-    public function testMobs()
+    public function testMobs(): void
     {
         $ilWacPath = new ilWACPath('http://trunk.local/data/trunk/mobs/mm_270/Koeniz_Komturei1.jpg');
         $this->assertEquals('mobs', $ilWacPath->getModuleType());
@@ -61,7 +61,7 @@ class ilWACPathTest //extends MockeryTestCase
     }
 
 
-    public function testUserImage()
+    public function testUserImage(): void
     {
         $ilWacPath = new ilWACPath('http://trunk.local/data/trunk/usr_images/usr_6_small.jpg?t=63944');
         $this->assertEquals('usr_images', $ilWacPath->getModuleType());
@@ -76,7 +76,7 @@ class ilWACPathTest //extends MockeryTestCase
     }
 
 
-    public function testBlogInSec()
+    public function testBlogInSec(): void
     {
         $ilWacPath = new ilWACPath('http://trunk.local/data/trunk/sec/ilBlog/blog_123/Header.mp4');
         $this->assertEquals('ilBlog', $ilWacPath->getModuleType());
@@ -91,7 +91,7 @@ class ilWACPathTest //extends MockeryTestCase
     }
 
 
-    public function testSubfolders()
+    public function testSubfolders(): void
     {
         $ilWacPathBase = new ilWACPath('http://trunk.local/data/trunk/lm_data/lm_123456/start.html');
         $ilWacPathSub = new ilWACPath('http://trunk.local/data/trunk/lm_data/lm_123456/subfolder/image.png');

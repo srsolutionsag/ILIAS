@@ -16,7 +16,7 @@
 class ilSecurePathDefinitionProcessor implements ilComponentDefinitionProcessor
 {
     protected \ilDBInterface $db;
-    protected ?string $component;
+    protected ?string $component = null;
 
     public function __construct(\ilDBInterface $db)
     {

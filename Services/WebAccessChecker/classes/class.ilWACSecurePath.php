@@ -43,7 +43,7 @@ class ilWACSecurePath extends ActiveRecord
      *
      * @throws ilWACException Thrown if the the checking instance is not found or if the concatenated path is not valid to the checking instance.
      */
-    public static function getCheckingInstance(ilWACPath $ilWACPath)
+    public static function getCheckingInstance(ilWACPath $ilWACPath): object
     {
         /**
          * @var $obj ilWACSecurePath
@@ -70,17 +70,14 @@ class ilWACSecurePath extends ActiveRecord
      *
      * @return bool true if a checking instance is found otherwise false.
      */
-    public static function hasCheckingInstanceRegistered(ilWACPath $ilWACPath)
+    public static function hasCheckingInstanceRegistered(ilWACPath $ilWACPath): bool
     {
         $obj = self::find($ilWACPath->getModuleType());
         return !is_null($obj);
     }
 
 
-    /**
-     * @return bool
-     */
-    public function hasCheckingInstance()
+    public function hasCheckingInstance(): bool
     {
         return $this->has_checking_instance;
     }
@@ -126,30 +123,20 @@ class ilWACSecurePath extends ActiveRecord
     protected $has_checking_instance = false;
 
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return (string) $this->path;
     }
 
 
-    /**
-     * @param string $path
-     * @return void
-     */
-    public function setPath($path)
+    public function setPath(string $path): void
     {
         assert(is_string($path));
         $this->path = $path;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getComponentDirectory()
+    public function getComponentDirectory(): string
     {
         preg_match("/[\\\|\\/](Services|Modules|Customizing)[\\\|\\/].*/u", $this->component_directory, $matches);
 
@@ -157,61 +144,40 @@ class ilWACSecurePath extends ActiveRecord
     }
 
 
-    /**
-     * @param string $component_directory
-     * @return void
-     */
-    public function setComponentDirectory($component_directory)
+    public function setComponentDirectory(string $component_directory): void
     {
         assert(is_string($component_directory));
         $this->component_directory = $component_directory;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getCheckingClass()
+    public function getCheckingClass(): string
     {
         return (string) $this->checking_class;
     }
 
 
-    /**
-     * @param string $checking_class
-     * @return void
-     */
-    public function setCheckingClass($checking_class)
+    public function setCheckingClass(string $checking_class): void
     {
         assert(is_string($checking_class));
         $this->checking_class = $checking_class;
     }
 
 
-    /**
-     * @param bool $has_checking_instance
-     * @return void
-     */
-    public function setHasCheckingInstance($has_checking_instance)
+    public function setHasCheckingInstance(bool $has_checking_instance): void
     {
         assert(is_bool($has_checking_instance));
         $this->has_checking_instance = $has_checking_instance;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getInSecFolder()
+    public function getInSecFolder(): string
     {
         return (string) $this->in_sec_folder;
     }
 
 
-    /**
-     * @param string $in_sec_folder
-     */
-    public function setInSecFolder($in_sec_folder)
+    public function setInSecFolder(string $in_sec_folder): void
     {
         // assert(is_string($in_sec_folder));
         $this->in_sec_folder = $in_sec_folder;

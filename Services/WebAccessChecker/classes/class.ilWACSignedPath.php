@@ -60,14 +60,8 @@ class ilWACSignedPath
      * @var bool
      */
     protected $checked = false;
-    /**
-     * @var \ILIAS\HTTP\Services $httpService
-     */
-    private $httpService;
-    /**
-     * @var CookieFactory $cookieFactory
-     */
-    private $cookieFactory;
+    private \ILIAS\HTTP\Services $httpService;
+    private \ILIAS\HTTP\Cookies\CookieFactory $cookieFactory;
 
 
     /**
@@ -86,10 +80,9 @@ class ilWACSignedPath
 
 
     /**
-     * @return string
      * @throws ilWACException
      */
-    public function getSignedPath()
+    public function getSignedPath(): string
     {
         if ($this->getType() !== PathType::FILE) {
             throw new ilWACException(ilWACException::WRONG_PATH_TYPE);
@@ -117,10 +110,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isFolderSigned()
+    public function isFolderSigned(): bool
     {
         $jar = $this->httpService->cookieJar();
         $cookies = $jar->getAll();
@@ -151,10 +141,9 @@ class ilWACSignedPath
 
 
     /**
-     * @return bool
      * @throws ilWACException
      */
-    public function isFolderTokenValid()
+    public function isFolderTokenValid(): bool
     {
         if (!$this->isFolderSigned()) {
             return false;
@@ -164,10 +153,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return void
-     */
-    protected function saveFolderToken()
+    protected function saveFolderToken(): void
     {
         $ttl = $this->getPathObject()->getTTL();
         $cookie_lifetime = $ttl !== 0 ? $ttl : self::getCookieMaxLifetimeInSeconds();
@@ -211,10 +197,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return bool
-     */
-    public function revalidatingFolderToken()
+    public function revalidatingFolderToken(): bool
     {
         if ($this->getType() !== PathType::FOLDER) {
             return false;
@@ -230,10 +213,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isSignedPath()
+    public function isSignedPath(): bool
     {
         return ($this->getPathObject()->hasToken() && $this->getPathObject()->hasTimestamp()
                 && $this->getPathObject()->hasTTL());
@@ -241,10 +221,9 @@ class ilWACSignedPath
 
 
     /**
-     * @return bool
      * @throws ilWACException
      */
-    public function isSignedPathValid()
+    public function isSignedPathValid(): bool
     {
         $this->buildAndSetTokenInstance($this->getPathObject()->getTimestamp(), $this->getPathObject()->getTTL());
 
@@ -253,13 +232,11 @@ class ilWACSignedPath
 
 
     /**
-     * @param string $path_to_file
      *
-     * @return string
      *
      * @throws ilWACException
      */
-    public static function signFile($path_to_file)
+    public static function signFile(string $path_to_file): string
     {
         if (!$path_to_file) {
             return '';
@@ -276,11 +253,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @param string $start_file_path
-     * @return void
-     */
-    public static function signFolderOfStartFile($start_file_path)
+    public static function signFolderOfStartFile(string $start_file_path): void
     {
         $obj = new self(new ilWACPath($start_file_path), self::http(), new CookieFactoryImpl());
         $obj->setType(PathType::FOLDER);
@@ -289,10 +262,7 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return ilWACToken
-     */
-    public function getTokenInstance()
+    public function getTokenInstance(): \ilWACToken
     {
         return $this->token_instance;
     }
@@ -300,38 +270,27 @@ class ilWACSignedPath
 
     /**
      * @param ilWACToken $token_instance
-     * @return void
      */
-    public function setTokenInstance(ilWACToken $token_instance)
+    public function setTokenInstance(ilWACToken $token_instance): void
     {
         $this->token_instance = $token_instance;
     }
 
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return (int) $this->type;
     }
 
 
-    /**
-     * @param int $type
-     * @return void
-     */
-    public function setType($type)
+    public function setType(int $type): void
     {
         assert(is_int($type));
         $this->type = $type;
     }
 
 
-    /**
-     * @return ilWACPath
-     */
-    public function getPathObject()
+    public function getPathObject(): \ilWACPath
     {
         return $this->path_object;
     }
@@ -339,19 +298,17 @@ class ilWACSignedPath
 
     /**
      * @param ilWACPath $path_object
-     * @return void
      */
-    public function setPathObject(ilWACPath $path_object)
+    public function setPathObject(ilWACPath $path_object): void
     {
         $this->path_object = $path_object;
     }
 
 
     /**
-     * @return bool
      * @throws \ilWACException
      */
-    protected function checkToken()
+    protected function checkToken(): bool
     {
         $request_token_string = $this->getPathObject()->getToken();
         $request_ttl = $this->getPathObject()->getTTL();
@@ -381,13 +338,10 @@ class ilWACSignedPath
 
 
     /**
-     * @param int $timestamp
-     * @param int $ttl
      *
-     * @return ilWACToken
      * @throws ilWACException
      */
-    protected function buildTokenInstance($timestamp = 0, $ttl = 0)
+    protected function buildTokenInstance(int $timestamp = 0, int $ttl = 0): \ilWACToken
     {
         assert(is_int($timestamp));
         assert(is_int($ttl));
@@ -413,13 +367,10 @@ class ilWACSignedPath
 
 
     /**
-     * @param int $timestamp
-     * @param int $ttl
-     * @return void
      *
      * @throws \ilWACException
      */
-    public function buildAndSetTokenInstance($timestamp = 0, $ttl = 0)
+    public function buildAndSetTokenInstance(int $timestamp = 0, int $ttl = 0): void
     {
         assert(is_int($timestamp));
         assert(is_int($ttl));
@@ -428,22 +379,17 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return int
-     */
-    public static function getTokenMaxLifetimeInSeconds()
+    public static function getTokenMaxLifetimeInSeconds(): int
     {
         return self::$token_max_lifetime_in_seconds;
     }
 
 
     /**
-     * @param int $token_max_lifetime_in_seconds
-     * @return void
      *
      * @throws \ilWACException
      */
-    public static function setTokenMaxLifetimeInSeconds($token_max_lifetime_in_seconds)
+    public static function setTokenMaxLifetimeInSeconds(int $token_max_lifetime_in_seconds): void
     {
         assert(is_int($token_max_lifetime_in_seconds));
         if ($token_max_lifetime_in_seconds > self::MAX_LIFETIME) {
@@ -453,23 +399,18 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return int
-     */
-    public static function getCookieMaxLifetimeInSeconds()
+    public static function getCookieMaxLifetimeInSeconds(): int
     {
         return self::$cookie_max_lifetime_in_seconds;
     }
 
 
     /**
-     * @param int $cookie_max_lifetime_in_seconds
      *
-     * @return void
      *
      * @throws \ilWACException
      */
-    public static function setCookieMaxLifetimeInSeconds($cookie_max_lifetime_in_seconds)
+    public static function setCookieMaxLifetimeInSeconds(int $cookie_max_lifetime_in_seconds): void
     {
         assert(is_int($cookie_max_lifetime_in_seconds));
         if ($cookie_max_lifetime_in_seconds > self::MAX_LIFETIME) {
@@ -504,20 +445,13 @@ class ilWACSignedPath
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isChecked()
+    public function isChecked(): bool
     {
         return (bool) $this->checked;
     }
 
 
-    /**
-     * @param bool $checked
-     * @return void
-     */
-    public function setChecked($checked)
+    public function setChecked(bool $checked): void
     {
         assert(is_bool($checked));
         $this->checked = $checked;

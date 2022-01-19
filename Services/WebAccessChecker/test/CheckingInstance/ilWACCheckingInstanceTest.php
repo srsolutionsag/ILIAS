@@ -61,9 +61,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
 
         //setup container for HttpServiceAware classes
         $container = new \ILIAS\DI\Container();
-        $container['http'] = function ($c) {
-            return Mockery::mock(Services::class);
-        };
+        $container['http'] = fn($c) => Mockery::mock(Services::class);
 
         $this->http = $container['http'];
 
@@ -79,7 +77,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
      * @backupGlobals          disabled
      * @backupStaticAttributes disabled
      */
-    public function testDeliver()
+    public function testDeliver(): void
     {
         self::markTestSkipped("WIP");
         return;
@@ -144,7 +142,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
     }
 
 
-    public function testBasic()
+    public function testBasic(): void
     {
         self::markTestSkipped("Can't run test without db.");
 
@@ -163,7 +161,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
     }
 
 
-    public function testBasicWithFileSigning()
+    public function testBasicWithFileSigning(): void
     {
         self::markTestSkipped("WIP");
         return;
@@ -188,7 +186,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
     }
 
 
-    public function testBasicWithFolderSigning()
+    public function testBasicWithFolderSigning(): void
     {
         self::markTestSkipped("WIP");
         return;
@@ -215,7 +213,7 @@ class ilWACCheckingInstanceTest //extends MockeryTestCase
     /**
      * @Test
      */
-    public function testNonCheckingInstanceNoSec()
+    public function testNonCheckingInstanceNoSec(): void
     {
         self::markTestSkipped("Can't run test without db.");
 
