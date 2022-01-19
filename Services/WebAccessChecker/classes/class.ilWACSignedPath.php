@@ -164,8 +164,15 @@ class ilWACSignedPath
 
         // FIX: currently the cookies are never stored, we must use setcookie
         foreach ($jar->getAll() as $cookie) {
-            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpires(), $cookie->getPath(),
-                $cookie->getDomain(), $cookie->getSecure(), $cookie->getHttpOnly());
+            setcookie(
+                $cookie->getName(),
+                $cookie->getValue(),
+                $cookie->getExpires(),
+                $cookie->getPath(),
+                $cookie->getDomain(),
+                $cookie->getSecure(),
+                $cookie->getHttpOnly()
+            );
         }
     }
 

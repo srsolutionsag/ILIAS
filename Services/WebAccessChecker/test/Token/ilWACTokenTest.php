@@ -106,7 +106,7 @@ class ilWACTokenTest extends MockeryTestCase
 
         //setup container for HttpServiceAware classes
         $container = new \ILIAS\DI\Container();
-        $container['http'] = fn($c) => Mockery::mock(GlobalHttpState::class);
+        $container['http'] = fn ($c) => Mockery::mock(GlobalHttpState::class);
 
         $this->http = $container['http'];
 
@@ -122,7 +122,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testWithoutSigning(): void
+    public function testWithoutSigning() : void
     {
         $ilWACSignedPath = new ilWACSignedPath(new ilWACPath($this->file_one->url()), $this->http, $this->cookieFactory);
 
@@ -154,7 +154,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testSomeBasics(): void
+    public function testSomeBasics() : void
     {
         $query = 'myparam=1234';
         $ilWACSignedPath = new ilWACSignedPath(new ilWACPath($this->file_four->url() . '?'
@@ -170,7 +170,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testTokenGeneration(): void
+    public function testTokenGeneration() : void
     {
         $ilWacPath = new ilWacPath($this->file_four->url());
         $ilWACToken = new ilWACToken($ilWacPath->getPath(), self::CLIENT_NAME, 123456, 20);
@@ -185,7 +185,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testCookieGeneration(): void
+    public function testCookieGeneration() : void
     {
         $this->markTestSkipped('unable to use http cookies at this point');
 
@@ -233,7 +233,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testFileToken(): void
+    public function testFileToken() : void
     {
         ilWACSignedPath::setTokenMaxLifetimeInSeconds(self::LIFETIME);
         $lifetime = ilWACSignedPath::getTokenMaxLifetimeInSeconds();
@@ -265,7 +265,7 @@ class ilWACTokenTest extends MockeryTestCase
     /**
      * @Test
      */
-    public function testModifiedTimestampNoMod(): void
+    public function testModifiedTimestampNoMod() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -278,7 +278,7 @@ class ilWACTokenTest extends MockeryTestCase
     /**
      * @Test
      */
-    public function testModifiedTimestampAddTime(): void
+    public function testModifiedTimestampAddTime() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -288,7 +288,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testModifiedTimestampSubTime(): void
+    public function testModifiedTimestampSubTime() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -299,7 +299,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testModifiedTTL(): void
+    public function testModifiedTTL() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -309,7 +309,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testModifiedTTLAndTimestamp(): void
+    public function testModifiedTTLAndTimestamp() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -319,7 +319,7 @@ class ilWACTokenTest extends MockeryTestCase
     }
 
 
-    public function testModifiedToken(): void
+    public function testModifiedToken() : void
     {
         // self::markTestSkipped("WIP");
         // return;
@@ -332,7 +332,7 @@ class ilWACTokenTest extends MockeryTestCase
     /**
      * @param null $override_token
      */
-    protected function getModifiedSignedPath(int $add_ttl = 0, int $add_timestamp = 0, $override_token = null): string
+    protected function getModifiedSignedPath(int $add_ttl = 0, int $add_timestamp = 0, $override_token = null) : string
     {
         ilWACSignedPath::setTokenMaxLifetimeInSeconds(self::LIFETIME);
         $signed_path = ilWACSignedPath::signFile($this->file_one->url());

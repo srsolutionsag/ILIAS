@@ -48,14 +48,18 @@ class ilWACSecurePath extends ActiveRecord
          */
         $obj = self::find($ilWACPath->getModuleType());
         if ($obj === null) {
-            throw new ilWACException(ilWACException::CODE_NO_PATH,
-                'No Checking Instance found for id: ' . $ilWACPath->getSecurePathId());
+            throw new ilWACException(
+                ilWACException::CODE_NO_PATH,
+                'No Checking Instance found for id: ' . $ilWACPath->getSecurePathId()
+            );
         }
 
         $secure_path_checking_class = $obj->getComponentDirectory() . '/classes/class.' . $obj->getCheckingClass() . '.php';
         if (!file_exists($secure_path_checking_class)) {
-            throw new ilWACException(ilWACException::CODE_NO_PATH,
-                'Checking Instance not found in path: ' . $secure_path_checking_class);
+            throw new ilWACException(
+                ilWACException::CODE_NO_PATH,
+                'Checking Instance not found in path: ' . $secure_path_checking_class
+            );
         }
         $class_name = $obj->getCheckingClass();
 
