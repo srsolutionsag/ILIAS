@@ -30,119 +30,59 @@ class ilWACPath
     /**
      * @var string[]
      */
-    protected static $image_suffixes = array(
+    protected static array $image_suffixes = [
         'png',
         'jpg',
         'jpeg',
         'gif',
         'svg',
-    );
+    ];
     /**
      * @var string[]
      */
-    protected static $video_suffixes = array(
+    protected static array $video_suffixes = [
         'mp4',
         'm4v',
         'mov',
         'wmv',
         'webm',
-    );
+    ];
     /**
      * @var string[]
      */
-    protected static $audio_suffixes = array(
+    protected static array $audio_suffixes = [
         'mp3',
         'aiff',
         'aif',
         'm4a',
         'wav',
-    );
-    /**
-     * @var string
-     */
-    protected $client = '';
-    /**
-     * @var array
-     */
-    protected $parameters = array();
-    /**
-     * @var bool
-     */
-    protected $in_sec_folder = false;
-    /**
-     * @var string
-     */
-    protected $token = '';
-    /**
-     * @var int
-     */
-    protected $timestamp = 0;
-    /**
-     * @var int
-     */
-    protected $ttl = 0;
-    /**
-     * @var string
-     */
-    protected $secure_path = '';
-    /**
-     * @var string
-     */
-    protected $secure_path_id = '';
-    /**
-     * @var string
-     */
-    protected $original_request = '';
-    /**
-     * @var string
-     */
-    protected $file_name = '';
-    /**
-     * @var string
-     */
-    protected $query = '';
-    /**
-     * @var string
-     */
-    protected $suffix = '';
-    /**
-     * @var string
-     */
-    protected $prefix = '';
-    /**
-     * @var string
-     */
-    protected $appendix = '';
-    /**
-     * @var string
-     */
-    protected $module_path = '';
-    /**
-     * @var string
-     */
-    protected $path = '';
-    /**
-     * @var string
-     */
-    protected $module_type = '';
-    /**
-     * @var string
-     */
-    protected $module_identifier = '';
-    /**
-     * @var string
-     */
-    protected $path_without_query = '';
+    ];
 
-
+    protected string $client = '';
     /**
-     * ilWACPath constructor.
-     *
-     * @param string $path
+     * @var string[]
      */
-    public function __construct($path)
+    protected array $parameters = [];
+    protected bool $in_sec_folder = false;
+    protected string $token = '';
+    protected int $timestamp = 0;
+    protected int $ttl = 0;
+    protected string $secure_path = '';
+    protected string $secure_path_id = '';
+    protected string $original_request = '';
+    protected string $file_name = '';
+    protected string $query = '';
+    protected string $suffix = '';
+    protected string $prefix = '';
+    protected string $appendix = '';
+    protected string $module_path = '';
+    protected string $path = '';
+    protected string $module_type = '';
+    protected string $module_identifier = '';
+    protected string $path_without_query = '';
+
+    public function __construct(string $path)
     {
-        assert(is_string($path));
         $this->setOriginalRequest($path);
         $re = '/' . self::REGEX . '/';
         preg_match($re, $path, $result);
@@ -166,20 +106,18 @@ class ilWACPath
         $this->setModuleIdentifier($moduleId);
         $this->setModuleType(!isset($result['module_type']) || is_null($result['module_type']) ? '' : $result['module_type']);
 
-        $modulePath = null;
-
         if ($this->getModuleIdentifier()) {
-            $modulePath = strstr(
+            $module_path = strstr(
                 !isset($result['module_path']) || is_null($result['module_path']) ? '' : $result['module_path'],
                 $this->getModuleIdentifier(),
                 true
             );
-            $modulePath = '.' . ($modulePath === false ? '' : $modulePath);
+            $module_path = '.' . ($module_path === false ? '' : $module_path);
         } else {
-            $modulePath = ('.' . (!isset($result['module_path']) || is_null($result['module_path']) ? '' : $result['module_path']));
+            $module_path = ('.' . (!isset($result['module_path']) || is_null($result['module_path']) ? '' : $result['module_path']));
         }
 
-        $this->setModulePath("$modulePath");
+        $this->setModulePath("$module_path");
         $this->setInSecFolder(isset($result['sec']) && $result['sec'] === 'sec/');
         $this->setPathWithoutQuery(
             '.' . (!isset($result['path_without_query']) || is_null($result['path_without_query']) ? '' : $result['path_without_query'])
@@ -202,8 +140,7 @@ class ilWACPath
         $this->handleParameters();
     }
 
-
-    protected function handleParameters(): void
+    protected function handleParameters() : void
     {
         $param = $this->getParameters();
         if (isset($param[ilWACSignedPath::WAC_TOKEN_ID])) {
@@ -217,377 +154,304 @@ class ilWACPath
         }
     }
 
-
     /**
-     * @return mixed[]
+     * @return string[]
      */
-    public function getParameters(): array
+    public function getParameters() : array
     {
-        return (array) $this->parameters;
+        return $this->parameters;
     }
 
-
     /**
-     * @param array $parameters
+     * @param string[] $parameters
      */
-    public function setParameters(array $parameters): void
+    public function setParameters(array $parameters) : void
     {
         $this->parameters = $parameters;
     }
 
-
     /**
-     * @return mixed[]
+     * @return string[]
      */
-    public static function getAudioSuffixes(): array
+    public static function getAudioSuffixes() : array
     {
-        return (array) self::$audio_suffixes;
+        return self::$audio_suffixes;
     }
 
-
     /**
-     * @param array $audio_suffixes
+     * @param string[] $audio_suffixes
      */
-    public static function setAudioSuffixes(array $audio_suffixes): void
+    public static function setAudioSuffixes(array $audio_suffixes) : void
     {
         self::$audio_suffixes = $audio_suffixes;
     }
 
-
     /**
-     * @return mixed[]
+     * @return string[]
      */
-    public static function getImageSuffixes(): array
+    public static function getImageSuffixes() : array
     {
-        return (array) self::$image_suffixes;
+        return self::$image_suffixes;
     }
 
-
     /**
-     * @param array $image_suffixes
+     * @param string[] $image_suffixes
      */
-    public static function setImageSuffixes(array $image_suffixes): void
+    public static function setImageSuffixes(array $image_suffixes) : void
     {
         self::$image_suffixes = $image_suffixes;
     }
 
-
     /**
-     * @return mixed[]
+     * @return string[]
      */
-    public static function getVideoSuffixes(): array
+    public static function getVideoSuffixes() : array
     {
-        return (array) self::$video_suffixes;
+        return self::$video_suffixes;
     }
 
-
     /**
-     * @param array $video_suffixes
+     * @param string[] $video_suffixes
      */
-    public static function setVideoSuffixes(array $video_suffixes): void
+    public static function setVideoSuffixes(array $video_suffixes) : void
     {
         self::$video_suffixes = $video_suffixes;
     }
 
-
-    public function getPrefix(): string
+    public function getPrefix() : string
     {
-        return (string) $this->prefix;
+        return $this->prefix;
     }
 
-
-    public function setPrefix(string $prefix): void
+    public function setPrefix(string $prefix) : void
     {
-        assert(is_string($prefix));
         $this->prefix = $prefix;
     }
 
-
-    public function getAppendix(): string
+    public function getAppendix() : string
     {
-        return (string) $this->appendix;
+        return $this->appendix;
     }
 
-
-    public function setAppendix(string $appendix): void
+    public function setAppendix(string $appendix) : void
     {
-        assert(is_string($appendix));
         $this->appendix = $appendix;
     }
 
-
-    public function getModulePath(): string
+    public function getModulePath() : string
     {
-        return (string) $this->module_path;
+        return $this->module_path;
     }
 
-
-    public function setModulePath(string $module_path): void
+    public function setModulePath(string $module_path) : void
     {
-        assert(is_string($module_path));
         $this->module_path = $module_path;
     }
 
-
-    public function getDirName(): string
+    public function getDirName() : string
     {
-        return (string) dirname($this->getPathWithoutQuery());
+        return dirname($this->getPathWithoutQuery());
     }
 
-
-    public function getPathWithoutQuery(): string
+    public function getPathWithoutQuery() : string
     {
-        return (string) $this->path_without_query;
+        return $this->path_without_query;
     }
 
-
-    public function setPathWithoutQuery(string $path_without_query): void
+    public function setPathWithoutQuery(string $path_without_query) : void
     {
-        assert(is_string($path_without_query));
         $this->path_without_query = $path_without_query;
     }
 
-
-    public function isImage(): bool
+    public function isImage() : bool
     {
-        return (bool) in_array(strtolower($this->getSuffix()), self::$image_suffixes);
+        return in_array(strtolower($this->getSuffix()), self::$image_suffixes);
     }
 
-
-    public function getSuffix(): string
+    public function getSuffix() : string
     {
-        return (string) $this->suffix;
+        return $this->suffix;
     }
 
-
-    public function setSuffix(string $suffix): void
+    public function setSuffix(string $suffix) : void
     {
-        assert(is_string($suffix));
         $this->suffix = $suffix;
     }
 
-
-    public function isStreamable(): bool
+    public function isStreamable() : bool
     {
-        return (bool) ($this->isAudio() || $this->isVideo());
+        return ($this->isAudio() || $this->isVideo());
     }
 
-
-    public function isAudio(): bool
+    public function isAudio() : bool
     {
-        return (bool) in_array(strtolower($this->getSuffix()), self::$audio_suffixes);
+        return in_array(strtolower($this->getSuffix()), self::$audio_suffixes);
     }
 
-
-    public function isVideo(): bool
+    public function isVideo() : bool
     {
-        return (bool) in_array(strtolower($this->getSuffix()), self::$video_suffixes);
+        return in_array(strtolower($this->getSuffix()), self::$video_suffixes);
     }
 
-
-    public function fileExists(): bool
+    public function fileExists() : bool
     {
-        return (bool) is_file($this->getPathWithoutQuery());
+        return is_file($this->getPathWithoutQuery());
     }
 
-
-    public function hasToken(): bool
+    public function hasToken() : bool
     {
-        return (bool) ($this->token !== '');
+        return ($this->token !== '');
     }
 
-
-    public function hasTimestamp(): bool
+    public function hasTimestamp() : bool
     {
-        return (bool) ($this->timestamp !== 0);
+        return ($this->timestamp !== 0);
     }
 
-
-    public function hasTTL(): bool
+    public function hasTTL() : bool
     {
-        return (bool) ($this->ttl !== 0);
+        return ($this->ttl !== 0);
     }
 
-
-    public function getToken(): string
+    public function getToken() : string
     {
-        return (string) $this->token;
+        return $this->token;
     }
 
-
-    public function setToken(string $token): void
+    public function setToken(string $token) : void
     {
-        assert(is_string($token));
         $this->parameters[ilWACSignedPath::WAC_TOKEN_ID] = $token;
         $this->token = $token;
     }
 
-
-    public function getTimestamp(): int
+    public function getTimestamp() : int
     {
-        return (int) $this->timestamp;
+        return $this->timestamp;
     }
 
-
-    public function setTimestamp(int $timestamp): void
+    public function setTimestamp(int $timestamp) : void
     {
-        assert(is_int($timestamp));
         $this->parameters[ilWACSignedPath::WAC_TIMESTAMP_ID] = $timestamp;
         $this->timestamp = $timestamp;
     }
 
-
-    public function getTTL(): int
+    public function getTTL() : int
     {
-        return (int) $this->ttl;
+        return $this->ttl;
     }
 
-
-    public function setTTL(int $ttl): void
+    public function setTTL(int $ttl) : void
     {
         $this->parameters[ilWACSignedPath::WAC_TTL_ID] = $ttl;
         $this->ttl = $ttl;
     }
 
-
-    public function getClient(): string
+    public function getClient() : string
     {
-        return (string) $this->client;
+        return $this->client;
     }
 
-
-    public function setClient(string $client): void
+    public function setClient(string $client) : void
     {
-        assert(is_string($client));
         $this->client = $client;
     }
 
-
-    public function getSecurePathId(): string
+    public function getSecurePathId() : string
     {
-        return (string) $this->secure_path_id;
+        return $this->secure_path_id;
     }
 
-
-    public function setSecurePathId(string $secure_path_id): void
+    public function setSecurePathId(string $secure_path_id) : void
     {
-        assert(is_string($secure_path_id));
         $this->secure_path_id = $secure_path_id;
     }
 
-
-    public function getPath(): string
+    public function getPath() : string
     {
-        return (string) $this->path;
+        return $this->path;
     }
-
 
     /**
      * Returns a clean (everything behind ? is removed and rawurldecoded path
      */
-    public function getCleanURLdecodedPath(): string
+    public function getCleanURLdecodedPath() : string
     {
-        $path = explode("?", (string) $this->path); // removing everything behind ?
-        $path_to_file = rawurldecode($path[0]);
-
-        return $path_to_file;
+        $path = explode("?", $this->path); // removing everything behind ?
+        return rawurldecode($path[0]);
     }
 
-
-    public function setPath(string $path): void
+    public function setPath(string $path) : void
     {
-        assert(is_string($path));
         $this->path = $path;
     }
 
-
-    public function getQuery(): string
+    public function getQuery() : string
     {
-        return (string) $this->query;
+        return $this->query;
     }
 
-
-    public function setQuery(string $query): void
+    public function setQuery(string $query) : void
     {
-        assert(is_string($query));
         $this->query = $query;
     }
 
-
-    public function getFileName(): string
+    public function getFileName() : string
     {
-        return (string) $this->file_name;
+        return $this->file_name;
     }
 
-
-    public function setFileName(string $file_name): void
+    public function setFileName(string $file_name) : void
     {
-        assert(is_string($file_name));
         $this->file_name = $file_name;
     }
 
-
-    public function getOriginalRequest(): string
+    public function getOriginalRequest() : string
     {
-        return (string) $this->original_request;
+        return $this->original_request;
     }
 
-
-    public function setOriginalRequest(string $original_request): void
+    public function setOriginalRequest(string $original_request) : void
     {
-        assert(is_string($original_request));
         $this->original_request = $original_request;
     }
 
-
-    public function getSecurePath(): string
+    public function getSecurePath() : string
     {
-        return (string) $this->secure_path;
+        return $this->secure_path;
     }
 
-
-    public function setSecurePath(string $secure_path): void
+    public function setSecurePath(string $secure_path) : void
     {
-        assert(is_string($secure_path));
         $this->secure_path = $secure_path;
     }
 
-
-    public function isInSecFolder(): bool
+    public function isInSecFolder() : bool
     {
-        return (bool) $this->in_sec_folder;
+        return $this->in_sec_folder;
     }
 
-
-    public function setInSecFolder(bool $in_sec_folder): void
+    public function setInSecFolder(bool $in_sec_folder) : void
     {
-        assert(is_bool($in_sec_folder));
         $this->in_sec_folder = $in_sec_folder;
     }
 
-
-    public function getModuleType(): string
+    public function getModuleType() : string
     {
-        return (string) $this->module_type;
+        return $this->module_type;
     }
 
-
-    public function setModuleType(string $module_type): void
+    public function setModuleType(string $module_type) : void
     {
-        assert(is_string($module_type));
         $this->module_type = $module_type;
     }
 
-
-    public function getModuleIdentifier(): string
+    public function getModuleIdentifier() : string
     {
-        return (string) $this->module_identifier;
+        return $this->module_identifier;
     }
 
-
-    public function setModuleIdentifier(string $module_identifier): void
+    public function setModuleIdentifier(string $module_identifier) : void
     {
-        assert(is_string($module_identifier));
         $this->module_identifier = $module_identifier;
     }
 }

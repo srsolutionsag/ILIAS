@@ -34,51 +34,27 @@ class ilWebAccessChecker
     const CM_FOLDER_TOKEN = 2;
     const CM_CHECKINGINSTANCE = 3;
     const CM_SECFOLDER = 4;
-    /**
-     * @var ilWACPath
-     */
-    protected $path_object = null;
-    /**
-     * @var bool
-     */
-    protected $checked = false;
-    /**
-     * @var string
-     */
-    protected $disposition = ilFileDelivery::DISP_INLINE;
-    /**
-     * @var string
-     */
-    protected $override_mimetype = '';
-    /**
-     * @var bool
-     */
-    protected $send_status_code = false;
-    /**
-     * @var bool
-     */
-    protected $initialized = false;
-    /**
-     * @var bool
-     */
-    protected $revalidate_folder_tokens = true;
-    /**
-     * @var bool
-     */
-    protected static $use_seperate_logfile = false;
-    /**
-     * @var array
-     */
-    protected $applied_checking_methods = array();
-    private \ILIAS\HTTP\Services $http;
-    private \ILIAS\HTTP\Cookies\CookieFactory $cookieFactory;
 
+    protected ?ilWACPath $path_object = null;
+    protected bool $checked = false;
+    protected string $disposition = ilFileDelivery::DISP_INLINE;
+    protected string $override_mimetype = '';
+    protected bool $send_status_code = false;
+    protected bool $initialized = false;
+    protected bool $revalidate_folder_tokens = true;
+    protected static bool $use_seperate_logfile = false;
+    /**
+     * @var int[]
+     */
+    protected array $applied_checking_methods = [];
+    private Services $http;
+    private CookieFactory $cookieFactory;
 
     /**
      * ilWebAccessChecker constructor.
      *
-     * @param Services            $httpState
-     * @param CookieFactory              $cookieFactory
+     * @param Services      $httpState
+     * @param CookieFactory $cookieFactory
      */
     public function __construct(Services $httpState, CookieFactory $cookieFactory)
     {
@@ -87,12 +63,10 @@ class ilWebAccessChecker
         $this->cookieFactory = $cookieFactory;
     }
 
-
     /**
-     * @return bool
      * @throws ilWACException
      */
-    public function check()
+    public function check() : bool
     {
         if (!$this->getPathObject()) {
             throw new ilWACException(ilWACException::CODE_NO_PATH);
@@ -161,15 +135,13 @@ class ilWebAccessChecker
         }
     }
 
-
-    protected function sendHeader(string $message): void
+    protected function sendHeader(string $message) : void
     {
         $response = $this->http->response()->withHeader('X-ILIAS-WebAccessChecker', $message);
         $this->http->saveResponse($response);
     }
 
-
-    public function initILIAS(): void
+    public function initILIAS() : void
     {
         if ($this->isInitialized()) {
             return;
@@ -207,11 +179,10 @@ class ilWebAccessChecker
         $this->setInitialized(true);
     }
 
-
     /**
      * @throws ilWACException
      */
-    protected function checkPublicSection(): void
+    protected function checkPublicSection() : void
     {
         global $DIC;
         $on_login_page = !$this->isRequestNotFromLoginPage();
@@ -240,8 +211,7 @@ class ilWebAccessChecker
         }
     }
 
-
-    protected function checkUser(): void
+    protected function checkUser() : void
     {
         global $DIC;
 
@@ -253,139 +223,108 @@ class ilWebAccessChecker
         }
     }
 
-
-    public function isChecked(): bool
+    public function isChecked() : bool
     {
-        return (bool) $this->checked;
+        return $this->checked;
     }
 
-
-    public function setChecked(bool $checked): void
+    public function setChecked(bool $checked) : void
     {
-        assert(is_bool($checked));
         $this->checked = $checked;
     }
 
-
-    public function getPathObject(): \ilWACPath
+    public function getPathObject() : ?\ilWACPath
     {
         return $this->path_object;
     }
 
-
-    /**
-     * @param ilWACPath $path_object
-     */
-    public function setPathObject(ilWACPath $path_object): void
+    public function setPathObject(ilWACPath $path_object) : void
     {
         $this->path_object = $path_object;
     }
 
-
-    public function getDisposition(): string
+    public function getDisposition() : string
     {
-        return (string) $this->disposition;
+        return $this->disposition;
     }
 
-
-    public function setDisposition(string $disposition): void
+    public function setDisposition(string $disposition) : void
     {
-        assert(is_string($disposition));
         $this->disposition = $disposition;
     }
 
-
-    public function getOverrideMimetype(): string
+    public function getOverrideMimetype() : string
     {
-        return (string) $this->override_mimetype;
+        return $this->override_mimetype;
     }
 
-
-    public function setOverrideMimetype(string $override_mimetype): void
+    public function setOverrideMimetype(string $override_mimetype) : void
     {
-        assert(is_string($override_mimetype));
         $this->override_mimetype = $override_mimetype;
     }
 
-
-    public function isInitialized(): bool
+    public function isInitialized() : bool
     {
-        return (bool) $this->initialized;
+        return $this->initialized;
     }
 
-
-    public function setInitialized(bool $initialized): void
+    public function setInitialized(bool $initialized) : void
     {
-        assert(is_bool($initialized));
         $this->initialized = $initialized;
     }
 
-
-    public function isSendStatusCode(): bool
+    public function isSendStatusCode() : bool
     {
-        return (bool) $this->send_status_code;
+        return $this->send_status_code;
     }
 
-
-    public function setSendStatusCode(bool $send_status_code): void
+    public function setSendStatusCode(bool $send_status_code) : void
     {
-        assert(is_bool($send_status_code));
         $this->send_status_code = $send_status_code;
     }
 
-
-    public function isRevalidateFolderTokens(): bool
+    public function isRevalidateFolderTokens() : bool
     {
-        return (bool) $this->revalidate_folder_tokens;
+        return $this->revalidate_folder_tokens;
     }
 
-
-    public function setRevalidateFolderTokens(bool $revalidate_folder_tokens): void
+    public function setRevalidateFolderTokens(bool $revalidate_folder_tokens) : void
     {
-        assert(is_bool($revalidate_folder_tokens));
         $this->revalidate_folder_tokens = $revalidate_folder_tokens;
     }
 
-
-    public static function isUseSeperateLogfile(): bool
+    public static function isUseSeperateLogfile() : bool
     {
-        return (bool) self::$use_seperate_logfile;
+        return self::$use_seperate_logfile;
     }
 
-
-    public static function setUseSeperateLogfile(bool $use_seperate_logfile): void
+    public static function setUseSeperateLogfile(bool $use_seperate_logfile) : void
     {
-        assert(is_bool($use_seperate_logfile));
         self::$use_seperate_logfile = $use_seperate_logfile;
     }
-
 
     /**
      * @return int[]
      */
-    public function getAppliedCheckingMethods(): array
+    public function getAppliedCheckingMethods() : array
     {
-        return (array) $this->applied_checking_methods;
+        return $this->applied_checking_methods;
     }
-
 
     /**
      * @param int[] $applied_checking_methods
      */
-    public function setAppliedCheckingMethods(array $applied_checking_methods): void
+    public function setAppliedCheckingMethods(array $applied_checking_methods) : void
     {
         $this->applied_checking_methods = $applied_checking_methods;
     }
 
-
-    protected function addAppliedCheckingMethod(int $method): void
+    protected function addAppliedCheckingMethod(int $method) : void
     {
-        assert(is_int($method));
         $this->applied_checking_methods[] = $method;
     }
 
-
-    protected function initAnonymousSession(): void
+    protected function initAnonymousSession() : void
     {
         global $DIC;
         session_destroy();
@@ -403,12 +342,11 @@ class ilWebAccessChecker
         $DIC->user()->setId($a_id);
     }
 
-
-    protected function isRequestNotFromLoginPage(): bool
+    protected function isRequestNotFromLoginPage() : bool
     {
         $referrer = (string) ($_SERVER['HTTP_REFERER'] ?? '');
         $not_on_login_page = (strpos($referrer, 'login.php') === false
-                              && strpos($referrer, '&baseClass=ilStartUpGUI') === false);
+            && strpos($referrer, '&baseClass=ilStartUpGUI') === false);
 
         if ($not_on_login_page && $referrer !== '') {
             // In some scenarios (observed for content styles on login page, the HTTP_REFERER does not contain a PHP script
