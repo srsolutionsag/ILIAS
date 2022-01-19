@@ -1,7 +1,17 @@
 <?php
-require_once('./Services/AuthShibboleth/classes/Config/class.shibConfig.php');
-require_once('./Services/User/classes/class.ilObjUser.php');
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class shibUser
  *
@@ -133,8 +143,6 @@ class shibUser extends ilObjUser
         $c = shibConfig::getInstance();
         if ($c->isActivateNew()) {
             $this->setActive(false);
-            require_once('./Services/Registration/classes/class.ilRegistrationMailNotification.php');
-            require_once('./Services/Registration/classes/class.ilRegistrationSettings.php');
             $ilRegistrationSettings = new ilRegistrationSettings();
             $mail = new ilRegistrationMailNotification();
             $mail->setType(ilRegistrationMailNotification::TYPE_NOTIFICATION_CONFIRMATION);

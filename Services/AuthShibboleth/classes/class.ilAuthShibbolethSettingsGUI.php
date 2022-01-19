@@ -1,5 +1,17 @@
 <?php
-/* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilAuthShibbolethSettingsGUI
  *
@@ -29,7 +41,7 @@ class ilAuthShibbolethSettingsGUI
      */
     private $lng;
     /**
-     * @var HTML_Template_ITX|ilTemplate
+     * @var ilGlobalTemplateInterface
      */
     private $tpl;
     /**
@@ -38,7 +50,7 @@ class ilAuthShibbolethSettingsGUI
     private $ref_id;
 
     protected ilComponentRepository $component_repository;
-    
+
     private ilAccess $access;
 
 
@@ -148,8 +160,6 @@ class ilAuthShibbolethSettingsGUI
             'shib_language',
             'shib_matriculation',
         );
-        //set PropertyFormGUI
-        include_once("./Services/Form/classes/class.ilPropertyFormGUI.php");
         $propertys = new ilPropertyFormGUI();
         $propertys->setTitle($this->lng->txt("shib"));
         $propertys->setFormAction($this->ctrl->getFormAction($this, "save"));
@@ -191,9 +201,6 @@ class ilAuthShibbolethSettingsGUI
         $name->setMaxLength(50);
         $name->setRequired(true);
         $name->setValue(stripslashes($settings["shib_federation_name"]));
-        //set Organize selection group
-        include_once("./Services/Form/classes/class.ilRadioGroupInputGUI.php");
-        include_once("./Services/Form/classes/class.ilRadioOption.php");
         $organize = new ilRadioGroupInputGUI();
         $organize->setTitle($this->lng->txt("shib_login_type"));
         $organize->setPostVar("shib[hos_type]");
@@ -366,11 +373,9 @@ class ilAuthShibbolethSettingsGUI
 
     protected function parseRulesTable()
     {
-        include_once('./Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRules.php');
         if (ilShibbolethRoleAssignmentRules::getCountRules() == 0) {
             return '';
         }
-        include_once('./Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentTableGUI.php');
         $rules_table = new ilShibbolethRoleAssignmentTableGUI($this, 'roleAssignment');
         $rules_table->setTitle($this->lng->txt('shib_rules_tables'));
         $rules_table->parse(ilShibbolethRoleAssignmentRules::getAllRules());
@@ -404,8 +409,6 @@ class ilAuthShibbolethSettingsGUI
         $c_gui->setHeaderText($this->lng->txt("shib_confirm_del_role_ass"));
         $c_gui->setCancel($this->lng->txt("cancel"), "roleAssignment");
         $c_gui->setConfirm($this->lng->txt("confirm"), "deleteRules");
-        // add items to delete
-        include_once('Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRule.php');
         foreach ($_POST["rule_ids"] as $rule_id) {
             $rule = new ilShibbolethRoleAssignmentRule($rule_id);
             $info = ilObject::_lookupTitle($rule->getRoleId());
@@ -432,7 +435,6 @@ class ilAuthShibbolethSettingsGUI
 
             return false;
         }
-        include_once('Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRule.php');
         foreach ($_POST["rule_ids"] as $rule_id) {
             $rule = new ilShibbolethRoleAssignmentRule($rule_id);
             $rule->delete();
@@ -446,7 +448,6 @@ class ilAuthShibbolethSettingsGUI
 
     protected function initFormRoleAssignment($a_mode = 'default')
     {
-        include_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
         $this->form = new ilPropertyFormGUI();
         $this->form->setFormAction($this->ctrl->getFormAction($this, 'cancel'));
         $this->form->setTitle($this->lng->txt('shib_role_ass_table'));
@@ -469,11 +470,9 @@ class ilAuthShibbolethSettingsGUI
         $global->addSubItem($role_select);
         $local = new ilRadioOption($this->lng->txt('shib_local_role'), 1);
         $role->addOption($local);
-        include_once './Services/Form/classes/class.ilRoleAutoCompleteInputGUI.php';
         $role_search = new ilRoleAutoCompleteInputGUI('', 'role_search', $this, 'addRoleAutoCompleteObject');
         $role_search->setSize(40);
         $local->addSubItem($role_search);
-        include_once './Services/AccessControl/classes/class.ilRoleAutoComplete.php';
         $role->setInfo($this->lng->txt('shib_role_name_info'));
         $this->form->addItem($role);
         // Update options
@@ -522,7 +521,6 @@ class ilAuthShibbolethSettingsGUI
      */
     public function addRoleAutoCompleteObject()
     {
-        include_once("./Services/Form/classes/class.ilRoleAutoCompleteInputGUI.php");
         ilRoleAutoCompleteInputGUI::echoAutoCompleteList();
     }
 
@@ -615,19 +613,15 @@ class ilAuthShibbolethSettingsGUI
 
     private function loadRule($a_rule_id = 0)
     {
-        include_once('./Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRule.php');
         $this->rule = new ilShibbolethRoleAssignmentRule($a_rule_id);
         if ($this->form->getInput('role_name') == 0) {
             $this->rule->setRoleId($this->form->getInput('role_id'));
         } elseif ($this->form->getInput('role_search')) {
-            // Search role
-            include_once './Services/Search/classes/class.ilQueryParser.php';
             $parser = new ilQueryParser($this->form->getInput('role_search'));
             // TODO: Handle minWordLength
             $parser->setMinWordLength(1);
             $parser->setCombination(ilQueryParser::QP_COMBINATION_AND);
             $parser->parse();
-            include_once 'Services/Search/classes/Like/class.ilLikeObjectSearch.php';
             $object_search = new ilLikeObjectSearch($parser);
             $object_search->setFilter(array( 'role' ));
             $res = $object_search->performSearch();
@@ -654,7 +648,6 @@ class ilAuthShibbolethSettingsGUI
     {
         global $DIC;
         $rbacreview = $DIC['rbacreview'];
-        include_once './Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRule.php';
         $rule = new ilShibbolethRoleAssignmentRule((int) $_GET['rule_id']);
         $role = $rule->getRoleId();
         if ($rbacreview->isGlobalRole($role)) {
@@ -706,17 +699,14 @@ class ilAuthShibbolethSettingsGUI
     protected function chooseRole()
     {
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
-        include_once './Services/Search/classes/class.ilQueryParser.php';
         $parser = new ilQueryParser($_SESSION['shib_role_ass']['search']);
         $parser->setMinWordLength(1);
         $parser->setCombination(ilQueryParser::QP_COMBINATION_AND);
         $parser->parse();
-        include_once 'Services/Search/classes/Like/class.ilLikeObjectSearch.php';
         $object_search = new ilLikeObjectSearch($parser);
         $object_search->setFilter(array( 'role' ));
         $res = $object_search->performSearch();
         $entries = $res->getEntries();
-        include_once './Services/AccessControl/classes/class.ilRoleSelectionTableGUI.php';
         $table = new ilRoleSelectionTableGUI($this, 'chooseRole');
         $table->setTitle($this->lng->txt('shib_role_selection'));
         $table->addMultiCommand('saveRoleSelection', $this->lng->txt('shib_choose_role'));
@@ -767,7 +757,6 @@ class ilAuthShibbolethSettingsGUI
     {
         global $DIC;
         $ilSetting = $DIC['ilSetting'];
-        include_once './Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRules.php';
         if ($ilSetting->get('shib_active') == 0 and ilShibbolethRoleAssignmentRules::getCountRules() == 0) {
             return false;
         }

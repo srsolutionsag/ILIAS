@@ -1,19 +1,18 @@
 <?php
 
-/* Copyright (c) 1998-2010 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-include_once './Services/Authentication/classes/Provider/class.ilAuthProvider.php';
-include_once './Services/Authentication/interfaces/interface.ilAuthProviderInterface.php';
-include_once './Services/Authentication/interfaces/interface.ilAuthProviderAccountMigrationInterface.php';
-
-
-require_once('./Services/AuthShibboleth/classes/class.ilShibbolethRoleAssignmentRules.php');
-require_once('include/Unicode/UtfNormal.php');
-require_once('./Services/AuthShibboleth/classes/class.ilShibbolethPluginWrapper.php');
-require_once('./Services/AuthShibboleth/classes/Config/class.shibConfig.php');
-require_once('./Services/AuthShibboleth/classes/ServerData/class.shibServerData.php');
-require_once('./Services/AuthShibboleth/classes/User/class.shibUser.php');
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Shibboleth authentication provider
  *
@@ -21,8 +20,8 @@ require_once('./Services/AuthShibboleth/classes/User/class.shibUser.php');
 class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderInterface
 {
     private $migration_account = '';
-    
-    
+
+
     /**
      * Constructor
      * @param \ilAuthCredentials $credentials
@@ -31,7 +30,7 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
     {
         parent::__construct($credentials);
     }
-    
+
     /**
      * Do apache auth
      * @param \ilAuthStatus $status
@@ -42,9 +41,9 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
         $ilias = $DIC['ilias'];
         $ilSetting = $DIC['ilSetting'];
         $shibServerData = shibServerData::getInstance();
-        
+
         //$this->getLogger()->dump($shibServerData);
-        
+
         if ($shibServerData->getLogin()) {
             $shibUser = shibUser::buildInstance($shibServerData);
             // for backword compatibility of hook environment variables
@@ -60,6 +59,7 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
                 if ($ilias->getSetting('shib_data_conv') and $ilias->getSetting('shib_data_conv') != ''
                     and is_readable($ilias->getSetting('shib_data_conv'))
                 ) {
+                    /** @noRector */
                     include($ilias->getSetting('shib_data_conv'));
                 }
                 $shibUser = ilShibbolethPluginWrapper::getInstance()->beforeCreateUser($shibUser);
@@ -76,6 +76,7 @@ class ilAuthProviderShibboleth extends ilAuthProvider implements ilAuthProviderI
                 if ($ilias->getSetting('shib_data_conv') and $ilias->getSetting('shib_data_conv') != ''
                     and is_readable($ilias->getSetting('shib_data_conv'))
                 ) {
+                    /** @noRector */
                     include($ilias->getSetting('shib_data_conv'));
                 }
                 //				$shibUser->update();
