@@ -12,8 +12,10 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * File System Explorer GUI class
+ *
  * @deprecated
  */
 class ilFileSystemGUI
@@ -338,7 +340,8 @@ class ilFileSystemGUI
             $hashes = [$this->wrapper->query()->retrieve(
                 self::PARAMETER_FHSH,
                 $this->refinery->to()->string()
-            )];
+            )
+            ];
         }
 
         if (count($hashes) > 0) {
@@ -641,7 +644,7 @@ class ilFileSystemGUI
             $this->ctrl->redirect($this, "listFiles");
         }
 
-        $uploaded_file  = $this->wrapper->post()->has(self::POST_PARAM_UPLOADED_FILE)
+        $uploaded_file = $this->wrapper->post()->has(self::POST_PARAM_UPLOADED_FILE)
             ? $this->wrapper->post()->retrieve(self::POST_PARAM_UPLOADED_FILE, $this->refinery->to()->string())
             : '';
         if (is_file($_FILES["new_file"]["tmp_name"])) {
@@ -710,9 +713,6 @@ class ilFileSystemGUI
 
     public function deleteFile() : void
     {
-        global $DIC;
-        $lng = $DIC['lng'];
-
         if (!$this->wrapper->post()->has(self::POST_PARAM_FILE)) {
             throw new LogicException($this->lng->txt("no_checkbox"));
         }
@@ -720,7 +720,7 @@ class ilFileSystemGUI
         $post_file = null;
 
         $postfiles = $this->wrapper->post()->retrieve(
-            self::POST_PARAM_FILE, 
+            self::POST_PARAM_FILE,
             $this->refinery->to()->listOf(
                 $this->refinery->to()->string()
             )
@@ -750,13 +750,13 @@ class ilFileSystemGUI
 
         $this->ctrl->saveParameter($this, self::PARAMETER_CDIR);
         if ($is_dir) {
-            ilUtil::sendSuccess($lng->txt("cont_dir_deleted"), true);
+            ilUtil::sendSuccess($this->lng->txt("cont_dir_deleted"), true);
             $this->setPerformedCommand(
                 "delete_dir",
                 array("name" => ilUtil::stripSlashes($post_file))
             );
         } else {
-            ilUtil::sendSuccess($lng->txt("cont_file_deleted"), true);
+            ilUtil::sendSuccess($this->lng->txt("cont_file_deleted"), true);
             $this->setPerformedCommand(
                 "delete_file",
                 array("name" => ilUtil::stripSlashes($post_file))
@@ -767,9 +767,6 @@ class ilFileSystemGUI
 
     public function unzipFile(?string $a_file = null) : void
     {
-        global $DIC;
-        $lng = $DIC['lng'];
-
         // #17470 - direct unzip call (after upload)
         $upname = $this->wrapper->query()->has(self::PARAM_UPFILE)
             ? $this->wrapper->query()->retrieve(self::PARAM_UPFILE, $this->refinery->to()->string())
@@ -805,7 +802,7 @@ class ilFileSystemGUI
                 $pi = pathinfo($f);
                 if (!is_dir($f) && !$this->isValidSuffix(strtolower($pi["extension"]))) {
                     ilUtil::sendFailure(
-                        $lng->txt("file_some_invalid_file_types_removed") . " (" . $pi["extension"] . ")",
+                        $this->lng->txt("file_some_invalid_file_types_removed") . " (" . $pi["extension"] . ")",
                         true
                     );
                     unlink($f);
@@ -841,7 +838,7 @@ class ilFileSystemGUI
         ilUtil::renameExecutables($this->main_dir);
 
         $this->ctrl->saveParameter($this, self::PARAMETER_CDIR);
-        ilUtil::sendSuccess($lng->txt("cont_file_unzipped"), true);
+        ilUtil::sendSuccess($this->lng->txt("cont_file_unzipped"), true);
         $this->ctrl->redirect($this, "listFiles");
     }
 
@@ -903,12 +900,14 @@ class ilFileSystemGUI
 
     private function sanitizeCurrentDirectory() : string
     {
-        global $DIC;
+        $cur_subdir = $this->wrapper->query()->has(self::PARAMETER_CDIR)
+            ? $this->wrapper->query()->retrieve(self::PARAMETER_CDIR, $this->refinery->to()->string())
+            : '';
 
         return str_replace(
             "..",
             "",
-            ilUtil::stripSlashes($DIC->http()->request()->getQueryParams()[self::PARAMETER_CDIR])
+            ilUtil::stripSlashes($cur_subdir)
         );
     }
 }
