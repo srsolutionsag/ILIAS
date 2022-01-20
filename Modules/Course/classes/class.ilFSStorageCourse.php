@@ -21,7 +21,6 @@
     +-----------------------------------------------------------------------------+
 */
 
-include_once('Services/FileSystem/classes/class.ilFileSystemStorage.php');
 
 /**
 *

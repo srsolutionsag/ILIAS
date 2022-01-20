@@ -21,7 +21,6 @@
     +-----------------------------------------------------------------------------+
 */
 
-include_once('Services/FileSystem/classes/class.ilFileSystemStorage.php');
 /**
 *
 * @author Jörg Lützenkirchen <luetzenkirchen@leifos.com>
