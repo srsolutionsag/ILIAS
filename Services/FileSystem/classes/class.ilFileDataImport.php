@@ -1,16 +1,17 @@
 <?php
-/* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-
-/**
-* This class handles all operations on files for the exercise object
-*
-* @author	Stefan Meyer <meyer@leifos.com>
-* @version $Id$Id$
-*
-*/
-require_once("./Services/FileSystem/classes/class.ilFileData.php");
-                
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 class ilFileDataImport extends ilFileData
 {
     /**

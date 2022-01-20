@@ -1,12 +1,21 @@
 <?php
 
-/* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
-
 use ILIAS\Filesystem\DTO\Metadata;
 use ILIAS\DI\Container;
 
-include_once "Services/Cron/classes/class.ilCronJob.php";
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilFileSystemCleanTempDirCron
  * @author Lukas Zehnder <lz@studer-raimann.ch>
