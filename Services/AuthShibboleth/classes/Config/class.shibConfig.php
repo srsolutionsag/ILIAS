@@ -20,7 +20,6 @@
  */
 class shibConfig
 {
-
     protected string $firstname = '';
     protected bool $update_firstname = false;
     protected string $lastname = '';
@@ -462,7 +461,7 @@ class shibConfig
     /**
      * @return mixed
      */
-    public function getUpdateTitle(): bool
+    public function getUpdateTitle() : bool
     {
         return $this->update_title;
     }

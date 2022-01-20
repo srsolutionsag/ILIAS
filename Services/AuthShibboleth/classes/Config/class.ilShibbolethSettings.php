@@ -3,6 +3,19 @@
 use ILIAS\Administration\Setting;
 use function _PHPStan_e04cc8dfb\RingCentral\Psr7\str;
 
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
  * Class ilShibbolethSettings
  *
@@ -10,10 +23,8 @@ use function _PHPStan_e04cc8dfb\RingCentral\Psr7\str;
  */
 class ilShibbolethSettings
 {
-
     const PREFIX = 'shib_';
-    const DEFAULT_IDP_LIST = "urn:mace:organization1:providerID, Example Organization 1\n
-    urn:mace:organization2:providerID, Example Organization 2, /Shibboleth.sso/WAYF/SWITCHaai";
+    const DEFAULT_IDP_LIST = "urn:mace:organization1:providerID, Example Organization 1\nurn:mace:organization2:providerID, Example Organization 2, /Shibboleth.sso/WAYF/SWITCHaai";
     const DEFAULT_LOGIN_BUTTON = "templates/default/images/shib_login_button.png";
     const DEFAULT_ORGANISATION_SELECTION = "external_wayf";
     protected ilSetting $settings;
@@ -46,6 +57,9 @@ class ilShibbolethSettings
         $this->read();
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getUserFields() : array
     {
         return $this->user_fields;
@@ -53,16 +67,14 @@ class ilShibbolethSettings
 
     public function read() : void
     {
-        $filtered_data = array_filter($this->settings->getAll(), function ($value, string $key) : bool {
-            return strpos($key, self::PREFIX) === 0;
-        }, ARRAY_FILTER_USE_BOTH);
+        $filtered_data = array_filter($this->settings->getAll(), fn ($value, string $key) : bool => strpos($key, self::PREFIX) === 0, ARRAY_FILTER_USE_BOTH);
 
         array_walk($filtered_data, function ($v, string $k) : void {
             $this->data[str_replace(self::PREFIX, '', $k)] = $v === '' ? null : $v;
         });
     }
 
-    public function get(string $a_keyword, ?string $a_default_value = null) : ?string
+    public function get(string $a_keyword, ?string $a_default_value = null) : string
     {
         $a_keyword = str_replace(self::PREFIX, '', $a_keyword);
 
@@ -74,6 +86,9 @@ class ilShibbolethSettings
         // TODO: Implement delete() method.
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAll() : array
     {
         return $this->data;
@@ -81,7 +96,7 @@ class ilShibbolethSettings
 
     public function set(string $a_key, string $a_val) : void
     {
-        $a_keyword = str_replace(self::PREFIX, '', $a_key);
+        $a_key = str_replace(self::PREFIX, '', $a_key);
         $this->data[$a_key] = $a_val;
     }
 

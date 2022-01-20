@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * Class ilAuthShibbolethSettingsGUI
  *
@@ -34,7 +33,6 @@ class ilAuthShibbolethSettingsGUI
     private int $ref_id;
     protected ilComponentRepository $component_repository;
     private \ILIAS\DI\RBACServices $rbac;
-    private ilSetting $settings;
     private ilAccessHandler $access;
     private \ILIAS\HTTP\Wrapper\WrapperFactory $wrapper;
     private \ILIAS\Refinery\Factory $refinery;
@@ -54,7 +52,6 @@ class ilAuthShibbolethSettingsGUI
         $this->refinery = $DIC->refinery();
         $this->rbac = $DIC->rbac();
         $this->access = $DIC->access();
-        $this->settings = $DIC->settings();
         $this->tabs_gui = $DIC->tabs();
         $this->lng = $DIC->language();
         $this->lng->loadLanguageModule('shib');
@@ -70,7 +67,6 @@ class ilAuthShibbolethSettingsGUI
      */
     public function executeCommand() : void
     {
-        $next_class = $this->ctrl->getNextClass($this);
         $cmd = $this->ctrl->getCmd();
         if (!$this->access->checkAccess('read', '', $this->ref_id)) {
             throw new ilException('Permission denied');
@@ -101,7 +97,7 @@ class ilAuthShibbolethSettingsGUI
     {
         $form = new ilShibbolethSettingsForm($this->shib_settings, 'save');
         $form->setValuesByPost();
-        if($form->saveObject()) {
+        if ($form->saveObject()) {
             ilUtil::sendSuccess($this->lng->txt("shib_settings_saved"), true);
             $this->ctrl->redirect($this, 'settings');
         }
@@ -112,8 +108,12 @@ class ilAuthShibbolethSettingsGUI
     {
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
         $this->initFormRoleAssignment('default');
-        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
-            'Services/AuthShibboleth');
+        $this->tpl->addBlockFile(
+            'ADM_CONTENT',
+            'adm_content',
+            'tpl.shib_role_assignment.html',
+            'Services/AuthShibboleth'
+        );
         $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
         if (strlen($html = $this->parseRulesTable()) !== 0) {
             $this->tpl->setVariable('RULE_TABLE', $html);
@@ -286,8 +286,12 @@ class ilAuthShibbolethSettingsGUI
             }
             $this->tabs_gui->setSubTabActive('shib_role_assignment');
             $this->form->setValuesByPost();
-            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
-                'Services/AuthShibboleth');
+            $this->tpl->addBlockFile(
+                'ADM_CONTENT',
+                'adm_content',
+                'tpl.shib_role_assignment.html',
+                'Services/AuthShibboleth'
+            );
             $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
             if (strlen($html = $this->parseRulesTable()) !== 0) {
                 $this->tpl->setVariable('RULE_TABLE', $html);
@@ -315,8 +319,12 @@ class ilAuthShibbolethSettingsGUI
         $this->tabs_gui->setSubTabActive('shib_role_assignment');
         $this->initFormRoleAssignment('update');
         $this->getRuleValues();
-        $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
-            'Services/AuthShibboleth');
+        $this->tpl->addBlockFile(
+            'ADM_CONTENT',
+            'adm_content',
+            'tpl.shib_role_assignment.html',
+            'Services/AuthShibboleth'
+        );
         $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
 
         return true;
@@ -340,8 +348,12 @@ class ilAuthShibbolethSettingsGUI
             }
             $this->tabs_gui->setSubTabActive('shib_role_assignment');
             $this->form->setValuesByPost();
-            $this->tpl->addBlockFile('ADM_CONTENT', 'adm_content', 'tpl.shib_role_assignment.html',
-                'Services/AuthShibboleth');
+            $this->tpl->addBlockFile(
+                'ADM_CONTENT',
+                'adm_content',
+                'tpl.shib_role_assignment.html',
+                'Services/AuthShibboleth'
+            );
             $this->tpl->setVariable('NEW_RULE_TABLE', $this->form->getHTML());
 
             return true;
@@ -414,7 +426,7 @@ class ilAuthShibbolethSettingsGUI
         $this->form->setValuesByArray($values);
     }
 
-    private function checkInput($a_rule_id = 0)
+    private function checkInput($a_rule_id = 0) : string
     {
         $this->loadRule($a_rule_id);
 
