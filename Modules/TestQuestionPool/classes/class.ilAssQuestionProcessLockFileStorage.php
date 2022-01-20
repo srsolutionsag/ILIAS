@@ -28,7 +28,7 @@ class ilAssQuestionProcessLockFileStorage extends ilFileSystemAbstractionStorage
      *
      * @return string path prefix e.g files
      */
-    protected function getPathPrefix()
+    protected function getPathPrefix(): string
     {
         return 'ilAssQuestionProcessLocks';
     }
@@ -42,17 +42,17 @@ class ilAssQuestionProcessLockFileStorage extends ilFileSystemAbstractionStorage
      *
      * @return string directory name
      */
-    protected function getPathPostfix()
+    protected function getPathPostfix(): string
     {
         return 'question';
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return parent::getPath() . '/' . $this->subPath;
     }
 
-    public function create()
+    public function create(): void
     {
         set_error_handler(function ($severity, $message, $file, $line) {
             throw new ErrorException($message, $severity, 0, $file, $line);

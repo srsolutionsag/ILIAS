@@ -68,7 +68,7 @@ class ilFSStorageSession extends ilFileSystemAbstractionStorage
      * @access protected
      *
      */
-    protected function getPathPostfix()
+    protected function getPathPostfix(): string
     {
         return 'sess';
     }
@@ -79,7 +79,7 @@ class ilFSStorageSession extends ilFileSystemAbstractionStorage
      * @access protected
      *
      */
-    protected function getPathPrefix()
+    protected function getPathPrefix(): string
     {
         return 'ilSession';
     }

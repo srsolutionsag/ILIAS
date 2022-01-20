@@ -56,12 +56,11 @@ class ilIndividualAssessmentFileStorage extends ilFileSystemAbstractionStorage i
     /**
      * creates the folder structure
      */
-    public function create() : bool
+    public function create() : void
     {
         if (!file_exists($this->getAbsolutePath())) {
             ilUtil::makeDirParents($this->getAbsolutePath());
         }
-        return true;
     }
 
     /**

@@ -27,7 +27,7 @@ class ilTestProcessLockFileStorage extends ilFileSystemAbstractionStorage
      *
      * @return string path prefix e.g files
      */
-    protected function getPathPrefix()
+    protected function getPathPrefix(): string
     {
         return 'ilTestProcessLocks';
     }
@@ -41,12 +41,12 @@ class ilTestProcessLockFileStorage extends ilFileSystemAbstractionStorage
      *
      * @return string directory name
      */
-    protected function getPathPostfix()
+    protected function getPathPostfix(): string
     {
         return 'active';
     }
 
-    public function create()
+    public function create(): void
     {
         set_error_handler(function ($severity, $message, $file, $line) {
             throw new ErrorException($message, $severity, 0, $file, $line);
@@ -62,7 +62,5 @@ class ilTestProcessLockFileStorage extends ilFileSystemAbstractionStorage
         if (!file_exists($this->getPath())) {
             throw new ErrorException(sprintf('Could not find directory: %s', $this->getPath()));
         }
-
-        return true;
     }
 }
