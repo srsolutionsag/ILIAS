@@ -29,10 +29,10 @@ include_once('Services/FileSystem/classes/class.ilFileSystemStorage.php');
 *
 *
 */
-class ilFSStorageSession extends ilFileSystemStorage
+class ilFSStorageSession extends ilFileSystemAbstractionStorage
 {
     private $log;
-    
+
     /**
      * Constructor
      *
@@ -44,11 +44,11 @@ class ilFSStorageSession extends ilFileSystemStorage
         global $DIC;
 
         $log = $DIC['log'];
-        
+
         $this->log = $log;
         parent::__construct(ilFileSystemStorage::STORAGE_DATA, true, $a_event_id);
     }
-    
+
     /**
      * Create directory
      *
@@ -60,8 +60,8 @@ class ilFSStorageSession extends ilFileSystemStorage
     {
         return ilUtil::makeDirParents($this->getAbsolutePath());
     }
-    
-    
+
+
     /**
      * Implementation of abstract method
      *
@@ -72,7 +72,7 @@ class ilFSStorageSession extends ilFileSystemStorage
     {
         return 'sess';
     }
-    
+
     /**
      * Implementation of abstract method
      *

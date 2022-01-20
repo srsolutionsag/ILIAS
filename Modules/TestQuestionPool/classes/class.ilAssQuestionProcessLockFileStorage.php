@@ -9,14 +9,14 @@ require_once 'Services/FileSystem/classes/class.ilFileSystemStorage.php';
  *
  * @package     Modules/Test
  */
-class ilAssQuestionProcessLockFileStorage extends ilFileSystemStorage
+class ilAssQuestionProcessLockFileStorage extends ilFileSystemAbstractionStorage
 {
     private $subPath;
-    
+
     public function __construct($questionId, $userId)
     {
         parent::__construct(ilFileSystemStorage::STORAGE_DATA, true, $questionId);
-        
+
         $this->initSubPath($userId);
     }
 
@@ -46,7 +46,7 @@ class ilAssQuestionProcessLockFileStorage extends ilFileSystemStorage
     {
         return 'question';
     }
-    
+
     public function getPath()
     {
         return parent::getPath() . '/' . $this->subPath;
@@ -71,11 +71,11 @@ class ilAssQuestionProcessLockFileStorage extends ilFileSystemStorage
 
         return true;
     }
-    
+
     private function initSubPath($userId)
     {
         $userId = (string) $userId;
-        
+
         $path = array();
 
         for ($i = 0, $max = strlen($userId); $i < $max; $i++) {

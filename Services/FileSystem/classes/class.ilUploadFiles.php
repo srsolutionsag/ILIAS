@@ -1,26 +1,17 @@
 <?php
-/*
-    +-----------------------------------------------------------------------------+
-    | ILIAS open source                                                           |
-    +-----------------------------------------------------------------------------+
-    | Copyright (c) 1998-2009 ILIAS open source, University of Cologne            |
-    |                                                                             |
-    | This program is free software; you can redistribute it and/or               |
-    | modify it under the terms of the GNU General Public License                 |
-    | as published by the Free Software Foundation; either version 2              |
-    | of the License, or (at your option) any later version.                      |
-    |                                                                             |
-    | This program is distributed in the hope that it will be useful,             |
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-    | GNU General Public License for more details.                                |
-    |                                                                             |
-    | You should have received a copy of the GNU General Public License           |
-    | along with this program; if not, write to the Free Software                 |
-    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-    +-----------------------------------------------------------------------------+
-*/
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
 *
 * @author Fred Neumann <fred.neumann@fim.uni-erlangen.de>
@@ -29,7 +20,6 @@
 *
 * @ingroup ServicesFileSystemStorage
 */
-
 class ilUploadFiles
 {
     /**
@@ -43,7 +33,7 @@ class ilUploadFiles
     * @return   string      full path of upload directory on the server or empty
     * @access   static
     */
-    public static function _getUploadDirectory()
+    public static function _getUploadDirectory(): string
     {
         global $DIC;
         $rbacsystem = $DIC['rbacsystem'];
@@ -71,7 +61,7 @@ class ilUploadFiles
     * @return  array       list of file names (without path)
     * @access 	static
     */
-    public static function _getUploadFiles()
+    public static function _getUploadFiles(): array
     {
         if (!$upload_dir = self::_getUploadDirectory()) {
             return array();
@@ -100,7 +90,7 @@ class ilUploadFiles
     * @return  	boolean     true/false
     * @access 	static
     */
-    public static function _checkUploadFile($a_file)
+    public static function _checkUploadFile($a_file): bool
     {
         $files = self::_getUploadFiles();
         

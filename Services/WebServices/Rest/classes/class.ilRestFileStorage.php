@@ -9,7 +9,7 @@ include_once './Services/FileSystem/classes/class.ilFileSystemStorage.php';
  * @author Stefan Meyer <smeyer.ilias@gmx.de>
  * $Id$
  */
-class ilRestFileStorage extends ilFileSystemStorage
+class ilRestFileStorage extends ilFileSystemAbstractionStorage
 {
     const AVAILABILITY_IN_DAYS = 1;
 
@@ -61,7 +61,7 @@ class ilRestFileStorage extends ilFileSystemStorage
     /**
      * Get path prefix
      */
-    protected function getPathPrefix()
+    protected function getPathPrefix():string
     {
         return 'ilRestFileStorage';
     }
@@ -69,7 +69,7 @@ class ilRestFileStorage extends ilFileSystemStorage
     /**
      * Get path prefix
      */
-    protected function getPathPostfix()
+    protected function getPathPostfix():string
     {
         return 'files';
     }
@@ -77,7 +77,7 @@ class ilRestFileStorage extends ilFileSystemStorage
     /**
      * init and create directory
      */
-    protected function init()
+    protected function init():bool
     {
         parent::init();
         $this->create();

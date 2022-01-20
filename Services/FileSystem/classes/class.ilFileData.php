@@ -12,28 +12,19 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
+/**
+ * @deprecated
+ */
 class ilFileData extends ilFile
 {
 
-    /**
-    * Constructor
-    * class bas constructor and read path of directory from ilias.ini
-    * setup an mail object
-    * @access	public
-    */
     public function __construct()
     {
-        parent::__construct();
         $this->path = CLIENT_DATA_DIR;
     }
 
-    /**
-    * check if path exists and is writable
-    * @param string path to check
-    * @access	public
-    * @return bool
-    */
-    public function checkPath($a_path)
+    public function checkPath(string $a_path) : bool
     {
         if (is_writable($a_path)) {
             return true;
@@ -42,12 +33,7 @@ class ilFileData extends ilFile
         }
     }
 
-    /**
-    * get Path
-    * @access	public
-    * @return string path
-    */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }

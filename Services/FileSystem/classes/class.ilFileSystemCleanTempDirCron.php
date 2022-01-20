@@ -16,24 +16,20 @@ use ILIAS\DI\Container;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * Class ilFileSystemCleanTempDirCron
+ *
  * @author Lukas Zehnder <lz@studer-raimann.ch>
  */
 class ilFileSystemCleanTempDirCron extends ilCronJob
 {
-    /**
-     * @var \ILIAS\Filesystem\Filesystem
-     */
-    protected $filesystem;
-    /**
-     * @var ilLanguage
-     */
-    protected $language;
-    /**
-     * @var ilLogger
-     */
-    protected $logger;
+
+    protected \ILIAS\Filesystem\Filesystem $filesystem;
+
+    protected ilLanguage $language;
+
+    protected ilLogger $logger;
 
     /**
      * @inheritDoc
@@ -55,7 +51,7 @@ class ilFileSystemCleanTempDirCron extends ilCronJob
         }
     }
 
-    private function initDependencies()
+    private function initDependencies() : void
     {
 
     }
@@ -118,12 +114,10 @@ class ilFileSystemCleanTempDirCron extends ilCronJob
 
         // the folders are sorted based on their path length to ensure that nested folders are deleted first
         // thereby preventing any issues due to deletion attempts on no longer existing folders.
-        $folders = $this->filesystem->finder()->in([""])->date($date)->directories()->sort(function (
+        $folders = $this->filesystem->finder()->in([""])->date($date)->directories()->sort(fn(
             Metadata $a,
             Metadata $b
-        ) {
-            return strlen($a->getPath()) - strlen($b->getPath());
-        })->reverseSorting();
+        ) : int => strlen($a->getPath()) - strlen($b->getPath()))->reverseSorting();
         $deleted_folders = [];
         foreach ($folders as $folder_match) {
             try {

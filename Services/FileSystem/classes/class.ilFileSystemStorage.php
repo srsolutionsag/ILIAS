@@ -1,52 +1,36 @@
 <?php
-/*
-    +-----------------------------------------------------------------------------+
-    | ILIAS open source                                                           |
-    +-----------------------------------------------------------------------------+
-    | Copyright (c) 1998-2006 ILIAS open source, University of Cologne            |
-    |                                                                             |
-    | This program is free software; you can redistribute it and/or               |
-    | modify it under the terms of the GNU General Public License                 |
-    | as published by the Free Software Foundation; either version 2              |
-    | of the License, or (at your option) any later version.                      |
-    |                                                                             |
-    | This program is distributed in the hope that it will be useful,             |
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-    | GNU General Public License for more details.                                |
-    |                                                                             |
-    | You should have received a copy of the GNU General Public License           |
-    | along with this program; if not, write to the Free Software                 |
-    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-    +-----------------------------------------------------------------------------+
-*/
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
-* @defgroup ServicesFileSystemStorage Services/FileSystem
-*
-* @author Stefan Meyer <meyer@leifos.com>
-* @version $Id$
-*
-*
-* @ingroup ServicesFileSystemStorage
+* @deprecated
 */
-
 abstract class ilFileSystemStorage
 {
-    const STORAGE_WEB = 1;
-    const STORAGE_DATA = 2;
-    const STORAGE_SECURED = 3;
-    
-    const FACTOR = 100;
-    const MAX_EXPONENT = 3;
-    const SECURED_DIRECTORY = "sec";
-    
-    private $container_id;
-    private $storage_type;
-    private $path_conversion = false;
+    public const STORAGE_WEB = 1;
+    public const STORAGE_DATA = 2;
+    public const STORAGE_SECURED = 3;
 
-    protected $path;
-    
+    protected const FACTOR = 100;
+    protected const MAX_EXPONENT = 3;
+    protected const SECURED_DIRECTORY = "sec";
+
+    private int $container_id;
+    private int $storage_type;
+    private bool $path_conversion = false;
+
+    protected string $path;
+
     /**
      * Constructor
      *
@@ -56,7 +40,7 @@ abstract class ilFileSystemStorage
      * @param int object id of container (e.g file_id or mob_id)
      *
      */
-    public function __construct($a_storage_type, $a_path_conversion, $a_container_id)
+    public function __construct(int $a_storage_type, bool $a_path_conversion, int $a_container_id)
     {
         $this->storage_type = $a_storage_type;
         $this->path_conversion = $a_path_conversion;
@@ -65,12 +49,12 @@ abstract class ilFileSystemStorage
         // Get path info
         $this->init();
     }
-    
+
     public function getContainerId()
     {
         return $this->container_id;
     }
-    
+
     /**
      * Create a path from an id: e.g 12345 will be converted to 12/34/<name>_5
      *
@@ -80,7 +64,7 @@ abstract class ilFileSystemStorage
      * @param int container id
      * @param string name
      */
-    public static function _createPathFromId($a_container_id, $a_name)
+    public static function _createPathFromId($a_container_id, $a_name): string
     {
         $path_string = "";
         $path = array();
@@ -100,7 +84,7 @@ abstract class ilFileSystemStorage
         }
         return $path_string . $a_name . '_' . $a_container_id;
     }
-    
+
     /**
      * Get path prefix. Prefix that will be prepended to the path
      * No trailing slash. E.g ilFiles for files
@@ -110,8 +94,8 @@ abstract class ilFileSystemStorage
      *
      * @return string path prefix e.g files
      */
-    abstract protected function getPathPrefix();
-    
+    abstract protected function getPathPrefix(): string;
+
     /**
      * Get directory name. E.g for files => file
      * Only relative path, no trailing slash
@@ -122,23 +106,23 @@ abstract class ilFileSystemStorage
      *
      * @return string directory name
      */
-    abstract protected function getPathPostfix();
-    
+    abstract protected function getPathPostfix(): string;
+
     /**
      * Create directory
      *
      * @access public
      *
      */
-    public function create()
+    public function create(): bool
     {
         if (!file_exists($this->path)) {
             ilUtil::makeDirParents($this->path);
         }
         return true;
     }
-    
-    
+
+
     /**
      * Get absolute path of storage directory
      *
@@ -149,23 +133,23 @@ abstract class ilFileSystemStorage
     {
         return $this->path;
     }
-    
+
     /**
      * Read path info
      *
      * @access private
      */
-    protected function init()
+    protected function init(): bool
     {
         switch ($this->storage_type) {
             case self::STORAGE_DATA:
                 $this->path = ilUtil::getDataDir();
                 break;
-                
+
             case self::STORAGE_WEB:
                 $this->path = ilUtil::getWebspaceDir();
                 break;
-            
+
             case self::STORAGE_SECURED:
                 $this->path = ilUtil::getWebspaceDir();
                 $this->path = ilUtil::removeTrailingPathSeparators($this->path);
@@ -174,10 +158,10 @@ abstract class ilFileSystemStorage
         }
         $this->path = ilUtil::removeTrailingPathSeparators($this->path);
         $this->path .= '/';
-        
+
         // Append path prefix
         $this->path .= ($this->getPathPrefix() . '/');
-        
+
         if ($this->path_conversion) {
             $this->path .= self::_createPathFromId($this->container_id, $this->getPathPostfix());
         } else {
@@ -185,7 +169,7 @@ abstract class ilFileSystemStorage
         }
         return true;
     }
-    
+
     /**
      * Write data to file
      *
@@ -193,7 +177,7 @@ abstract class ilFileSystemStorage
      * @param
      *
      */
-    public function writeToFile($a_data, $a_absolute_path)
+    public function writeToFile($a_data, $a_absolute_path): bool
     {
         if (!$fp = @fopen($a_absolute_path, 'w+')) {
             return false;
@@ -205,7 +189,7 @@ abstract class ilFileSystemStorage
         @fclose($fp);
         return true;
     }
-    
+
     /**
      * Delete file
      *
@@ -213,7 +197,7 @@ abstract class ilFileSystemStorage
      * @param string absolute name
      *
      */
-    public function deleteFile($a_abs_name)
+    public function deleteFile($a_abs_name): bool
     {
         if (@file_exists($a_abs_name)) {
             @unlink($a_abs_name);
@@ -221,7 +205,7 @@ abstract class ilFileSystemStorage
         }
         return false;
     }
-    
+
     /**
      * Delete directory
      *
@@ -229,7 +213,7 @@ abstract class ilFileSystemStorage
      * @param string absolute name
      *
      */
-    public function deleteDirectory($a_abs_name)
+    public function deleteDirectory($a_abs_name): bool
     {
         if (@file_exists($a_abs_name)) {
             ilUtil::delDir($a_abs_name);
@@ -237,8 +221,8 @@ abstract class ilFileSystemStorage
         }
         return false;
     }
-    
-    
+
+
     /**
      * Delete complete directory
      *
@@ -250,8 +234,8 @@ abstract class ilFileSystemStorage
     {
         return ilUtil::delDir($this->getAbsolutePath());
     }
-    
-    
+
+
     /**
      * Copy files
      *
@@ -260,7 +244,7 @@ abstract class ilFileSystemStorage
      * @param string absolute target
      *
      */
-    public function copyFile($a_from, $a_to)
+    public function copyFile($a_from, $a_to): bool
     {
         if (@file_exists($a_from)) {
             @copy($a_from, $a_to);
@@ -268,28 +252,28 @@ abstract class ilFileSystemStorage
         }
         return false;
     }
-    
+
     /**
      * Copy directory and all contents
      *
      * @param string $a_source absolute source path
      * @param string $a_target absolute target path
      */
-    public static function _copyDirectory($a_source, $a_target)
+    public static function _copyDirectory(string $a_source, string $a_target): bool
     {
         return ilUtil::rCopy($a_source, $a_target);
     }
-    
+
     public function appendToPath($a_appendix)
     {
         $this->path .= $a_appendix;
     }
-    
+
     public function getStorageType()
     {
         return $this->storage_type;
     }
-    
+
     /**
      * Get path
      */

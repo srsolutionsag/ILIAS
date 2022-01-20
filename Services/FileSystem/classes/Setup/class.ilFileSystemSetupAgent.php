@@ -43,11 +43,9 @@ class ilFileSystemSetupAgent implements Setup\Agent
      */
     public function getArrayToConfigTransformation() : Refinery\Transformation
     {
-        return $this->refinery->custom()->transformation(function ($data) {
-            return new \ilFileSystemSetupConfig(
-                $data["data_dir"]
-            );
-        });
+        return $this->refinery->custom()->transformation(fn($data): \ilFileSystemSetupConfig => new \ilFileSystemSetupConfig(
+            $data["data_dir"]
+        ));
     }
 
     /**

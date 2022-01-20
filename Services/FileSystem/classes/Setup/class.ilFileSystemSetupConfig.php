@@ -26,7 +26,7 @@ class ilFileSystemSetupConfig implements Setup\Config
         $this->data_dir = $this->normalizePath($data_dir);
     }
 
-    protected function normalizePath(string $p) : string
+    protected function normalizePath(string $p) : ?string
     {
         $p = preg_replace("/\\\\/", "/", $p);
         return preg_replace("%/+$%", "", $p);

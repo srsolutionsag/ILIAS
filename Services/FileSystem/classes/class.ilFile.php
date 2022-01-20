@@ -12,51 +12,21 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
-* Base class for all file (directory) operations
-* This class is abstract and needs to be extended
-*
-* @author	Stefan Meyer <meyer@leifos.com>
-* @version $Id$
-*
-*/
-class ilFile
+ * Base class for all file (directory) operations
+ * This class is abstract and needs to be extended
+ *
+ * @deprecated
+ */
+abstract class ilFile
 {
-    /**
-    * Path of directory
-    * @var string path
-    * @access private
-    */
-    public $path;
+    protected string $path;
 
     /**
-    * ilias object
-    * @var object Ilias
-    * @access public
-    */
-    public $ilias;
-
-
-    /**
-    * Constructor
-    * get ilias object
-    * @access	public
-    */
-    public function __construct()
-    {
-        global $DIC;
-        $ilias = $DIC['ilias'];
-
-        $this->ilias = &$ilias;
-    }
-
-    /**
-    * delete trailing slash of path variables
-    * @param	string	path
-    * @access	public
-    * @return	string	path
-    */
-    public function deleteTrailingSlash($a_path)
+     * delete trailing slash of path variables
+     */
+    public function deleteTrailingSlash(string $a_path) : string
     {
         // DELETE TRAILING '/'
         if (substr($a_path, -1) == '/' or substr($a_path, -1) == "\\") {

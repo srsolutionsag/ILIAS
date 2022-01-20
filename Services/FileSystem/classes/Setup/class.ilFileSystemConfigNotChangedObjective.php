@@ -40,6 +40,9 @@ class ilFileSystemConfigNotChangedObjective implements Setup\Objective
         return false;
     }
 
+    /**
+     * @return \ilFileSystemDirectoriesCreatedObjective[]|\ilIniFilesLoadedObjective[]
+     */
     public function getPreconditions(Setup\Environment $environment) : array
     {
         return [

@@ -18,6 +18,9 @@ use ILIAS\Setup\Metrics\Storage;
  *****************************************************************************/
 class ilFileSystemMetricsCollectedObjective extends Setup\Metrics\CollectedObjective
 {
+    /**
+     * @return \ilIniFilesLoadedObjective[]
+     */
     protected function getTentativePreconditions(Setup\Environment $environment) : array
     {
         return [

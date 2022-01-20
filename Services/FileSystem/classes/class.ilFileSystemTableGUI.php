@@ -1,8 +1,17 @@
 <?php
-/* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
-
-include_once("./Services/Table/classes/class.ilTable2GUI.php");
-
+/******************************************************************************
+ *
+ * This file is part of ILIAS, a powerful learning management system.
+ *
+ * ILIAS is licensed with the GPL-3.0, you should have received a copy
+ * of said license along with the source code.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ *      https://www.ilias.de
+ *      https://github.com/ILIAS-eLearning
+ *
+ *****************************************************************************/
 /**
 * TableGUI class for file system
 *
@@ -14,7 +23,7 @@ include_once("./Services/Table/classes/class.ilTable2GUI.php");
 class ilFileSystemTableGUI extends ilTable2GUI
 {
     protected $has_multi; // [bool]
-    protected $row_commands = array();
+    protected array $row_commands = array();
     protected bool $label_enable = false;
     protected string $label_header = "";
     
@@ -22,8 +31,8 @@ class ilFileSystemTableGUI extends ilTable2GUI
     * Constructor
     */
     public function __construct(
-        $a_parent_obj,
-        $a_parent_cmd,
+        ?object $a_parent_obj,
+        string $a_parent_cmd,
         $a_cur_dir,
         $a_cur_subdir,
         $a_label_enable = false,
@@ -99,9 +108,10 @@ class ilFileSystemTableGUI extends ilTable2GUI
     
     
     /**
-    * Get entries
-    */
-    public function getEntries()
+     * Get entries
+     * @return array<int, array<string, mixed>>
+     */
+    public function getEntries(): array
     {
         if (is_dir($this->cur_dir)) {
             $entries = ilUtil::getDir($this->cur_dir);
@@ -134,7 +144,7 @@ class ilFileSystemTableGUI extends ilTable2GUI
         return $items;
     }
 
-    public function addColumns()
+    public function addColumns(): void
     {
         if ($this->has_multi) {
             $this->setSelectAllCheckbox("file[]");
@@ -151,15 +161,10 @@ class ilFileSystemTableGUI extends ilTable2GUI
 
         if (sizeof($this->row_commands)) {
             $this->addColumn($this->lng->txt("actions"));
-            include_once "Services/UIComponent/AdvancedSelectionList/classes/class.ilAdvancedSelectionListGUI.php";
         }
     }
 
-    /**
-     * @param array $entry
-     * @return bool
-     */
-    private function isDoubleDotDirectory(array $entry)
+    private function isDoubleDotDirectory(array $entry): bool
     {
         return $entry['entry'] === '..';
     }
@@ -226,8 +231,6 @@ class ilFileSystemTableGUI extends ilTable2GUI
             //$advsel->setListTitle($this->lng->txt("actions"));
             foreach ($this->row_commands as $rcom) {
                 if ($rcom["allow_dir"] || $a_set["type"] != "dir") {
-                    include_once("./Services/Utilities/classes/class.ilMimeTypeUtil.php");
-
                     if (($rcom["caption"] == "Unzip" && ilMimeTypeUtil::getMimeType($this->cur_dir . $a_set['entry']) == "application/zip") || $rcom["caption"] != "Unzip") {
                         $ilCtrl->setParameter($this->parent_obj, "fhsh", $hash);
                         $url = $ilCtrl->getLinkTarget($this->parent_obj, $rcom["cmd"]);

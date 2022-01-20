@@ -5,7 +5,7 @@
 /**
  * Storage of images in settings.
  */
-class ilLearningSequenceFilesystem extends ilFileSystemStorage
+class ilLearningSequenceFilesystem extends ilFileSystemAbstractionStorage
 {
     const IMG_ABSTRACT = 'abstract';
     const IMG_EXTRO = 'extro';

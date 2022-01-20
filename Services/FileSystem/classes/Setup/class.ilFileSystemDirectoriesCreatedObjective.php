@@ -40,6 +40,9 @@ class ilFileSystemDirectoriesCreatedObjective implements Setup\Objective
         return false;
     }
 
+    /**
+     * @return \ILIAS\Setup\Objective\DirectoryCreatedObjective[]|\ilIniFilesPopulatedObjective[]
+     */
     public function getPreconditions(Setup\Environment $environment) : array
     {
         $client_id = $environment->getResource(Setup\Environment::RESOURCE_CLIENT_ID);

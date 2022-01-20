@@ -7,7 +7,7 @@ use ILIAS\FileUpload\DTO\UploadResult;
 /**
  * Handles the file upload and folder creation for files uploaded in grading form
  */
-class ilIndividualAssessmentFileStorage extends ilFileSystemStorage implements IndividualAssessmentFileStorage
+class ilIndividualAssessmentFileStorage extends ilFileSystemAbstractionStorage implements IndividualAssessmentFileStorage
 {
     const PATH_POSTFIX = "iass";
     const PATH_PREFIX = "IASS";

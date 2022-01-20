@@ -58,6 +58,9 @@ class ilFileSystemComponentDataDirectoryCreatedObjective extends Setup\Objective
         return $new_dir;
     }
 
+    /**
+     * @return \ilFileSystemDirectoriesCreatedObjective[]|\ilIniFilesLoadedObjective[]
+     */
     public function getPreconditions(Setup\Environment $environment) : array
     {
         // case if it is a fresh ILIAS installation

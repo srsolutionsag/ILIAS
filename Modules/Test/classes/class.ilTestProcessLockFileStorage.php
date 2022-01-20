@@ -9,7 +9,7 @@ require_once 'Services/FileSystem/classes/class.ilFileSystemStorage.php';
  *
  * @package     Modules/Test
  */
-class ilTestProcessLockFileStorage extends ilFileSystemStorage
+class ilTestProcessLockFileStorage extends ilFileSystemAbstractionStorage
 {
     /**
      * @param integer $activeId
