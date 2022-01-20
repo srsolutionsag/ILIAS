@@ -11,10 +11,7 @@ class ilFileSystemSetupAgent implements Setup\Agent
 {
     use Setup\Agent\HasNoNamedObjective;
 
-    /**
-     * @var Refinery\Factory
-     */
-    protected $refinery;
+    protected Refinery\Factory $refinery;
 
     public function __construct(
         Refinery\Factory $refinery

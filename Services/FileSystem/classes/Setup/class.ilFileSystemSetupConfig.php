@@ -6,10 +6,8 @@ use ILIAS\Setup;
 
 class ilFileSystemSetupConfig implements Setup\Config
 {
-    /**
-     * @var string
-     */
-    protected $data_dir;
+
+    protected string $data_dir;
 
     public function __construct(
         string $data_dir

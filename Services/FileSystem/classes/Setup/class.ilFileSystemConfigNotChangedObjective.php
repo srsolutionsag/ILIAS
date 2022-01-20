@@ -7,10 +7,7 @@ use ILIAS\Setup;
 
 class ilFileSystemConfigNotChangedObjective implements Setup\Objective
 {
-    /**
-     * @var	\ilFileSystemSetupConfig
-     */
-    protected $config;
+    protected \ilFileSystemSetupConfig $config;
 
     public function __construct(
         \ilFileSystemSetupConfig $config

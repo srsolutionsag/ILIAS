@@ -6,18 +6,12 @@ use ILIAS\Setup;
 
 class ilFileSystemComponentDataDirectoryCreatedObjective extends Setup\Objective\DirectoryCreatedObjective implements Setup\Objective
 {
-    const DATADIR = 1;
-    const WEBDIR = 2;
+    public const DATADIR = 1;
+    public const WEBDIR = 2;
 
-    /**
-     * @var string
-     */
-    protected $component_dir;
+    protected string $component_dir;
 
-    /**
-     * @var int
-     */
-    protected $base_location;
+    protected int $base_location;
 
 
     public function __construct(
@@ -30,9 +24,7 @@ class ilFileSystemComponentDataDirectoryCreatedObjective extends Setup\Objective
         $this->base_location = $base_location;
     }
 
-    /**
-     * @inheritdocs
-     */
+
     public function getHash() : string
     {
         return hash("sha256", self::class . "::" . $this->component_dir . (string) $this->base_location);
