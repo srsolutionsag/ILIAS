@@ -15,7 +15,7 @@
  *****************************************************************************/
 /**
  * Class shibConfig
- *
+ * @deprecated
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
 class shibConfig
