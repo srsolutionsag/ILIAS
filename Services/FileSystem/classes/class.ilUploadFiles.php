@@ -29,8 +29,7 @@ class ilUploadFiles
         $lm_set = new ilSetting("lm");
         $upload_dir = $lm_set->get("cont_upload_dir");
 
-        $web_directory = $DIC->filesystem()->storage();
-        $import_file_factory = new ilImportDirectoryFactory($web_directory);
+        $import_file_factory = new ilImportDirectoryFactory();
         try {
             $scorm_import_directory = $import_file_factory->getInstanceForComponent(ilImportDirectoryFactory::TYPE_SAHS);
         } catch (InvalidArgumentException $e) {

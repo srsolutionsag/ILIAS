@@ -355,7 +355,7 @@ class ilFileSystemGUI
                 : $file;
 
             // check wether selected item is a directory
-            if (@is_dir($this->main_dir . "/" . $file) &&
+            if (is_dir($this->main_dir . "/" . $file) &&
                 !$this->commands[$a_nr]["allow_dir"]) {
                 ilUtil::sendFailure($this->lng->txt("select_a_file"), true);
                 $this->ctrl->redirect($this, "listFiles");
@@ -492,7 +492,7 @@ class ilFileSystemGUI
         $form->addCommandButton("cancelRename", $lng->txt("cancel"));
         $form->setFormAction($ilCtrl->getFormAction($this, "renameFile"));
 
-        if (@is_dir($file)) {
+        if (is_dir($file)) {
             $form->setTitle($this->lng->txt("cont_rename_dir"));
         } else {
             $form->setTitle($this->lng->txt("rename_file"));
@@ -536,7 +536,7 @@ class ilFileSystemGUI
         }
 
         ilUtil::renameExecutables($this->main_dir);
-        if (@is_dir($dir . $new_name)) {
+        if (is_dir($dir . $new_name)) {
             ilUtil::sendSuccess($lng->txt("cont_dir_renamed"), true);
             $this->setPerformedCommand("rename_dir", ["old_name" => $_GET["old_name"],
                                                       "new_name" => $new_name
@@ -674,7 +674,8 @@ class ilFileSystemGUI
         if (!isset($_POST["file"])) {
             throw new LogicException($this->lng->txt("no_checkbox"));
         }
-
+        $is_dir = false;
+        $post_file = null;
         foreach ($_POST["file"] as $post_file) {
             if (ilUtil::stripSlashes($post_file) == "..") {
                 throw new LogicException($this->lng->txt("no_checkbox"));
@@ -688,11 +689,11 @@ class ilFileSystemGUI
             $pi = pathinfo($post_file);
             $file = $cur_dir . "/" . ilUtil::stripSlashes($pi["basename"]);
 
-            if (@is_file($file)) {
+            if (is_file($file)) {
                 unlink($file);
             }
 
-            if (@is_dir($file)) {
+            if (is_dir($file)) {
                 $is_dir = true;
                 ilUtil::delDir($file);
             }
@@ -733,7 +734,7 @@ class ilFileSystemGUI
             : $this->main_dir;
         $a_file = $this->main_dir . "/" . $a_file;
 
-        if (@is_file($a_file)) {
+        if (is_file($a_file)) {
             $cur_files = array_keys(ilUtil::getDir($cur_dir));
             $cur_files_r = iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($cur_dir)));
 
@@ -781,8 +782,7 @@ class ilFileSystemGUI
 
                 $this->setPerformedCommand(
                     "unzip_file",
-                    array("name" => substr($file, strlen($this->main_dir) + 1),
-                          "added" => $diff
+                    array("added" => $diff
                     )
                 );
             }

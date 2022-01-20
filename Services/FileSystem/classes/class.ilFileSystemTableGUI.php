@@ -132,7 +132,7 @@ class ilFileSystemTableGUI extends ilTable2GUI
             $items[] = array("file" => $cfile,
                              "entry" => $e["entry"],
                              "type" => $e["type"],
-                             "label" => $label,
+                             "label" => $label ?? '',
                              "size" => $e["size"],
                              "name" => $pref . $e["entry"]
             );

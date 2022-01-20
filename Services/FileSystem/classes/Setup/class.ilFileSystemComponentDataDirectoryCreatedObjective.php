@@ -38,7 +38,7 @@ class ilFileSystemComponentDataDirectoryCreatedObjective extends Setup\Objective
 
     public function getHash() : string
     {
-        return hash("sha256", self::class . "::" . $this->component_dir . (string) $this->base_location);
+        return hash("sha256", self::class . "::" . $this->component_dir . $this->base_location);
     }
 
     protected function buildPath(Setup\Environment $environment) : string
@@ -49,8 +49,11 @@ class ilFileSystemComponentDataDirectoryCreatedObjective extends Setup\Objective
         if ($this->base_location === self::DATADIR) {
             $data_dir = $ini->readVariable('clients', 'datadir');
         }
-        if ($this->base_location === self::WEBDIR) {
+        elseif ($this->base_location === self::WEBDIR) {
             $data_dir = dirname(__DIR__, 4) . "/data";
+        }
+        if(!isset($data_dir)) {
+            throw new LogicException('cannot determine base directory');
         }
 
         $client_data_dir = $data_dir . '/' . $client_id;

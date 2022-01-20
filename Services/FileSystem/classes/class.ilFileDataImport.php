@@ -34,7 +34,7 @@ class ilFileDataImport extends ilFileData
 
     private function initExportDirectory() : void
     {
-        if (!@file_exists($this->import_path)) {
+        if (!file_exists($this->import_path)) {
             ilUtil::makeDir($this->import_path);
         }
     }
