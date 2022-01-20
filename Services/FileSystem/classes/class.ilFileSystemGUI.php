@@ -20,6 +20,15 @@ class ilFileSystemGUI
 {
     const PARAMETER_CDIR = "cdir";
     const SESSION_LAST_COMMAND = "fsys_lastcomm";
+    const PARAMETER_NEWDIR = "newdir";
+    const PARAMETER_FHSH = "fhsh";
+    const POST_PARAM_FILE = "file";
+    const PARAM_RESETOFFSET = "resetoffset";
+    const PARAM_OLD_NAME = "old_name";
+    const PARAM_UPFILE = "upfile";
+    const POST_PARAM_NEW_NAME = "new_name";
+    const POST_PARAM_NEW_DIR = "new_dir";
+    const POST_PARAM_UPLOADED_FILE = "uploaded_file";
 
     protected ilCtrl $ctrl;
     protected bool $use_upload_directory = false;
@@ -38,6 +47,8 @@ class ilFileSystemGUI
     protected string $label_header = '';
     protected bool $directory_creation = false;
     protected bool $file_creation = false;
+    protected \ILIAS\HTTP\Wrapper\WrapperFactory $wrapper;
+    protected \ILIAS\Refinery\Factory $refinery;
 
     public function __construct(string $a_main_directory)
     {
@@ -49,6 +60,8 @@ class ilFileSystemGUI
         $this->ctrl = $ilCtrl;
         $this->lng = $lng;
         $this->tpl = $tpl;
+        $this->wrapper = $DIC->http()->wrapper();
+        $this->refinery = $DIC->refinery();
         $this->main_dir = $a_main_directory;
 
         $this->defineCommands();
@@ -239,8 +252,17 @@ class ilFileSystemGUI
         // FIXME: I have to call stripSlashes here twice, because I could not
         //        determine where the second layer of slashes is added to the
         //        URL Parameter
-        $cur_subdir = ilUtil::stripSlashes(ilUtil::stripSlashes($_GET[self::PARAMETER_CDIR]));
-        $new_subdir = ilUtil::stripSlashes(ilUtil::stripSlashes($_GET["newdir"]));
+
+        $cur_subdir = $this->wrapper->query()->has(self::PARAMETER_CDIR)
+            ? $this->wrapper->query()->retrieve(self::PARAMETER_CDIR, $this->refinery->to()->string())
+            : '';
+
+        $new_subdir = $this->wrapper->query()->has(self::PARAMETER_NEWDIR)
+            ? $this->wrapper->query()->retrieve(self::PARAMETER_NEWDIR, $this->refinery->to()->string())
+            : '';
+
+        $cur_subdir = ilUtil::stripSlashes(ilUtil::stripSlashes($cur_subdir));
+        $new_subdir = ilUtil::stripSlashes(ilUtil::stripSlashes($new_subdir));
 
         if ($new_subdir === "..") {
             $cur_subdir = substr($cur_subdir, 0, strrpos($cur_subdir, "/"));
@@ -288,7 +310,7 @@ class ilFileSystemGUI
                 : $e["entry"];
 
             $items[] = array(
-                "file" => $cfile,
+                self::POST_PARAM_FILE => $cfile,
                 "entry" => $e["entry"],
                 "type" => $e["type"],
                 "size" => $e["size"],
@@ -304,21 +326,29 @@ class ilFileSystemGUI
      */
     protected function getIncomingFiles() : array
     {
-        $sel_files = $hashes = array();
-        if (isset($_POST["file"])) {
-            $hashes = $_POST["file"];
-        } elseif (isset($_GET["fhsh"])) {
-            $hashes = array($_GET["fhsh"]);
+        $sel_files = $hashes = [];
+        if ($this->wrapper->post()->has(self::POST_PARAM_FILE)) {
+            $hashes = $this->wrapper->post()->retrieve(
+                self::POST_PARAM_FILE,
+                $this->refinery->to()->listOf(
+                    $this->refinery->to()->string()
+                )
+            );
+        } elseif ($this->wrapper->query()->has(self::PARAMETER_FHSH)) {
+            $hashes = [$this->wrapper->query()->retrieve(
+                self::PARAMETER_FHSH,
+                $this->refinery->to()->string()
+            )];
         }
 
-        if (sizeof($hashes)) {
+        if (count($hashes) > 0) {
             $dir = $this->parseCurrentDirectory();
             $all_files = $this->getFileList($dir["dir"], $dir["subdir"]);
             foreach ($hashes as $hash) {
                 foreach ($all_files as $file) {
                     if ($file["hash"] == $hash) {
                         $sel_files[] = $this->getPostDirPath()
-                            ? $file["file"]
+                            ? $file[self::POST_PARAM_FILE]
                             : $file["entry"];
                         break;
                     }
@@ -412,7 +442,7 @@ class ilFileSystemGUI
         $ilToolbar->setFormAction($ilCtrl->getFormAction($this), true);
 
         if ($this->getAllowDirectories() && $this->getAllowDirectoryCreation()) {
-            $ti = new ilTextInputGUI($this->lng->txt("cont_new_dir"), "new_dir");
+            $ti = new ilTextInputGUI($this->lng->txt("cont_new_dir"), self::POST_PARAM_NEW_DIR);
             $ti->setMaxLength(80);
             $ti->setSize(10);
             $ilToolbar->addInputItem($ti, true);
@@ -434,7 +464,7 @@ class ilFileSystemGUI
                 $file = htmlspecialchars($file, ENT_QUOTES, "utf-8");
                 $options[$file] = $file;
             }
-            $si = new ilSelectInputGUI($this->lng->txt("cont_uploaded_file"), "uploaded_file");
+            $si = new ilSelectInputGUI($this->lng->txt("cont_uploaded_file"), self::POST_PARAM_UPLOADED_FILE);
             $si->setOptions($options);
             $ilToolbar->addInputItem($si, true);
             $ilToolbar->addFormButton($lng->txt("copy"), "uploadFile");
@@ -445,7 +475,12 @@ class ilFileSystemGUI
         if ($this->getTitle() != "") {
             $fs_table->setTitle($this->getTitle());
         }
-        if ($_GET["resetoffset"] == 1) {
+        if (
+            $this->wrapper->query()->has(self::PARAM_RESETOFFSET)
+            && $this->wrapper->query()->retrieve(
+                self::PARAM_RESETOFFSET,
+                $this->refinery->to()->int()
+            ) == 1) {
             $fs_table->resetOffset();
         }
         $this->tpl->setContent($fs_table->getHTML());
@@ -469,28 +504,24 @@ class ilFileSystemGUI
 
     public function renameFileForm(string $a_file) : void
     {
-        global $DIC;
-        $lng = $DIC['lng'];
-        $ilCtrl = $DIC['ilCtrl'];
-
         $cur_subdir = $this->sanitizeCurrentDirectory();
         $file = $this->main_dir . "/" . $a_file;
 
-        $this->ctrl->setParameter($this, "old_name", basename($a_file));
-        $this->ctrl->setParameter($this, self::PARAMETER_CDIR, ilUtil::stripSlashes($_GET[self::PARAMETER_CDIR]));
+        $this->ctrl->setParameter($this, self::PARAM_OLD_NAME, basename($a_file));
+        $this->ctrl->saveParameter($this, self::PARAMETER_CDIR);
         $form = new ilPropertyFormGUI();
 
         // file/dir name
-        $ti = new ilTextInputGUI($this->lng->txt("name"), "new_name");
+        $ti = new ilTextInputGUI($this->lng->txt("name"), self::POST_PARAM_NEW_NAME);
         $ti->setMaxLength(200);
         $ti->setSize(40);
         $ti->setValue(basename($a_file));
         $form->addItem($ti);
 
         // save and cancel commands
-        $form->addCommandButton("renameFile", $lng->txt("rename"));
-        $form->addCommandButton("cancelRename", $lng->txt("cancel"));
-        $form->setFormAction($ilCtrl->getFormAction($this, "renameFile"));
+        $form->addCommandButton("renameFile", $this->lng->txt("rename"));
+        $form->addCommandButton("cancelRename", $this->lng->txt("cancel"));
+        $form->setFormAction($this->ctrl->getFormAction($this, "renameFile"));
 
         if (is_dir($file)) {
             $form->setTitle($this->lng->txt("cont_rename_dir"));
@@ -503,10 +534,11 @@ class ilFileSystemGUI
 
     public function renameFile() : void
     {
-        global $DIC;
-        $lng = $DIC['lng'];
+        $new_name = $this->wrapper->post()->has(self::POST_PARAM_NEW_NAME)
+            ? $this->wrapper->post()->retrieve(self::POST_PARAM_NEW_NAME, $this->refinery->to()->string())
+            : '';
 
-        $new_name = str_replace("..", "", ilUtil::stripSlashes($_POST["new_name"]));
+        $new_name = str_replace("..", "", ilUtil::stripSlashes($new_name));
         $new_name = str_replace("/", "", $new_name);
         if ($new_name === "") {
             throw new LogicException($this->lng->txt("enter_new_name"));
@@ -524,11 +556,14 @@ class ilFileSystemGUI
             ? $this->main_dir . "/" . $cur_subdir . "/"
             : $this->main_dir . "/";
 
-        if (is_dir($dir . ilUtil::stripSlashes($_GET["old_name"]))) {
-            rename($dir . ilUtil::stripSlashes($_GET["old_name"]), $dir . $new_name);
+        $old_name = $this->wrapper->query()->has(self::PARAM_OLD_NAME)
+            ? $this->wrapper->query()->retrieve(self::PARAM_OLD_NAME, $this->refinery->to()->string())
+            : null;
+        if (is_dir($dir . ilUtil::stripSlashes($old_name))) {
+            rename($dir . ilUtil::stripSlashes($old_name), $dir . $new_name);
         } else {
             try {
-                ilFileUtils::rename($dir . ilUtil::stripSlashes($_GET["old_name"]), $dir . $new_name);
+                ilFileUtils::rename($dir . ilUtil::stripSlashes($old_name), $dir . $new_name);
             } catch (ilException $e) {
                 ilUtil::sendFailure($e->getMessage(), true);
                 $this->ctrl->redirect($this, "listFiles");
@@ -538,13 +573,13 @@ class ilFileSystemGUI
         ilUtil::renameExecutables($this->main_dir);
         if (is_dir($dir . $new_name)) {
             ilUtil::sendSuccess($lng->txt("cont_dir_renamed"), true);
-            $this->setPerformedCommand("rename_dir", ["old_name" => $_GET["old_name"],
-                                                      "new_name" => $new_name
+            $this->setPerformedCommand("rename_dir", [self::PARAM_OLD_NAME => $old_name,
+                                                      self::POST_PARAM_NEW_NAME => $new_name
             ]);
         } else {
             ilUtil::sendSuccess($lng->txt("cont_file_renamed"), true);
-            $this->setPerformedCommand("rename_file", array("old_name" => $_GET["old_name"],
-                                                            "new_name" => $new_name
+            $this->setPerformedCommand("rename_file", array(self::PARAM_OLD_NAME => $old_name,
+                                                            self::POST_PARAM_NEW_NAME => $new_name
             ));
         }
         $this->ctrl->redirect($this, "listFiles");
@@ -566,7 +601,11 @@ class ilFileSystemGUI
             ? $this->main_dir . "/" . $cur_subdir
             : $this->main_dir;
 
-        $new_dir = str_replace(".", "", ilUtil::stripSlashes($_POST["new_dir"]));
+        $new_dir = $this->wrapper->post()->has(self::POST_PARAM_NEW_DIR)
+            ? $this->wrapper->post()->retrieve(self::POST_PARAM_NEW_DIR, $this->refinery->to()->string())
+            : '';
+
+        $new_dir = str_replace(".", "", ilUtil::stripSlashes($new_dir));
         $new_dir = str_replace("/", "", $new_dir);
 
         if (!empty($new_dir)) {
@@ -602,18 +641,21 @@ class ilFileSystemGUI
             $this->ctrl->redirect($this, "listFiles");
         }
 
+        $uploaded_file  = $this->wrapper->post()->has(self::POST_PARAM_UPLOADED_FILE)
+            ? $this->wrapper->post()->retrieve(self::POST_PARAM_UPLOADED_FILE, $this->refinery->to()->string())
+            : '';
         if (is_file($_FILES["new_file"]["tmp_name"])) {
             $name = ilUtil::stripSlashes($_FILES["new_file"]["name"]);
             $tgt_file = $cur_dir . "/" . $name;
 
             ilUtil::moveUploadedFile($_FILES["new_file"]["tmp_name"], $name, $tgt_file);
-        } elseif ($_POST["uploaded_file"]) {
+        } elseif ($uploaded_file) {
             // check if the file is in the ftp directory and readable
-            if (ilUploadFiles::_checkUploadFile($_POST["uploaded_file"])) {
-                $tgt_file = $cur_dir . "/" . ilUtil::stripSlashes($_POST["uploaded_file"]);
+            if (ilUploadFiles::_checkUploadFile($uploaded_file)) {
+                $tgt_file = $cur_dir . "/" . ilUtil::stripSlashes($uploaded_file);
 
                 // copy uploaded file to data directory
-                ilUploadFiles::_copyUploadFile($_POST["uploaded_file"], $tgt_file);
+                ilUploadFiles::_copyUploadFile($uploaded_file, $tgt_file);
             }
         } elseif (trim($_FILES["new_file"]["name"]) == "") {
             ilUtil::sendFailure($lng->txt("cont_enter_a_file"), true);
@@ -622,9 +664,9 @@ class ilFileSystemGUI
         if ($tgt_file && is_file($tgt_file)) {
             $unzip = null;
             if (ilMimeTypeUtil::getMimeType($tgt_file) == "application/zip") {
-                $this->ctrl->setParameter($this, "upfile", basename($tgt_file));
+                $this->ctrl->setParameter($this, self::PARAM_UPFILE, basename($tgt_file));
                 $url = $this->ctrl->getLinkTarget($this, "unzipFile");
-                $this->ctrl->setParameter($this, "upfile", "");
+                $this->ctrl->setParameter($this, self::PARAM_UPFILE, "");
                 $unzip = ilLinkButton::getInstance();
                 $unzip->setCaption("unzip");
                 $unzip->setUrl($url);
@@ -671,12 +713,19 @@ class ilFileSystemGUI
         global $DIC;
         $lng = $DIC['lng'];
 
-        if (!isset($_POST["file"])) {
+        if (!$this->wrapper->post()->has(self::POST_PARAM_FILE)) {
             throw new LogicException($this->lng->txt("no_checkbox"));
         }
         $is_dir = false;
         $post_file = null;
-        foreach ($_POST["file"] as $post_file) {
+
+        $postfiles = $this->wrapper->post()->retrieve(
+            self::POST_PARAM_FILE, 
+            $this->refinery->to()->listOf(
+                $this->refinery->to()->string()
+            )
+        );
+        foreach ($postfiles as $post_file) {
             if (ilUtil::stripSlashes($post_file) == "..") {
                 throw new LogicException($this->lng->txt("no_checkbox"));
                 break;
@@ -722,10 +771,11 @@ class ilFileSystemGUI
         $lng = $DIC['lng'];
 
         // #17470 - direct unzip call (after upload)
-        if (is_null($a_file)
-            && isset($_GET["upfile"])
-        ) {
-            $a_file = basename($_GET["upfile"]);
+        $upname = $this->wrapper->query()->has(self::PARAM_UPFILE)
+            ? $this->wrapper->query()->retrieve(self::PARAM_UPFILE, $this->refinery->to()->string())
+            : null;
+        if (is_null($a_file) && $upname !== null) {
+            $a_file = basename($upname);
         }
 
         $cur_subdir = $this->sanitizeCurrentDirectory();
@@ -775,7 +825,7 @@ class ilFileSystemGUI
                     if (is_array($new_files["path"])) {
                         foreach ($new_files["path"] as $idx => $path) {
                             $path = substr($path, strlen($this->main_dir) + 1);
-                            $diff[] = $path . $new_files["file"][$idx];
+                            $diff[] = $path . $new_files[self::POST_PARAM_FILE][$idx];
                         }
                     }
                 }
