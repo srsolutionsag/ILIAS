@@ -181,7 +181,7 @@ class ilFileSystemGUI
             $ret = $this->$cmd();
         }
 
-        return $ret;
+        return $ret ?? '';
     }
 
     public function addCommand(
