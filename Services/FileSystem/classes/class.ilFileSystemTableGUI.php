@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * @deprecated $
  */
@@ -101,6 +100,9 @@ class ilFileSystemTableGUI extends ilTable2GUI
         $this->setData($this->getEntries());
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getEntries() : array
     {
         if (is_dir($this->cur_dir)) {

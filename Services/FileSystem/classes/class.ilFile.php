@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * Base class for all file (directory) operations
  * This class is abstract and needs to be extended

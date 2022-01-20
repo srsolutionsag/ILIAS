@@ -16,7 +16,6 @@ use ILIAS\DI\Container;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * Class ilFileSystemCleanTempDirCron
  *

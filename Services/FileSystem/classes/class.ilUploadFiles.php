@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * @deprecated Will be removed in the next release
  */
@@ -40,6 +39,9 @@ class ilUploadFiles
         return $scorm_import_directory->getAbsolutePath();
     }
 
+    /**
+     * @return mixed[]
+     */
     public static function _getUploadFiles() : array
     {
         if (!$upload_dir = self::_getUploadDirectory()) {

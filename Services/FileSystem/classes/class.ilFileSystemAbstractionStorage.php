@@ -17,7 +17,6 @@ use ILIAS\Filesystem\Filesystem;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * @deprecated
  */

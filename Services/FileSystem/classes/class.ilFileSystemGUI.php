@@ -12,7 +12,6 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
 /**
  * File System Explorer GUI class
  * @deprecated
@@ -61,21 +60,33 @@ class ilFileSystemGUI
         $this->setAllowFileCreation(true);
     }
 
+    /**
+     * @param mixed[] $a_suffixes
+     */
     public function setAllowedSuffixes(array $a_suffixes) : void
     {
         $this->allowed_suffixes = $a_suffixes;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAllowedSuffixes() : array
     {
         return $this->allowed_suffixes;
     }
 
+    /**
+     * @param mixed[] $a_suffixes
+     */
     public function setForbiddenSuffixes(array $a_suffixes) : void
     {
         $this->forbidden_suffixes = $a_suffixes;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getForbiddenSuffixes() : array
     {
         return $this->forbidden_suffixes;
@@ -161,6 +172,9 @@ class ilFileSystemGUI
         ));
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getLastPerformedCommand() : array
     {
         if (!ilSession::has(self::SESSION_LAST_COMMAND)) {
@@ -285,6 +299,9 @@ class ilFileSystemGUI
         return $items;
     }
 
+    /**
+     * @return mixed[]
+     */
     protected function getIncomingFiles() : array
     {
         $sel_files = $hashes = array();
@@ -791,6 +808,9 @@ class ilFileSystemGUI
         }
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getActionCommands() : array
     {
         return $this->commands;
