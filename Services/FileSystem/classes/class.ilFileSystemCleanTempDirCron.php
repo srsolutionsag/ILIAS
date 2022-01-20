@@ -24,7 +24,6 @@ use ILIAS\DI\Container;
  */
 class ilFileSystemCleanTempDirCron extends ilCronJob
 {
-
     protected \ILIAS\Filesystem\Filesystem $filesystem;
 
     protected ilLanguage $language;
@@ -53,7 +52,6 @@ class ilFileSystemCleanTempDirCron extends ilCronJob
 
     private function initDependencies() : void
     {
-
     }
 
     public function getId() : string
@@ -114,7 +112,7 @@ class ilFileSystemCleanTempDirCron extends ilCronJob
 
         // the folders are sorted based on their path length to ensure that nested folders are deleted first
         // thereby preventing any issues due to deletion attempts on no longer existing folders.
-        $folders = $this->filesystem->finder()->in([""])->date($date)->directories()->sort(fn(
+        $folders = $this->filesystem->finder()->in([""])->date($date)->directories()->sort(fn (
             Metadata $a,
             Metadata $b
         ) : int => strlen($a->getPath()) - strlen($b->getPath()))->reverseSorting();

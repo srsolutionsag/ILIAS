@@ -198,7 +198,6 @@ class ilFileSystemGUI
         $this->commands[$i]["name"] = $a_name;
         $this->commands[$i]["single"] = $a_single;
         $this->commands[$i]["allow_dir"] = $a_allow_dir;
-
     }
 
     public function clearCommands() : void
@@ -737,8 +736,10 @@ class ilFileSystemGUI
             foreach ($diff_r as $f => $d) {
                 $pi = pathinfo($f);
                 if (!is_dir($f) && !$this->isValidSuffix(strtolower($pi["extension"]))) {
-                    ilUtil::sendFailure($lng->txt("file_some_invalid_file_types_removed") . " (" . $pi["extension"] . ")",
-                        true);
+                    ilUtil::sendFailure(
+                        $lng->txt("file_some_invalid_file_types_removed") . " (" . $pi["extension"] . ")",
+                        true
+                    );
                     unlink($f);
                 }
             }
@@ -834,7 +835,10 @@ class ilFileSystemGUI
     {
         global $DIC;
 
-        return str_replace("..", "",
-            ilUtil::stripSlashes($DIC->http()->request()->getQueryParams()[self::PARAMETER_CDIR]));
+        return str_replace(
+            "..",
+            "",
+            ilUtil::stripSlashes($DIC->http()->request()->getQueryParams()[self::PARAMETER_CDIR])
+        );
     }
 }

@@ -12,32 +12,17 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
-*
-* @author Fred Neumann <fred.neumann@fim.uni-erlangen.de>
-* @version $Id$
-*
-*
-* @ingroup ServicesFileSystemStorage
-*/
+ * @deprecated Will be removed in the next release
+ */
 class ilUploadFiles
 {
-    /**
-    * Get the directory with uploaded files
-    *
-    * The directory is configured as cont_upload_dir in the settings table.
-    * The directory must exist and have read permissions.
-    * Currently the user must have admin permissions in ILIAS.
-    * Later there may be different directories for different users/roles.
-    *
-    * @return   string      full path of upload directory on the server or empty
-    * @access   static
-    */
-    public static function _getUploadDirectory(): string
+    public static function _getUploadDirectory() : string
     {
         global $DIC;
         $rbacsystem = $DIC['rbacsystem'];
-        
+
         if (!$rbacsystem->checkAccess('write', SYSTEM_FOLDER_ID)) {
             return '';
         }
@@ -54,14 +39,8 @@ class ilUploadFiles
         }
         return $scorm_import_directory->getAbsolutePath();
     }
-    
-    /**
-    * Get a list of readable files in the upload directory
-    *
-    * @return  array       list of file names (without path)
-    * @access 	static
-    */
-    public static function _getUploadFiles(): array
+
+    public static function _getUploadFiles() : array
     {
         if (!$upload_dir = self::_getUploadDirectory()) {
             return array();
@@ -78,34 +57,18 @@ class ilUploadFiles
         }
         closedir($handle);
         sort($files);
-        reset($files);
-        
+
         return $files;
     }
-    
-    /**
-    * Check if a file exists in the upload directory and is readable
-    *
-    * @param    string      file name
-    * @return  	boolean     true/false
-    * @access 	static
-    */
-    public static function _checkUploadFile($a_file): bool
+
+    public static function _checkUploadFile(string $a_file) : bool
     {
         $files = self::_getUploadFiles();
-        
+
         return in_array($a_file, $files);
     }
 
-    /**
-    * copy an uploaded file to the target directory (including virus check)
-    *
-    * @param    string      file name
-    * @param    string      target path and name
-    * @return  	boolean     true/false
-    * @access 	static
-    */
-    public static function _copyUploadFile($a_file, $a_target, $a_raise_errors = true)
+    public static function _copyUploadFile(string $a_file, string $a_target, bool $a_raise_errors = true) : bool
     {
         global $DIC;
         $lng = $DIC['lng'];

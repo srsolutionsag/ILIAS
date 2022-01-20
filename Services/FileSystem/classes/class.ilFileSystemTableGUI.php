@@ -12,41 +12,39 @@
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
-* TableGUI class for file system
-*
-* @author Alex Killing <alex.killing@gmx.de>
-* @version $Id$
-*
-* @ingroup ServicesFileSystemStorage
-*/
+ * @deprecated $
+ */
 class ilFileSystemTableGUI extends ilTable2GUI
 {
-    protected $has_multi; // [bool]
-    protected array $row_commands = array();
+    protected bool $has_multi = false;
+    protected array $row_commands = [];
     protected bool $label_enable = false;
     protected string $label_header = "";
-    
+    protected string $cur_dir = '';
+    protected string $cur_subdir = '';
+    protected ?bool $post_dir_path = null;
+    protected array $file_labels = [];
+
     /**
-    * Constructor
-    */
+     * Constructor
+     */
     public function __construct(
-        ?object $a_parent_obj,
+        object $a_parent_obj,
         string $a_parent_cmd,
-        $a_cur_dir,
-        $a_cur_subdir,
-        $a_label_enable = false,
-        $a_file_labels,
-        $a_label_header = "",
-        $a_commands = array(),
-        $a_post_dir_path = false,
-        $a_table_id = ""
+        string $a_cur_dir,
+        string $a_cur_subdir,
+        bool $a_label_enable,
+        ?array $a_file_labels = [],
+        ?string $a_label_header = "",
+        ?array $a_commands = [],
+        ?bool $a_post_dir_path = false,
+        ?string $a_table_id = ""
     ) {
         global $DIC;
-        $ilCtrl = $DIC['ilCtrl'];
-        $lng = $DIC['lng'];
-        $ilAccess = $DIC['ilAccess'];
-        $lng = $DIC['lng'];
+        $this->ctrl = $DIC['ilCtrl'];
+        $this->lng = $DIC['lng'];
 
         $this->setId($a_table_id);
         $this->cur_dir = $a_cur_dir;
@@ -55,22 +53,22 @@ class ilFileSystemTableGUI extends ilTable2GUI
         $this->label_header = $a_label_header;
         $this->file_labels = $a_file_labels;
         $this->post_dir_path = $a_post_dir_path;
-        $this->lng = $lng;
-        
+
         parent::__construct($a_parent_obj, $a_parent_cmd);
-        $this->setTitle($lng->txt("cont_files") . " " . $this->cur_subdir);
-        
+        $this->setTitle($this->lng->txt("cont_files") . " " . $this->cur_subdir);
+
         $this->has_multi = false;
-        for ($i = 0; $i < count($a_commands); $i++) {
-            if (!$a_commands[$i]["single"]) {
+
+        foreach ($a_commands as $i => $command) {
+            if (!$command["single"]) {
                 // does also handle internal commands
-                $this->addMultiCommand("extCommand_" . $i, $a_commands[$i]["name"]);
+                $this->addMultiCommand("extCommand_" . $i, $command["name"]);
                 $this->has_multi = true;
             } else {
                 $this->row_commands[] = array(
                     "cmd" => "extCommand_" . $i,
-                    "caption" => $a_commands[$i]["name"],
-                    "allow_dir" => $a_commands[$i]["allow_dir"]
+                    "caption" => $command["name"],
+                    "allow_dir" => $command["allow_dir"]
                 );
             }
         }
@@ -79,16 +77,16 @@ class ilFileSystemTableGUI extends ilTable2GUI
 
         $this->setDefaultOrderField("name");
         $this->setDefaultOrderDirection("asc");
-        
+
         $this->setEnableHeader(true);
-        $this->setFormAction($ilCtrl->getFormAction($a_parent_obj));
+        $this->setFormAction($this->ctrl->getFormAction($a_parent_obj));
         $this->setRowTemplate(
             "tpl.directory_row.html",
             "Services/FileSystem"
         );
         $this->setEnableTitle(true);
     }
-    
+
     public function numericOrdering(string $a_field) : bool
     {
         if ($a_field == "size") {
@@ -97,21 +95,13 @@ class ilFileSystemTableGUI extends ilTable2GUI
         return false;
     }
 
-    /**
-    * Get data just before output
-    */
-    public function prepareOutput() : void
+    protected function prepareOutput() : void
     {
         $this->determineOffsetAndOrder(true);
         $this->setData($this->getEntries());
     }
-    
-    
-    /**
-     * Get entries
-     * @return array<int, array<string, mixed>>
-     */
-    public function getEntries(): array
+
+    public function getEntries() : array
     {
         if (is_dir($this->cur_dir)) {
             $entries = ilUtil::getDir($this->cur_dir);
@@ -127,7 +117,7 @@ class ilFileSystemTableGUI extends ilTable2GUI
             $cfile = (!empty($this->cur_subdir))
                 ? $this->cur_subdir . "/" . $e["entry"]
                 : $e["entry"];
-                
+
             if ($this->label_enable) {
                 $label = (is_array($this->file_labels[$cfile]))
                     ? implode(", ", $this->file_labels[$cfile])
@@ -137,14 +127,18 @@ class ilFileSystemTableGUI extends ilTable2GUI
             $pref = ($e["type"] == "dir")
                 ? ($this->getOrderDirection() != "desc" ? "1_" : "9_")
                 : "5_";
-            $items[] = array("file" => $cfile, "entry" => $e["entry"],
-                "type" => $e["type"], "label" => $label, "size" => $e["size"],
-                "name" => $pref . $e["entry"]);
+            $items[] = array("file" => $cfile,
+                             "entry" => $e["entry"],
+                             "type" => $e["type"],
+                             "label" => $label,
+                             "size" => $e["size"],
+                             "name" => $pref . $e["entry"]
+            );
         }
         return $items;
     }
 
-    public function addColumns(): void
+    public function addColumns() : void
     {
         if ($this->has_multi) {
             $this->setSelectAllCheckbox("file[]");
@@ -164,19 +158,16 @@ class ilFileSystemTableGUI extends ilTable2GUI
         }
     }
 
-    private function isDoubleDotDirectory(array $entry): bool
+    private function isDoubleDotDirectory(array $entry) : bool
     {
         return $entry['entry'] === '..';
     }
 
     /**
-    * Fill table row
-    */
+     * Fill table row
+     */
     protected function fillRow(array $a_set) : void
     {
-        global $DIC;
-        $ilCtrl = $DIC['ilCtrl'];
-        
         $hash = $this->post_dir_path
             ? md5($a_set["file"])
             : md5($a_set["entry"]);
@@ -195,31 +186,30 @@ class ilFileSystemTableGUI extends ilTable2GUI
             $this->tpl->setVariable("TXT_LABEL", $a_set["label"]);
             $this->tpl->parseCurrentBlock();
         }
-        
-        $ilCtrl->setParameter($this->parent_obj, "cdir", $this->cur_subdir);
 
-        //$this->tpl->setVariable("ICON", $obj["title"]);
+        $this->ctrl->setParameter($this->parent_obj, "cdir", $this->cur_subdir);
+
         if ($a_set["type"] == "dir") {
             $this->tpl->setCurrentBlock("FileLink");
-            $ilCtrl->setParameter($this->parent_obj, "newdir", $a_set["entry"]);
-            $ilCtrl->setParameter($this->parent_obj, "resetoffset", 1);
+            $this->ctrl->setParameter($this->parent_obj, "newdir", $a_set["entry"]);
+            $this->ctrl->setParameter($this->parent_obj, "resetoffset", 1);
             $this->tpl->setVariable(
                 "LINK_FILENAME",
-                $ilCtrl->getLinkTarget($this->parent_obj, "listFiles")
+                $this->ctrl->getLinkTarget($this->parent_obj, "listFiles")
             );
-            $ilCtrl->setParameter($this->parent_obj, "newdir", "");
+            $this->ctrl->setParameter($this->parent_obj, "newdir", "");
             $this->tpl->setVariable("TXT_FILENAME", $a_set["entry"]);
             $this->tpl->parseCurrentBlock();
 
             $this->tpl->setVariable("ICON", "<img src=\"" .
                 ilUtil::getImagePath("icon_cat.svg") . "\">");
-            $ilCtrl->setParameter($this->parent_obj, "resetoffset", "");
+            $this->ctrl->setParameter($this->parent_obj, "resetoffset", "");
         } else {
             $this->tpl->setCurrentBlock("File");
             $this->tpl->setVariable("TXT_FILENAME2", $a_set["entry"]);
             $this->tpl->parseCurrentBlock();
         }
-        
+
         if ($a_set["type"] != "dir") {
             $this->tpl->setVariable("TXT_SIZE", ilUtil::formatSize($a_set["size"]));
         }
@@ -228,13 +218,13 @@ class ilFileSystemTableGUI extends ilTable2GUI
         if (sizeof($this->row_commands) &&
             !($a_set["type"] == "dir" && $a_set["entry"] == "..")) {
             $advsel = new ilAdvancedSelectionListGUI();
-            //$advsel->setListTitle($this->lng->txt("actions"));
+            $advsel->setListTitle('');
             foreach ($this->row_commands as $rcom) {
                 if ($rcom["allow_dir"] || $a_set["type"] != "dir") {
                     if (($rcom["caption"] == "Unzip" && ilMimeTypeUtil::getMimeType($this->cur_dir . $a_set['entry']) == "application/zip") || $rcom["caption"] != "Unzip") {
-                        $ilCtrl->setParameter($this->parent_obj, "fhsh", $hash);
-                        $url = $ilCtrl->getLinkTarget($this->parent_obj, $rcom["cmd"]);
-                        $ilCtrl->setParameter($this->parent_obj, "fhsh", "");
+                        $this->ctrl->setParameter($this->parent_obj, "fhsh", $hash);
+                        $url = $this->ctrl->getLinkTarget($this->parent_obj, $rcom["cmd"]);
+                        $this->ctrl->setParameter($this->parent_obj, "fhsh", "");
 
                         $advsel->addItem($rcom["caption"], "", $url);
                     }

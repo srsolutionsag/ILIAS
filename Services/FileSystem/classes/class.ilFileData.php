@@ -18,7 +18,6 @@
  */
 class ilFileData extends ilFile
 {
-
     public function __construct()
     {
         $this->path = CLIENT_DATA_DIR;

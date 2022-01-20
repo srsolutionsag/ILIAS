@@ -18,7 +18,6 @@
  */
 class ilFileDataImport extends ilFileData
 {
-
     protected string $import_path;
 
     public function __construct()

@@ -17,7 +17,6 @@ use ILIAS\Setup;
  *****************************************************************************/
 class ilFileSystemSetupConfig implements Setup\Config
 {
-
     protected string $data_dir;
 
     public function __construct(
