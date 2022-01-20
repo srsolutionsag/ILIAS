@@ -118,7 +118,7 @@ class ilFSStorageExercise extends ilFileSystemAbstractionStorage
     /**
      * Create directory
      */
-    public function create() : bool
+    public function create() : void
     {
         parent::create();
         if (!file_exists($this->submission_path)) {
@@ -130,7 +130,6 @@ class ilFSStorageExercise extends ilFileSystemAbstractionStorage
         if (!file_exists($this->feedb_path)) {
             ilUtil::makeDirParents($this->feedb_path);
         }
-        return true;
     }
 
     public function getFiles() : array
