@@ -68,8 +68,6 @@ class ilAssQuestionProcessLockFileStorage extends ilFileSystemAbstractionStorage
         if (!file_exists($this->getPath())) {
             throw new ErrorException(sprintf('Could not find directory: %s', $this->getPath()));
         }
-
-        return true;
     }
 
     private function initSubPath($userId)
