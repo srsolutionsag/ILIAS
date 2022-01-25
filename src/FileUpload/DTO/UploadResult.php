@@ -20,30 +20,12 @@ use ILIAS\FileUpload\ScalarTypeCheckAware;
 final class UploadResult
 {
     use ScalarTypeCheckAware;
-    /**
-     * @var string $name
-     */
-    private $name;
-    /**
-     * @var int $size
-     */
-    private $size;
-    /**
-     * @var string $mimeType
-     */
-    private $mimeType;
-    /**
-     * @var ImmutableStringMap $metaData
-     */
-    private $metaData;
-    /**
-     * @var ProcessingStatus $status
-     */
-    private $status;
-    /**
-     * @var string $path
-     */
-    private $path;
+    private string $name;
+    private int $size;
+    private string $mimeType;
+    private \ILIAS\FileUpload\Collection\ImmutableStringMap $metaData;
+    private \ILIAS\FileUpload\DTO\ProcessingStatus $status;
+    private string $path;
 
 
     /**

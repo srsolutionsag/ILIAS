@@ -28,14 +28,8 @@ final class ProcessingStatus
      * Upload got rejected by a processor
      */
     const REJECTED = 2;
-    /**
-     * @var int $code
-     */
-    private $code;
-    /**
-     * @var string $message
-     */
-    private $message;
+    private int $code;
+    private string $message;
 
 
     /**

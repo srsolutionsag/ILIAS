@@ -25,7 +25,7 @@ final class PreProcessorManagerImpl implements PreProcessorManager
     /**
      * @var PreProcessor[] $processors
      */
-    private $processors = [];
+    private array $processors = [];
 
     /**
      * @inheritDoc

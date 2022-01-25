@@ -22,7 +22,7 @@ final class WhitelistExtensionPreProcessor implements PreProcessor
     /**
      * @var string[]
      */
-    private $whitelist;
+    private array $whitelist;
 
 
     /**

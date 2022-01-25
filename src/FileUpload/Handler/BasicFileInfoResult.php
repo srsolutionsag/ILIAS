@@ -12,26 +12,11 @@ use ILIAS\UI\Component\Input\Field\UploadHandler;
 class BasicFileInfoResult implements FileInfoResult
 {
 
-    /**
-     * @var string
-     */
-    private $mime_type;
-    /**
-     * @var string
-     */
-    private $file_identifier;
-    /**
-     * @var int
-     */
-    private $size;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $file_identification_key;
+    private string $mime_type;
+    private string $file_identifier;
+    private int $size;
+    private string $name;
+    private string $file_identification_key;
 
 
     /**

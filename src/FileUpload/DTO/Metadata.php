@@ -21,22 +21,10 @@ use ILIAS\FileUpload\ScalarTypeCheckAware;
 final class Metadata
 {
     use ScalarTypeCheckAware;
-    /**
-     * @var string $filename
-     */
-    private $filename;
-    /**
-     * @var int $uploadSize
-     */
-    private $uploadSize;
-    /**
-     * @var string $mimeType
-     */
-    private $mimeType;
-    /**
-     * @var StringMap $additionalMetaData
-     */
-    private $additionalMetaData;
+    private string $filename;
+    private int $uploadSize;
+    private string $mimeType;
+    private \ILIAS\FileUpload\Collection\StringMap $additionalMetaData;
 
 
     /**

@@ -16,14 +16,11 @@ use ILIAS\FileUpload\DTO\ProcessingStatus;
 class BlacklistExtensionPreProcessor implements PreProcessor
 {
 
-    /**
-     * @var string
-     */
-    private $reason;
+    private string $reason;
     /**
      * @var string[]
      */
-    private $blacklist;
+    private array $blacklist;
 
     /**
      * BlacklistExtensionPreProcessor constructor.

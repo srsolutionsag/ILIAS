@@ -30,38 +30,23 @@ use ILIAS\HTTP\GlobalHttpState;
 final class FileUploadImpl implements FileUpload
 {
 
-    /**
-     * @var PreProcessorManager $processorManager
-     */
-    private $processorManager;
-    /**
-     * @var Filesystems $filesystems
-     */
-    private $filesystems;
-    /**
-     * @var Services
-     */
-    private $globalHttpState;
-    /**
-     * @var bool $processed
-     */
-    private $processed;
-    /**
-     * @var bool $moved
-     */
-    private $moved;
+    private \ILIAS\FileUpload\Processor\PreProcessorManager $processorManager;
+    private \ILIAS\Filesystem\Filesystems $filesystems;
+    private \ILIAS\HTTP\GlobalHttpState $globalHttpState;
+    private bool $processed;
+    private bool $moved;
     /**
      * @var UploadResult[] $uploadResult
      */
-    private $uploadResult;
+    private array $uploadResult;
     /**
      * @var UploadResult[] $uploadResult
      */
-    private $rejectedUploadResult;
+    private array $rejectedUploadResult;
     /**
      * @var FileStream[] $uploadStreams The uploaded streams have their temp urls (->getMetadata('uri') as an identifier.
      */
-    private $uploadStreams;
+    private ?array $uploadStreams;
 
 
 

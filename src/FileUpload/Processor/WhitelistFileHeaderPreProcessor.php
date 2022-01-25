@@ -21,14 +21,8 @@ final class WhitelistFileHeaderPreProcessor implements PreProcessor
 {
     use ScalarTypeCheckAware;
 
-    /**
-     * @var string $fileHeader
-     */
-    private $fileHeader;
-    /**
-     * @var int $fileHeaderLength
-     */
-    private $fileHeaderLength;
+    private string $fileHeader;
+    private int $fileHeaderLength;
 
 
     /**

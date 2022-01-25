@@ -17,10 +17,7 @@ namespace ILIAS\FileUpload\Collection;
 final class ImmutableMapWrapper implements ImmutableStringMap
 {
 
-    /**
-     * @var StringMap
-     */
-    private $map;
+    private \ILIAS\FileUpload\Collection\StringMap $map;
 
 
     /**

@@ -21,10 +21,7 @@ use ILIAS\FileUpload\ScalarTypeCheckAware;
 final class EntryLockingStringMap implements StringMap
 {
     use ScalarTypeCheckAware;
-    /**
-     * @var \ArrayObject $map
-     */
-    private $map;
+    private \ArrayObject $map;
 
 
     /**

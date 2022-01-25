@@ -12,22 +12,10 @@ use ILIAS\UI\Component\Input\Field\UploadHandler;
 class BasicHandlerResult implements HandlerResult
 {
 
-    /**
-     * @var string
-     */
-    private $file_identification_key;
-    /**
-     * @var int
-     */
-    private $status;
-    /**
-     * @var string
-     */
-    private $file_identifier;
-    /**
-     * @var string
-     */
-    private $message;
+    private string $file_identification_key;
+    private int $status;
+    private string $file_identifier;
+    private string $message;
 
 
     /**
