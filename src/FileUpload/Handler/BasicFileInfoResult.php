@@ -21,12 +21,6 @@ class BasicFileInfoResult implements FileInfoResult
 
     /**
      * BasicFileInfoResult constructor.
-     *
-     * @param string $file_identification_key
-     * @param string $file_identifier
-     * @param string $name
-     * @param int    $size
-     * @param string $mime_type
      */
     public function __construct(string $file_identification_key, string $file_identifier, string $name, int $size, string $mime_type)
     {

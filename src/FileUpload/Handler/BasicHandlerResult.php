@@ -20,10 +20,6 @@ class BasicHandlerResult implements HandlerResult
 
     /**
      * BasicHandlerResult constructor.
-     *
-     * @param int    $status
-     * @param string $file_identifier
-     * @param string $message
      */
     public function __construct(string $file_identification_key, int $status, string $file_identifier, string $message)
     {

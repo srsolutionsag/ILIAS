@@ -27,10 +27,8 @@ final class WhitelistFileHeaderPreProcessor implements PreProcessor
 
     /**
      * WhitelistFileHeaderPreProcessor constructor.
-     *
-     * @param string $fileHeader
      */
-    public function __construct($fileHeader)
+    public function __construct(string $fileHeader)
     {
         $this->stringTypeCheck($fileHeader, 'fileHeader');
 

@@ -41,7 +41,7 @@ final class UploadResult
      *
      * @since 5.3
      */
-    public function __construct($name, $size, $mimeType, ImmutableStringMap $metaData, ProcessingStatus $status, $path)
+    public function __construct(string $name, string $size, string $mimeType, ImmutableStringMap $metaData, ProcessingStatus $status, string $path)
     {
         $this->stringTypeCheck($name, "name");
         $this->stringTypeCheck($mimeType, "mimeType");
@@ -102,9 +102,6 @@ final class UploadResult
     }
 
 
-    /**
-     * @return bool
-     */
     public function isOK() : bool
     {
         return $this->status->getCode() === ProcessingStatus::OK;

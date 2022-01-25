@@ -38,7 +38,7 @@ final class Metadata
      *                                   types.
      * @since 5.3
      */
-    public function __construct($filename, $size, $mimeType)
+    public function __construct(string $filename, string $size, string $mimeType)
     {
         $this->stringTypeCheck($filename, "filename");
         $this->intTypeCheck($size, "size");

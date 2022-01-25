@@ -65,7 +65,6 @@ final class WhitelistExtensionPreProcessor implements PreProcessor
     private function isWhitelisted($filename): bool
     {
         $extensions = explode('.', $filename);
-        $extension = null;
 
         if (count($extensions) === 1) {
             $extension = '';

@@ -58,8 +58,6 @@ class BlacklistExtensionPreProcessor implements PreProcessor
 
     /**
      * Checks if the current filename has a listed extension. (*.png, *.mp4 etc ...)
-     * @param Metadata   $metadata
-     * @param FileStream $stream
      * @return bool True if the extension is listed, otherwise false.
      */
     private function isBlacklisted(Metadata $metadata, FileStream $stream): bool
@@ -102,7 +100,6 @@ class BlacklistExtensionPreProcessor implements PreProcessor
     private function getExtensionForFilename($filename): string
     {
         $extensions = explode('.', $filename);
-        $extension = null;
 
         if (count($extensions) <= 1) {
             $extension = '';
