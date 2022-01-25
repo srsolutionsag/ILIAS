@@ -1,7 +1,5 @@
 <?php
 
-namespace ILIAS\FileUpload\Processor;
-
 require_once('./libs/composer/vendor/autoload.php');
 
 use ILIAS\Filesystem\Stream\Streams;

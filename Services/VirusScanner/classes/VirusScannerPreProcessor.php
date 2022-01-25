@@ -1,11 +1,10 @@
 <?php
 
-namespace ILIAS\FileUpload\Processor;
-
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\FileUpload\DTO\Metadata;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use Psr\Http\Message\StreamInterface;
+use ILIAS\FileUpload\Processor\PreProcessor;
 
 /**
  * Class VirusScannerPreProcessor
