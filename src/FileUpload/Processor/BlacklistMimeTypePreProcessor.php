@@ -49,7 +49,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         if ($this->isBlacklisted($metadata->getMimeType())) {
             return new ProcessingStatus(ProcessingStatus::REJECTED, 'The mime type ' . $metadata->getMimeType() . ' is blacklisted.');
@@ -66,7 +66,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
      *
      * @return bool                 True if the mime type is blacklisted otherwise false.
      */
-    private function isBlacklisted($mimeType)
+    private function isBlacklisted(string $mimeType): bool
     {
         foreach ($this->blacklist as $entry) {
             $entryJunks = explode('/', $entry);
@@ -87,11 +87,9 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
      *
      * @param string[] $list    The list which should be validated.
      *
-     * @return void
-     *
      * @throws \InvalidArgumentException Thrown if the list contains invalid list items.
      */
-    private function validateListEntries($list)
+    private function validateListEntries(array $list): void
     {
         if (in_array('*/*', $list, true)) {
             throw new \InvalidArgumentException('The mime type */* matches all mime types which would black all files.');

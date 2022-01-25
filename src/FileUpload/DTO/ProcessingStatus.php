@@ -59,20 +59,18 @@ final class ProcessingStatus
 
 
     /**
-     * @return int
      * @since 5.3
      */
-    public function getCode()
+    public function getCode(): int
     {
         return $this->code;
     }
 
 
     /**
-     * @return string
      * @since 5.3
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }

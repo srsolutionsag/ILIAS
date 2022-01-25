@@ -47,7 +47,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         if ($this->isBlacklisted($metadata, $stream)) {
             return new ProcessingStatus(ProcessingStatus::REJECTED, $this->reason);
@@ -62,7 +62,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
      * @param FileStream $stream
      * @return bool True if the extension is listed, otherwise false.
      */
-    private function isBlacklisted(Metadata $metadata, FileStream $stream)
+    private function isBlacklisted(Metadata $metadata, FileStream $stream): bool
     {
         $filename = $metadata->getFilename();
         $extension = $this->getExtensionForFilename($filename);
@@ -99,7 +99,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
      * @param $filename
      * @return null|string
      */
-    private function getExtensionForFilename($filename)
+    private function getExtensionForFilename($filename): string
     {
         $extensions = explode('.', $filename);
         $extension = null;

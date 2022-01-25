@@ -55,7 +55,7 @@ class BasicHandlerResult implements HandlerResult
     /**
      * @inheritDoc
      */
-    final public function jsonSerialize()
+    final public function jsonSerialize(): array
     {
         $str = $this->file_identification_key ?? UploadHandler::DEFAULT_FILE_ID_PARAMETER;
 

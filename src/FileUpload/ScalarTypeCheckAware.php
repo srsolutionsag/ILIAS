@@ -28,7 +28,7 @@ trait ScalarTypeCheckAware
      * @throws \InvalidArgumentException Thrown if the variable is not of the type string.
      * @since 5.3
      */
-    private function stringTypeCheck($variable, $name)
+    private function stringTypeCheck(string $variable, string $name)
     {
         if (!is_string($variable)) {
             $varType = gettype($variable);
@@ -46,7 +46,7 @@ trait ScalarTypeCheckAware
      * @throws \InvalidArgumentException Thrown if the variable is not of the type int.
      * @since 5.3
      */
-    private function intTypeCheck($variable, $name)
+    private function intTypeCheck(string $variable, string $name)
     {
         if (!is_int($variable)) {
             $varType = gettype($variable);

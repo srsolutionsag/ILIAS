@@ -30,7 +30,7 @@ final class PreProcessorManagerImpl implements PreProcessorManager
     /**
      * @inheritDoc
      */
-    public function with(PreProcessor $processor)
+    public function with(PreProcessor $processor): void
     {
         $this->processors[] = $processor;
     }
@@ -39,7 +39,7 @@ final class PreProcessorManagerImpl implements PreProcessorManager
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         try {
             $result = null;

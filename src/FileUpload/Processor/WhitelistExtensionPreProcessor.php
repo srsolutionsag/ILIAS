@@ -52,7 +52,7 @@ final class WhitelistExtensionPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         if ($this->isWhitelisted($metadata->getFilename())) {
             return new ProcessingStatus(ProcessingStatus::OK, 'Extension complies with whitelist.');
@@ -62,7 +62,7 @@ final class WhitelistExtensionPreProcessor implements PreProcessor
     }
 
 
-    private function isWhitelisted($filename)
+    private function isWhitelisted($filename): bool
     {
         $extensions = explode('.', $filename);
         $extension = null;

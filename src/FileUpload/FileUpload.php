@@ -29,19 +29,17 @@ interface FileUpload
      * Please note that the Location interface defines all valid location.
      *
      * @param string $destination The destination of the uploaded files.
-     *
      * @param int    $location    The filesystem location which should be used.
      *
      * @return void
      *
-     * @throws IllegalStateException        Thrown if the files are not processed before invoking
-     *                                      the moveFilesTo method.
+     * @throws IllegalStateException        Thrown if the files are not processed before invoking the moveFilesTo method.
      * @throws \InvalidArgumentException    Thrown if the location is invalid.
      * @since 5.3
      *
      * @see   Location
      */
-    public function moveFilesTo($destination, $location = Location::STORAGE);
+    public function moveFilesTo(string $destination, int $location = Location::STORAGE);
 
 
     /**
@@ -56,7 +54,7 @@ interface FileUpload
      *
      * @return void
      */
-    public function moveOneFileTo(UploadResult $UploadResult, $destination, $location = Location::STORAGE, $file_name = '', $override_existing = false);
+    public function moveOneFileTo(UploadResult $UploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false);
 
 
     /**

@@ -58,50 +58,45 @@ final class UploadResult
 
 
     /**
-     * @return string
      * @since 5.3
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
 
     /**
-     * @return int
      * @since 5.3
      */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
 
 
     /**
-     * @return string
      * @since 5.3
      */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }
 
 
     /**
-     * @return ImmutableStringMap
      * @since 5.3
      */
-    public function getMetaData()
+    public function getMetaData(): \ILIAS\FileUpload\Collection\ImmutableStringMap
     {
         return $this->metaData;
     }
 
 
     /**
-     * @return ProcessingStatus
      * @since 5.3
      */
-    public function getStatus()
+    public function getStatus(): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         return $this->status;
     }
@@ -117,10 +112,9 @@ final class UploadResult
 
 
     /**
-     * @return string
      * @since 5.3
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }

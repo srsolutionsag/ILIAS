@@ -119,5 +119,8 @@ abstract class AbstractCtrlAwareUploadHandler implements ilCtrlAwareUploadHandle
     abstract protected function getInfoResult(string $identifier) : FileInfoResult;
 
 
+    /**
+     * @return mixed[]
+     */
     abstract public function getInfoForExistingFiles(array $file_ids) : array;
 }

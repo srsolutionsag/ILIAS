@@ -36,7 +36,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function get($key)
+    public function get($key): string
     {
         return $this->map->get($key);
     }
@@ -45,7 +45,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->map->toArray();
     }
@@ -54,7 +54,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function has($key)
+    public function has($key): bool
     {
         return $this->map->has($key);
     }

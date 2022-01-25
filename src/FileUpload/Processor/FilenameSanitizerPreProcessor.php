@@ -22,7 +22,7 @@ final class FilenameSanitizerPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         $metadata->setFilename(Util::normalizeRelativePath($metadata->getFilename()));
 

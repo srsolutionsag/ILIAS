@@ -42,7 +42,7 @@ final class WhitelistFileHeaderPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
     {
         $header = $stream->read($this->fileHeaderLength);
         if (strcmp($this->fileHeader, $header) === 0) {

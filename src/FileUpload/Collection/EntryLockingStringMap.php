@@ -38,14 +38,11 @@ final class EntryLockingStringMap implements StringMap
      *
      * @param string $key The key which should be used to search the corresponding value.
      *
-     * @return string
-     *
      * @throws NoSuchElementException    Thrown if the entry is not found with the given key.
      * @throws \InvalidArgumentException Thrown if the key type is not of the type string.
-     *
      * @since 5.3
      */
-    public function get($key)
+    public function get($key): string
     {
         $this->stringTypeCheck($key, 'key');
 
@@ -64,7 +61,7 @@ final class EntryLockingStringMap implements StringMap
      *
      * @since 5.3
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->map->getArrayCopy();
     }
@@ -75,13 +72,10 @@ final class EntryLockingStringMap implements StringMap
      *
      * @param string $key The key which should be checked.
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException Thrown if the key type is not of the type string.
-     *
      * @since 5.3
      */
-    public function has($key)
+    public function has($key): bool
     {
         $this->stringTypeCheck($key, 'key');
 
@@ -96,15 +90,12 @@ final class EntryLockingStringMap implements StringMap
      * @param string $key   The key which should be put into the map.
      * @param string $value The value which should be associated with the given key.
      *
-     * @return void
-     *
      * @throws ElementAlreadyExistsException    Thrown if the key already exists in the map.
      * @throws \InvalidArgumentException         Thrown if the key or value is not of the type
      *                                           string.
-     *
      * @since 5.3
      */
-    public function put($key, $value)
+    public function put($key, $value): void
     {
         $this->stringTypeCheck($key, 'key');
         $this->stringTypeCheck($value, 'value');
