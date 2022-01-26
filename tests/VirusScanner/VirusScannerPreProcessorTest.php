@@ -26,9 +26,10 @@ class VirusScannerPreProcessorTest extends TestCase
     public function testVirusDetected()
     {
         $stream = Streams::ofString('Awesome stuff');
-        $mock = Mockery::mock(\ilVirusScanner::class);
-
-        $mock->shouldReceive("scanFile")->once()->withArgs(array( $stream->getMetadata('uri') ))->andReturn("Virus found!!!");
+        $mock = $this->getMockBuilder(\ilVirusScanner::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+        $mock->expects($this->once())->method('scanFile')->with($stream->getMetadata('uri'))->willReturn("Virus found!!!");
 
         $subject = new ilVirusScannerPreProcessor($mock);
         $result = $subject->process($stream, new Metadata("MyVirus.exe", $stream->getSize(), 'application/vnd.microsoft.portable-executable'));
@@ -40,9 +41,11 @@ class VirusScannerPreProcessorTest extends TestCase
     public function testNoVirusDetected()
     {
         $stream = Streams::ofString('Awesome stuff');
-        $mock = Mockery::mock(\ilVirusScanner::class);
-
-        $mock->shouldReceive("scanFile")->once()->withArgs(array( $stream->getMetadata('uri') ))->andReturn("");
+    
+        $mock = $this->getMockBuilder(\ilVirusScanner::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+        $mock->expects($this->once())->method('scanFile')->with($stream->getMetadata('uri'))->willReturn("");
 
         $subject = new ilVirusScannerPreProcessor($mock);
         $result = $subject->process($stream, new Metadata("MyVirus.exe", $stream->getSize(), 'application/vnd.microsoft.portable-executable'));
