@@ -7,7 +7,7 @@ use Psr\Http\Message\StreamInterface;
 use ILIAS\FileUpload\Processor\PreProcessor;
 
 /**
- * Class VirusScannerPreProcessor
+ * Class ilVirusScannerPreProcessor
  *
  * PreProcessor which denies all infected files if virusscanner is activated
  *
@@ -15,7 +15,7 @@ use ILIAS\FileUpload\Processor\PreProcessor;
  * @since   5.3
  * @version 1.0.0
  */
-final class VirusScannerPreProcessor implements PreProcessor
+final class ilVirusScannerPreProcessor implements PreProcessor
 {
 
     /**
@@ -25,7 +25,7 @@ final class VirusScannerPreProcessor implements PreProcessor
 
 
     /**
-     * VirusScannerPreProcessor constructor.
+     * ilVirusScannerPreProcessor constructor.
      *
      * @param \ilVirusScanner $scanner
      */

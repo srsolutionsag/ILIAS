@@ -349,7 +349,7 @@ class ilInitialisation
         $dic['upload'] = function (\ILIAS\DI\Container $c) {
             $fileUploadImpl = new \ILIAS\FileUpload\FileUploadImpl($c['upload.processor-manager'], $c['filesystem'], $c['http']);
             if ((defined('IL_VIRUS_SCANNER') && IL_VIRUS_SCANNER != "None") || (defined('IL_SCANNER_TYPE') && IL_SCANNER_TYPE == "1")) {
-                $fileUploadImpl->register(new VirusScannerPreProcessor(ilVirusScannerFactory::_getInstance()));
+                $fileUploadImpl->register(new ilVirusScannerPreProcessor(ilVirusScannerFactory::_getInstance()));
             }
 
             $fileUploadImpl->register(new FilenameSanitizerPreProcessor());

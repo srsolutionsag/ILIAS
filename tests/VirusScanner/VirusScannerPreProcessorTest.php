@@ -30,7 +30,7 @@ class VirusScannerPreProcessorTest extends TestCase
 
         $mock->shouldReceive("scanFile")->once()->withArgs(array( $stream->getMetadata('uri') ))->andReturn("Virus found!!!");
 
-        $subject = new VirusScannerPreProcessor($mock);
+        $subject = new ilVirusScannerPreProcessor($mock);
         $result = $subject->process($stream, new Metadata("MyVirus.exe", $stream->getSize(), 'application/vnd.microsoft.portable-executable'));
         $this->assertSame(ProcessingStatus::REJECTED, $result->getCode());
         $this->assertSame('Virus detected.', $result->getMessage());
@@ -44,7 +44,7 @@ class VirusScannerPreProcessorTest extends TestCase
 
         $mock->shouldReceive("scanFile")->once()->withArgs(array( $stream->getMetadata('uri') ))->andReturn("");
 
-        $subject = new VirusScannerPreProcessor($mock);
+        $subject = new ilVirusScannerPreProcessor($mock);
         $result = $subject->process($stream, new Metadata("MyVirus.exe", $stream->getSize(), 'application/vnd.microsoft.portable-executable'));
         $this->assertSame(ProcessingStatus::OK, $result->getCode());
     }
