@@ -36,7 +36,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
      */
     public function __construct(array $blacklist)
     {
-        if (count($blacklist) === 0) {
+        if ($blacklist === []) {
             throw new \InvalidArgumentException('Blacklist must not be empty.');
         }
 
@@ -72,10 +72,9 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
             $entryJunks = explode('/', $entry);
             $mimeTypeJunks = explode('/', $mimeType);
 
-            if (strcmp($entryJunks[0], $mimeTypeJunks[0]) === 0 || strcmp($entryJunks[0], '*') === 0) {
-                if (strcmp($entryJunks[1], $mimeTypeJunks[1]) === 0 || strcmp($entryJunks[1], '*') === 0) {
-                    return true;
-                }
+            if ((strcmp($entryJunks[0], $mimeTypeJunks[0]) === 0 || strcmp($entryJunks[0], '*') === 0)
+                && (strcmp($entryJunks[1], $mimeTypeJunks[1]) === 0 || strcmp($entryJunks[1], '*') === 0)){
+                return true;
             }
         }
         return false;

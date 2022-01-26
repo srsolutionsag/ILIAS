@@ -101,11 +101,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
     {
         $extensions = explode('.', $filename);
 
-        if (count($extensions) <= 1) {
-            $extension = '';
-        } else {
-            $extension = strtolower(end($extensions));
-        }
+        $extension = count($extensions) <= 1 ? '' : strtolower(end($extensions));
 
         return $extension;
     }

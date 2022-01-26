@@ -66,11 +66,7 @@ final class WhitelistExtensionPreProcessor implements PreProcessor
     {
         $extensions = explode('.', $filename);
 
-        if (count($extensions) === 1) {
-            $extension = '';
-        } else {
-            $extension = end($extensions);
-        }
+        $extension = count($extensions) === 1 ? '' : end($extensions);
 
         return in_array(strtolower($extension), $this->whitelist);
     }

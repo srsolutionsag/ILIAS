@@ -74,7 +74,7 @@ final class FileUploadImpl implements FileUpload
      */
     public function moveOneFileTo(UploadResult $uploadResult, $destination, $location = Location::STORAGE, $file_name = '', $override_existing = false)
     {
-        if ($this->processed === false) {
+        if (!$this->processed) {
             throw new \RuntimeException('Can not move unprocessed files.');
         }
         $filesystem = $this->selectFilesystem($location);
@@ -102,11 +102,11 @@ final class FileUploadImpl implements FileUpload
      */
     public function moveFilesTo($destination, $location = Location::STORAGE): void
     {
-        if ($this->processed === false) {
+        if (!$this->processed) {
             throw new \RuntimeException('Can not move unprocessed files.');
         }
 
-        if ($this->moved === true) {
+        if ($this->moved) {
             throw new \RuntimeException('Can not move the files a second time.');
         }
 
@@ -217,7 +217,7 @@ final class FileUploadImpl implements FileUpload
      */
     public function register(PreProcessor $preProcessor): void
     {
-        if ($this->processed === false) {
+        if (!$this->processed) {
             $this->processorManager->with($preProcessor);
         } else {
             throw new IllegalStateException('Can not register processor after the upload was processed.');
@@ -230,7 +230,7 @@ final class FileUploadImpl implements FileUpload
      */
     public function process(): void
     {
-        if ($this->processed === true) {
+        if ($this->processed) {
             throw new IllegalStateException('Can not reprocess the uploaded files.');
         }
 
@@ -319,7 +319,7 @@ final class FileUploadImpl implements FileUpload
 
         $uploadedFiles = $this->flattenUploadedFiles($this->globalHttpState->request()->getUploadedFiles());
 
-        return (count($uploadedFiles) > 0);
+        return ($uploadedFiles !== []);
     }
 
 
