@@ -4,7 +4,7 @@ namespace ILIAS\FileUpload\Handler;
 
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileUpload\FileUpload;
-use ILIAS\HTTP\Services AS HttpServices;
+use ILIAS\HTTP\Services as HttpServices;
 use ilCtrl;
 
 /**

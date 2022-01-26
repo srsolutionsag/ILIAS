@@ -60,7 +60,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
@@ -69,7 +69,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getSize(): int
+    public function getSize() : int
     {
         return $this->size;
     }
@@ -78,7 +78,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getMimeType(): string
+    public function getMimeType() : string
     {
         return $this->mimeType;
     }
@@ -87,7 +87,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getMetaData(): ImmutableStringMap
+    public function getMetaData() : ImmutableStringMap
     {
         return $this->metaData;
     }
@@ -96,7 +96,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getStatus(): ProcessingStatus
+    public function getStatus() : ProcessingStatus
     {
         return $this->status;
     }
@@ -111,7 +111,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getPath(): string
+    public function getPath() : string
     {
         return $this->path;
     }

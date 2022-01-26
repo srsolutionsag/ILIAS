@@ -52,7 +52,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus
     {
         if ($this->isBlacklisted($metadata->getMimeType())) {
             return new ProcessingStatus(ProcessingStatus::REJECTED, 'The mime type ' . $metadata->getMimeType() . ' is blacklisted.');
@@ -69,14 +69,14 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
      *
      * @return bool                 True if the mime type is blacklisted otherwise false.
      */
-    private function isBlacklisted(string $mimeType): bool
+    private function isBlacklisted(string $mimeType) : bool
     {
         foreach ($this->blacklist as $entry) {
             $entryJunks = explode('/', $entry);
             $mimeTypeJunks = explode('/', $mimeType);
 
             if ((strcmp($entryJunks[0], $mimeTypeJunks[0]) === 0 || strcmp($entryJunks[0], '*') === 0)
-                && (strcmp($entryJunks[1], $mimeTypeJunks[1]) === 0 || strcmp($entryJunks[1], '*') === 0)){
+                && (strcmp($entryJunks[1], $mimeTypeJunks[1]) === 0 || strcmp($entryJunks[1], '*') === 0)) {
                 return true;
             }
         }
@@ -91,7 +91,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
      *
      * @throws \InvalidArgumentException Thrown if the list contains invalid list items.
      */
-    private function validateListEntries(array $list): void
+    private function validateListEntries(array $list) : void
     {
         if (in_array('*/*', $list, true)) {
             throw new \InvalidArgumentException('The mime type */* matches all mime types which would black all files.');

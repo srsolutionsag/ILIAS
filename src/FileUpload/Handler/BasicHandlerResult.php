@@ -11,7 +11,6 @@ use ILIAS\UI\Component\Input\Field\UploadHandler;
  */
 class BasicHandlerResult implements HandlerResult
 {
-
     private string $file_identification_key;
     private int $status;
     private string $file_identifier;
@@ -51,7 +50,7 @@ class BasicHandlerResult implements HandlerResult
     /**
      * @inheritDoc
      */
-    final public function jsonSerialize(): array
+    final public function jsonSerialize() : array
     {
         $str = $this->file_identification_key ?? UploadHandler::DEFAULT_FILE_ID_PARAMETER;
 

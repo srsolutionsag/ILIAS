@@ -15,7 +15,6 @@ use ILIAS\FileUpload\DTO\ProcessingStatus;
  */
 class BlacklistExtensionPreProcessor implements PreProcessor
 {
-
     private string $reason;
     /**
      * @var string[]
@@ -47,7 +46,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus
     {
         if ($this->isBlacklisted($metadata, $stream)) {
             return new ProcessingStatus(ProcessingStatus::REJECTED, $this->reason);
@@ -60,7 +59,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
      * Checks if the current filename has a listed extension. (*.png, *.mp4 etc ...)
      * @return bool True if the extension is listed, otherwise false.
      */
-    private function isBlacklisted(Metadata $metadata, FileStream $stream): bool
+    private function isBlacklisted(Metadata $metadata, FileStream $stream) : bool
     {
         $filename = $metadata->getFilename();
         $extension = $this->getExtensionForFilename($filename);
@@ -97,7 +96,7 @@ class BlacklistExtensionPreProcessor implements PreProcessor
      * @param $filename
      * @return null|string
      */
-    private function getExtensionForFilename($filename): ?string
+    private function getExtensionForFilename($filename) : ?string
     {
         $extensions = explode('.', $filename);
 

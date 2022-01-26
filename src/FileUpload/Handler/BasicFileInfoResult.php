@@ -11,7 +11,6 @@ use ILIAS\UI\Component\Input\Field\UploadHandler;
  */
 class BasicFileInfoResult implements FileInfoResult
 {
-
     private string $mime_type;
     private string $file_identifier;
     private int $size;
@@ -59,7 +58,7 @@ class BasicFileInfoResult implements FileInfoResult
     /**
      * @inheritDoc
      */
-    final public function jsonSerialize(): array
+    final public function jsonSerialize() : array
     {
         $str = $this->file_identification_key ?? UploadHandler::DEFAULT_FILE_ID_PARAMETER;
 

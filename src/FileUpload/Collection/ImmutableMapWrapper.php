@@ -16,7 +16,6 @@ namespace ILIAS\FileUpload\Collection;
  */
 final class ImmutableMapWrapper implements ImmutableStringMap
 {
-
     private \ILIAS\FileUpload\Collection\StringMap $map;
 
 
@@ -36,7 +35,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function get(string $key): string
+    public function get(string $key) : string
     {
         return $this->map->get($key);
     }
@@ -45,7 +44,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function toArray(): array
+    public function toArray() : array
     {
         return $this->map->toArray();
     }
@@ -54,7 +53,7 @@ final class ImmutableMapWrapper implements ImmutableStringMap
     /**
      * @inheritDoc
      */
-    public function has(string $key): bool
+    public function has(string $key) : bool
     {
         return $this->map->has($key);
     }

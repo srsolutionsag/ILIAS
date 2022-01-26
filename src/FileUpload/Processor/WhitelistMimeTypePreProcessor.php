@@ -54,7 +54,7 @@ final class WhitelistMimeTypePreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus
     {
         if ($this->isWhitelisted($metadata->getMimeType())) {
             return new ProcessingStatus(ProcessingStatus::OK, 'Entity comply with mime type whitelist.');
@@ -71,7 +71,7 @@ final class WhitelistMimeTypePreProcessor implements PreProcessor
      *
      * @return bool                 True if the mime type is whitelisted otherwise false.
      */
-    private function isWhitelisted(string $mimeType): bool
+    private function isWhitelisted(string $mimeType) : bool
     {
         foreach ($this->whitelist as $entry) {
             $entryJunks = explode('/', $entry);
@@ -94,7 +94,7 @@ final class WhitelistMimeTypePreProcessor implements PreProcessor
      *
      * @throws \InvalidArgumentException Thrown if the list contains invalid list items.
      */
-    private function validateListEntries(array $list): void
+    private function validateListEntries(array $list) : void
     {
         if (in_array('*/*', $list, true)) {
             throw new \InvalidArgumentException('The mime type */* matches all mime types which renders the whole whitelist useless.');
