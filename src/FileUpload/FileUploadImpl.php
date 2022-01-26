@@ -94,6 +94,8 @@ final class FileUploadImpl implements FileUpload
         } catch (IOException $ex) {
             $this->regenerateUploadResultWithCopyError($uploadResult, $ex->getMessage());
         }
+
+        return true;
     }
 
 
