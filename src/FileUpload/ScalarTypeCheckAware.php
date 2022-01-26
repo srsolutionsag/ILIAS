@@ -40,13 +40,13 @@ trait ScalarTypeCheckAware
     /**
      * Type check for int variables.
      *
-     * @param string $variable The variable which should be tested.
+     * @param int $variable The variable which should be tested.
      * @param string $name     The name of the variable which is tested.
      *
      * @throws \InvalidArgumentException Thrown if the variable is not of the type int.
      * @since 5.3
      */
-    private function intTypeCheck(string $variable, string $name)
+    private function intTypeCheck(int $variable, string $name)
     {
         if (!is_int($variable)) {
             $varType = gettype($variable);

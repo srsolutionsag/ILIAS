@@ -38,7 +38,7 @@ final class VirusScannerPreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata)
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus
     {
         // $stream->rewind();
         $uri = $stream->getMetadata()["uri"];

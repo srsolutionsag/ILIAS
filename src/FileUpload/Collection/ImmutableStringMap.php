@@ -40,7 +40,7 @@ interface ImmutableStringMap
      *
      * @since 5.3
      */
-    public function toArray() : string;
+    public function toArray() : array;
 
 
     /**
