@@ -30,5 +30,5 @@ interface StringMap extends ImmutableStringMap
      *
      * @since 5.3
      */
-    public function put($key, $value);
+    public function put(string $key, string $value) : void;
 }

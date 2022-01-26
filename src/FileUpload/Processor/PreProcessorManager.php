@@ -31,7 +31,7 @@ interface PreProcessorManager
      * @return void
      * @since 5.3
      */
-    public function with(PreProcessor $processor);
+    public function with(PreProcessor $processor) : void;
 
 
     /**
@@ -44,5 +44,5 @@ interface PreProcessorManager
      * @return ProcessingStatus
      * @since 5.3
      */
-    public function process(FileStream $stream, Metadata $metadata);
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus;
 }

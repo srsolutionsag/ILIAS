@@ -4,6 +4,7 @@ namespace ILIAS\FileUpload;
 
 use ILIAS\Filesystem\Exception\IOException;
 use ILIAS\Filesystem\Filesystems;
+use \ILIAS\Filesystem\Filesystem;
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileUpload\Collection\EntryLockingStringMap;
@@ -30,9 +31,9 @@ use ILIAS\HTTP\GlobalHttpState;
 final class FileUploadImpl implements FileUpload
 {
 
-    private \ILIAS\FileUpload\Processor\PreProcessorManager $processorManager;
-    private \ILIAS\Filesystem\Filesystems $filesystems;
-    private \ILIAS\HTTP\GlobalHttpState $globalHttpState;
+    private PreProcessorManager $processorManager;
+    private Filesystems $filesystems;
+    private GlobalHttpState $globalHttpState;
     private bool $processed;
     private bool $moved;
     /**
@@ -72,7 +73,7 @@ final class FileUploadImpl implements FileUpload
     /**
      * @inheritdoc
      */
-    public function moveOneFileTo(UploadResult $uploadResult, $destination, $location = Location::STORAGE, $file_name = '', $override_existing = false)
+    public function moveOneFileTo(UploadResult $uploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false) : bool
     {
         if (!$this->processed) {
             throw new \RuntimeException('Can not move unprocessed files.');
@@ -102,7 +103,7 @@ final class FileUploadImpl implements FileUpload
     /**
      * @inheritDoc
      */
-    public function moveFilesTo($destination, $location = Location::STORAGE): void
+    public function moveFilesTo(string $destination, int $location = Location::STORAGE): void
     {
         if (!$this->processed) {
             throw new \RuntimeException('Can not move unprocessed files.');
@@ -143,7 +144,7 @@ final class FileUploadImpl implements FileUpload
      *
      * @return UploadResult         The cloned result with the given path.
      */
-    private function regenerateUploadResultWithPath(UploadResult $result, string $path): \ILIAS\FileUpload\DTO\UploadResult
+    private function regenerateUploadResultWithPath(UploadResult $result, string $path): UploadResult
     {
         return new UploadResult(
             $result->getName(),
@@ -164,7 +165,7 @@ final class FileUploadImpl implements FileUpload
      *
      * @return UploadResult                 The newly cloned rejected result.
      */
-    private function regenerateUploadResultWithCopyError(UploadResult $result, string $errorReason): \ILIAS\FileUpload\DTO\UploadResult
+    private function regenerateUploadResultWithCopyError(UploadResult $result, string $errorReason): UploadResult
     {
         return new UploadResult(
             $result->getName(),
@@ -182,13 +183,13 @@ final class FileUploadImpl implements FileUpload
      *
      * @param int $location The storage location constant defined within the Location interface.
      *
-     * @return \ILIAS\Filesystem\Filesystem
+     * @return Filesystem
      *
      * @see Location
      *
      * @throws \InvalidArgumentException    Thrown if the location is not a valid Location constant.
      */
-    private function selectFilesystem(int $location)
+    private function selectFilesystem(int $location) : Filesystem
     {
         switch ($location) {
             case Location::CUSTOMIZING:
@@ -208,7 +209,7 @@ final class FileUploadImpl implements FileUpload
     /**
      * @inheritDoc
      */
-    public function uploadSizeLimit()
+    public function uploadSizeLimit() : int
     {
         return \ilUtil::getUploadSizeLimitBytes();
     }

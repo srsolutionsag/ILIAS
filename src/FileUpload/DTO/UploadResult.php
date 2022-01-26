@@ -23,8 +23,8 @@ final class UploadResult
     private string $name;
     private int $size;
     private string $mimeType;
-    private \ILIAS\FileUpload\Collection\ImmutableStringMap $metaData;
-    private \ILIAS\FileUpload\DTO\ProcessingStatus $status;
+    private ImmutableStringMap $metaData;
+    private ProcessingStatus $status;
     private string $path;
 
 
@@ -41,7 +41,7 @@ final class UploadResult
      *
      * @since 5.3
      */
-    public function __construct(string $name, string $size, string $mimeType, ImmutableStringMap $metaData, ProcessingStatus $status, string $path)
+    public function __construct(string $name, int $size, string $mimeType, ImmutableStringMap $metaData, ProcessingStatus $status, string $path)
     {
         $this->stringTypeCheck($name, "name");
         $this->stringTypeCheck($mimeType, "mimeType");
@@ -87,7 +87,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getMetaData(): \ILIAS\FileUpload\Collection\ImmutableStringMap
+    public function getMetaData(): ImmutableStringMap
     {
         return $this->metaData;
     }
@@ -96,7 +96,7 @@ final class UploadResult
     /**
      * @since 5.3
      */
-    public function getStatus(): \ILIAS\FileUpload\DTO\ProcessingStatus
+    public function getStatus(): ProcessingStatus
     {
         return $this->status;
     }

@@ -39,7 +39,7 @@ final class PreProcessorManagerImpl implements PreProcessorManager
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
     {
         try {
             $result = null;

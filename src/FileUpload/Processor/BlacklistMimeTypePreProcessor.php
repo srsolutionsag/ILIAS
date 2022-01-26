@@ -21,6 +21,9 @@ use Psr\Http\Message\StreamInterface;
  */
 final class BlacklistMimeTypePreProcessor implements PreProcessor
 {
+    /**
+     * @var string[] $blacklist
+     */
     private $blacklist;
 
 
@@ -49,7 +52,7 @@ final class BlacklistMimeTypePreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
     {
         if ($this->isBlacklisted($metadata->getMimeType())) {
             return new ProcessingStatus(ProcessingStatus::REJECTED, 'The mime type ' . $metadata->getMimeType() . ' is blacklisted.');

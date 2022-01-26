@@ -30,7 +30,7 @@ interface ImmutableStringMap
      *
      * @since 5.3
      */
-    public function get(string $key);
+    public function get(string $key) : string;
 
 
     /**
@@ -40,7 +40,7 @@ interface ImmutableStringMap
      *
      * @since 5.3
      */
-    public function toArray();
+    public function toArray() : string;
 
 
     /**
@@ -54,5 +54,5 @@ interface ImmutableStringMap
      *
      * @since 5.3
      */
-    public function has(string $key);
+    public function has(string $key) : bool;
 }

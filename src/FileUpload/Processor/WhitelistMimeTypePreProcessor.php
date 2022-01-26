@@ -21,6 +21,9 @@ use Psr\Http\Message\StreamInterface;
  */
 final class WhitelistMimeTypePreProcessor implements PreProcessor
 {
+    /**
+     * @var string[] $whitelist
+     */
     private $whitelist;
 
 
@@ -51,7 +54,7 @@ final class WhitelistMimeTypePreProcessor implements PreProcessor
     /**
      * @inheritDoc
      */
-    public function process(FileStream $stream, Metadata $metadata): \ILIAS\FileUpload\DTO\ProcessingStatus
+    public function process(FileStream $stream, Metadata $metadata): ProcessingStatus
     {
         if ($this->isWhitelisted($metadata->getMimeType())) {
             return new ProcessingStatus(ProcessingStatus::OK, 'Entity comply with mime type whitelist.');

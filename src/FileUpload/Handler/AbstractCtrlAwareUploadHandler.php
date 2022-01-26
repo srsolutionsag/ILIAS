@@ -4,6 +4,7 @@ namespace ILIAS\FileUpload\Handler;
 
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileUpload\FileUpload;
+use ILIAS\HTTP\Services AS HttpServices;
 use ilCtrl;
 
 /**
@@ -16,18 +17,10 @@ abstract class AbstractCtrlAwareUploadHandler implements ilCtrlAwareUploadHandle
     protected const CMD_UPLOAD = 'upload';
     protected const CMD_REMOVE = 'remove';
     protected const CMD_INFO = 'info';
-    /**
-     * @var \ILIAS\HTTP\Services
-     */
-    protected $http;
-    /**
-     * @var ilCtrl
-     */
-    protected $ctrl;
-    /**
-     * @var FileUpload
-     */
-    protected $upload;
+
+    protected HttpServices $http;
+    protected ilCtrl $ctrl;
+    protected FileUpload $upload;
 
 
     /**

@@ -35,5 +35,5 @@ interface PreProcessor
      *
      * @return ProcessingStatus The new status of the file.
      */
-    public function process(FileStream $stream, Metadata $metadata);
+    public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus;
 }

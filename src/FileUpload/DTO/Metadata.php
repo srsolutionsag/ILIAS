@@ -24,7 +24,7 @@ final class Metadata
     private string $filename;
     private int $uploadSize;
     private string $mimeType;
-    private \ILIAS\FileUpload\Collection\StringMap $additionalMetaData;
+    private StringMap $additionalMetaData;
 
 
     /**
@@ -128,7 +128,7 @@ final class Metadata
      *
      * @since 5.3
      */
-    public function additionalMetaData(): \ILIAS\FileUpload\Collection\StringMap
+    public function additionalMetaData(): StringMap
     {
         return $this->additionalMetaData;
     }

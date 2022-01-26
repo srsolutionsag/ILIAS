@@ -39,7 +39,7 @@ interface FileUpload
      *
      * @see   Location
      */
-    public function moveFilesTo(string $destination, int $location = Location::STORAGE);
+    public function moveFilesTo(string $destination, int $location = Location::STORAGE) : void;
 
 
     /**
@@ -52,9 +52,9 @@ interface FileUpload
      * @param string       $file_name    Do you want to rename the file?
      * @param bool         $override_existing Override existing file with same name
      *
-     * @return void
+     * @return bool
      */
-    public function moveOneFileTo(UploadResult $UploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false);
+    public function moveOneFileTo(UploadResult $UploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false) : bool;
 
 
     /**
@@ -63,7 +63,7 @@ interface FileUpload
      * @return int
      * @since 5.3
      */
-    public function uploadSizeLimit();
+    public function uploadSizeLimit() : int;
 
 
     /**
@@ -78,7 +78,7 @@ interface FileUpload
      *                               processed.
      * @since 5.3
      */
-    public function register(PreProcessor $preProcessor);
+    public function register(PreProcessor $preProcessor) : void;
 
 
     /**
@@ -92,7 +92,7 @@ interface FileUpload
      * @throws IllegalStateException If the files already got processed.
      * @since 5.3
      */
-    public function process();
+    public function process() : void;
 
 
     /**
@@ -103,7 +103,7 @@ interface FileUpload
      * @throws IllegalStateException If the method is called before the files are processed.
      * @since 5.3
      */
-    public function getResults();
+    public function getResults() : array;
 
 
     /**
@@ -113,7 +113,7 @@ interface FileUpload
      *
      * @since 5.3
      */
-    public function hasUploads();
+    public function hasUploads() : bool;
 
     /**
      * Return (bool)true if the current upload has already been processed
@@ -122,5 +122,5 @@ interface FileUpload
      *
      * @since 5.3
      */
-    public function hasBeenProcessed();
+    public function hasBeenProcessed() : bool;
 }

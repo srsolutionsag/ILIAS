@@ -44,7 +44,7 @@ final class ProcessingStatus
      *                                   of the correct type.
      * @since 5.3
      */
-    public function __construct($code, string $reason)
+    public function __construct(int $code, string $reason)
     {
         $this->intTypeCheck($code, 'code');
         $this->stringTypeCheck($reason, 'reason');
