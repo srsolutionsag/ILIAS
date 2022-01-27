@@ -5,7 +5,6 @@ require_once('./libs/composer/vendor/autoload.php');
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileUpload\DTO\Metadata;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
