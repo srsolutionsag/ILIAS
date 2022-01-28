@@ -36,11 +36,9 @@ interface ImmutableStringMap
      *
      * @param string $key The key which should be used to search the corresponding meta data value.
      *
-     * @return string
      *
      * @throws NoSuchElementException   Thrown if the entry is not found with the given key.
      * @throws \InvalidArgumentException Thrown if the key type is not of the type string.
-     *
      * @since 5.3
      */
     public function get(string $key) : string;
@@ -61,10 +59,8 @@ interface ImmutableStringMap
      *
      * @param string $key The key which should be checked.
      *
-     * @return bool
      *
      * @throws \InvalidArgumentException Thrown if the key type is not of the type string.
-     *
      * @since 5.3
      */
     public function has(string $key) : bool;

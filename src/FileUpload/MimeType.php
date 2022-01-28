@@ -493,9 +493,6 @@ class MimeType
     protected bool $external = false;
     protected string $fallback = self::APPLICATION__OCTET_STREAM;
     
-    /**
-     * @param string $path_to_file
-     */
     protected function __construct(string $path_to_file)
     {
         if (strpos($path_to_file, 'http://') !== false || strpos($path_to_file, 'https://') !== false) {

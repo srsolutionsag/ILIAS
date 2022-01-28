@@ -44,12 +44,10 @@ interface FileUpload
      * @param string $destination The destination of the uploaded files.
      * @param int    $location    The filesystem location which should be used.
      *
-     * @return void
      *
      * @throws IllegalStateException        Thrown if the files are not processed before invoking the moveFilesTo method.
      * @throws \InvalidArgumentException    Thrown if the location is invalid.
      * @since 5.3
-     *
      * @see   Location
      */
     public function moveFilesTo(string $destination, int $location = Location::STORAGE) : void;
@@ -64,8 +62,6 @@ interface FileUpload
      * @param int          $location     Location::[STORAGE|WEB|CUSTOMIZING]
      * @param string       $file_name    Do you want to rename the file?
      * @param bool         $override_existing Override existing file with same name
-     *
-     * @return bool
      */
     public function moveOneFileTo(UploadResult $UploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false) : bool;
 
@@ -73,7 +69,6 @@ interface FileUpload
     /**
      * Returns the current upload size limit in bytes.
      *
-     * @return int
      * @since 5.3
      */
     public function uploadSizeLimit() : int;
@@ -85,7 +80,6 @@ interface FileUpload
      *
      * @param PreProcessor $preProcessor The preprocessor instance which should be registered.
      *
-     * @return void
      *
      * @throws IllegalStateException If the register method is called after the files already got
      *                               processed.
@@ -100,7 +94,6 @@ interface FileUpload
      * the file which got processed is automatically rejected to prevent ILIAS from using
      * unprocessed files.
      *
-     * @return void
      *
      * @throws IllegalStateException If the files already got processed.
      * @since 5.3
@@ -122,7 +115,6 @@ interface FileUpload
     /**
      * Return (bool)true if one ore more file-uploads are in the current request, (bool)false if not
      *
-     * @return bool
      *
      * @since 5.3
      */
@@ -131,7 +123,6 @@ interface FileUpload
     /**
      * Return (bool)true if the current upload has already been processed
      *
-     * @return bool
      *
      * @since 5.3
      */

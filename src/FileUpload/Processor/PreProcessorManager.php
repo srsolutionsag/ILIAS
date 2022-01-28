@@ -41,7 +41,6 @@ interface PreProcessorManager
      *
      * @param PreProcessor $processor The processor which should be added.
      *
-     * @return void
      * @since 5.3
      */
     public function with(PreProcessor $processor) : void;
@@ -54,7 +53,6 @@ interface PreProcessorManager
      * @param FileStream                 $stream   The stream of the current file.
      * @param Metadata                   $metadata The metadata of the current file.
      *
-     * @return ProcessingStatus
      * @since 5.3
      */
     public function process(FileStream $stream, Metadata $metadata) : ProcessingStatus;

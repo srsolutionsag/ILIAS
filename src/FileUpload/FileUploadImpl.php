@@ -195,10 +195,8 @@ final class FileUploadImpl implements FileUpload
      *
      * @param int $location The storage location constant defined within the Location interface.
      *
-     * @return Filesystem
      *
      * @see Location
-     *
      * @throws \InvalidArgumentException    Thrown if the location is not a valid Location constant.
      */
     private function selectFilesystem(int $location) : Filesystem

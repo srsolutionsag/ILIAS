@@ -48,7 +48,6 @@ class BlacklistExtensionPreProcessor implements PreProcessor
      * example.png.exe
      * ...
      * @param \string[] $blacklist The file extensions which should be blacklisted.
-     * @param string    $reason
      */
     public function __construct(array $blacklist, string $reason = 'Extension is blacklisted.')
     {
@@ -113,8 +112,6 @@ class BlacklistExtensionPreProcessor implements PreProcessor
     {
         $extensions = explode('.', $filename);
 
-        $extension = count($extensions) <= 1 ? '' : strtolower(end($extensions));
-
-        return $extension;
+        return count($extensions) <= 1 ? '' : strtolower(end($extensions));
     }
 }
