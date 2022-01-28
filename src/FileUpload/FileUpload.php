@@ -57,13 +57,19 @@ interface FileUpload
      * Moves a single File (the attributes, metadata and upload-status of which are contained in UploadResult)
      * to the given destination. The destination is a relative path which refers to the path of the location.
      *
-     * @param UploadResult $UploadResult Which upload result do you want to move?
+     * @param UploadResult $uploadResult Which upload result do you want to move?
      * @param string       $destination  Where do you want to move the file?
      * @param int          $location     Location::[STORAGE|WEB|CUSTOMIZING]
      * @param string       $file_name    Do you want to rename the file?
      * @param bool         $override_existing Override existing file with same name
      */
-    public function moveOneFileTo(UploadResult $UploadResult, string $destination, int $location = Location::STORAGE, string $file_name = '', bool $override_existing = false) : bool;
+    public function moveOneFileTo(
+        UploadResult $uploadResult,
+        string $destination,
+        int $location = Location::STORAGE,
+        string $file_name = '',
+        bool $override_existing = false
+    ) : bool;
 
 
     /**

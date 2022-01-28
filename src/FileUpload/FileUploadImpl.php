@@ -4,7 +4,7 @@ namespace ILIAS\FileUpload;
 
 use ILIAS\Filesystem\Exception\IOException;
 use ILIAS\Filesystem\Filesystems;
-use \ILIAS\Filesystem\Filesystem;
+use ILIAS\Filesystem\Filesystem;
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileUpload\Collection\EntryLockingStringMap;
@@ -335,11 +335,7 @@ final class FileUploadImpl implements FileUpload
         return ($uploadedFiles !== []);
     }
 
-
-    /**
-     * @return UploadedFileInterface[]
-     * @param mixed[] $uploadedFiles
-     */
+    
     protected function flattenUploadedFiles(array $uploadedFiles) : array
     {
         $recursiveIterator = new RecursiveIteratorIterator(
