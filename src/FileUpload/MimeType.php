@@ -13,9 +13,6 @@ namespace ILIAS\FileUpload;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-
-
-
 /**
  * Mime type determination.
  *
