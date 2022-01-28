@@ -1,5 +1,7 @@
 <?php
+
 namespace ILIAS\FileUpload;
+
 /******************************************************************************
  *
  * This file is part of ILIAS, a powerful learning management system.
@@ -13,11 +15,12 @@ namespace ILIAS\FileUpload;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
+
 /**
  * Mime type determination.
  *
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @author  Alexander Killing <killing@leifos.de>
+ * @author     Fabian Schmid <fs@studer-raimann.ch>
+ * @author     Alexander Killing <killing@leifos.de>
  *
  * @deprecated This should be moved to Data/Refinery
  */
@@ -506,9 +509,9 @@ class MimeType
     /**
      * @return array<string, mixed>
      */
-    public static function getExt2MimeMap(): array
+    public static function getExt2MimeMap() : array
     {
-        /** @noRector  */
+        /** @noRector */
         $suffix_map = include "mime_type_map.php";
         $map = [];
         foreach ($suffix_map as $k => $v) {
@@ -523,7 +526,7 @@ class MimeType
      *
      * @deprecated use ILIAS\FileUpload\MimeType::lookupMimeType() instead
      */
-    public static function getMimeType(string $a_file = '', string $a_filename = '', string $a_mime = ''): string
+    public static function getMimeType(string $a_file = '', string $a_filename = '', string $a_mime = '') : string
     {
         $path = '';
         if ($a_filename !== '' && $a_filename !== '0') {
@@ -535,12 +538,11 @@ class MimeType
         return self::lookupMimeType($path, $a_mime);
     }
     
-
     public static function lookupMimeType(
         string $path_to_file,
         string $fallback = self::APPLICATION__OCTET_STREAM,
         bool $a_external = false
-    ): string {
+    ) : string {
         $obj = new self($path_to_file);
         if ($a_external) {
             $obj->setExternal($a_external);
@@ -550,12 +552,9 @@ class MimeType
         return $obj->get();
     }
     
-    /**
-     * @return mixed|string
-     */
-    public function get()
+    public function get() : string
     {
-        /** @noRector  */
+        /** @noRector */
         $suffix_map = include "mime_type_map.php";
         if ($this->isExternal()) {
             if (is_int(strpos($this->getPath(), 'youtube.')) ||
@@ -586,43 +585,43 @@ class MimeType
         return $this->getFallback();
     }
     
-    public function isExternal(): bool
+    protected function isExternal() : bool
     {
         return $this->external;
     }
     
-    public function setExternal(bool $external): void
+    public function setExternal(bool $external) : void
     {
         $this->external = $external;
     }
     
-    public function getPath(): string
+    protected function getPath() : string
     {
         return $this->path;
     }
     
-    public function setPath(string $path): void
+    protected function setPath(string $path) : void
     {
         $this->path = $path;
     }
     
-    public function getSuffix(): string
+    protected function getSuffix() : string
     {
         return $this->suffix;
     }
     
-    public function setSuffix(string $suffix): void
+    protected function setSuffix(string $suffix) : void
     {
         // see #18157
         $this->suffix = strtolower($suffix);
     }
     
-    public function getFallback(): string
+    protected function getFallback() : string
     {
         return $this->fallback;
     }
     
-    public function setFallback(string $fallback): void
+    public function setFallback(string $fallback) : void
     {
         $this->fallback = $fallback;
     }
