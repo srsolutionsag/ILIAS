@@ -397,7 +397,7 @@ class ilPCParagraphGUI extends ilPageContentGUI
         // marked text spans
         $ws = "[ \t\r\f\v\n]*";
         while (preg_match("~\[(marked$ws(class$ws=$ws\"([^\"])*\")$ws)\]~i", $s_text, $found)) {
-            $attribs = ilUtil::attribsToArray($found[2]);
+            $attribs = ilPCParagraph::attribsToArray($found[2]);
             if (isset($attribs["class"])) {
                 $s_text = str_replace("[" . $found[1] . "]", "<span class=\"ilc_text_inline_" . $attribs["class"] . "\">", $s_text);
             } else {
