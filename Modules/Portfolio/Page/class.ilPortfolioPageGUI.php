@@ -821,7 +821,7 @@ class ilPortfolioPageGUI extends ilPageObjectGUI
                         }
                         $tpl->parseCurrentBlock();
 
-                        $objtv_icon = ilUtil::getTypeIconPath("lobj", $objtv["id"]);
+                        $objtv_icon = ilObject::_getIcon($objtv["id"], 'big', "lobj");
                         if ($img_path) {
                             $objtv_icon = $img_path . basename($objtv_icon);
                         }
@@ -863,7 +863,7 @@ class ilPortfolioPageGUI extends ilPageObjectGUI
                 }
                 $tpl->parseCurrentBlock();
 
-                $crs_icon = ilUtil::getTypeIconPath("crs", $course["obj_id"]);
+                $crs_icon = ilObject::_getIcon($course["obj_id"], 'small', 'crs');
                 if ($img_path) {
                     $crs_icon = $img_path . basename($crs_icon);
                 }

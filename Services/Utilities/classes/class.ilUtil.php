@@ -25,15 +25,9 @@ class ilUtil
 
     /**
     * Builds an html image tag
-    * TODO: function still in use, but in future use getImagePath and move HTML-Code to your template file
-    * @access	public
-    *
-    * @param	string	object type
-    * @param	string	tpl path
-    * @static
-    *
+    * @deprecated Use UI-Service!
     */
-    public static function getImageTagByType($a_type, $a_path, $a_big = false)
+    public static function getImageTagByType(string $a_type, string $a_path, bool $a_big = false) : string
     {
         global $DIC;
 
@@ -48,22 +42,6 @@ class ilUtil
         return "<img src=\"" . $filename . "\" alt=\"" . $lng->txt("obj_" . $a_type) . "\" title=\"" . $lng->txt("obj_" . $a_type) . "\" border=\"0\" vspace=\"0\"/>";
     }
 
-    /**
-     * Get type icon path path
-     * Return image path for icon_xxx.pngs
-     * Or (if enabled) path to custom icon
-     * Deprecated, use ilObject::_getIcon instead
-     *
-     * @param string $a_type obj_type
-     * @param int $a_obj_id obj_id
-     * @param string $a_size size 'tiny','small' or 'big'
-     * @return string path
-     * @deprecated
-     */
-    public static function getTypeIconPath($a_type, $a_obj_id, $a_size = 'small')
-    {
-        return ilObject::_getIcon($a_obj_id, $a_size, $a_type);
-    }
 
     /**
     * get image path (for images located in a template directory)

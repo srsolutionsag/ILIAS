@@ -799,7 +799,7 @@ class ilCourseContentGUI
 
         $this->tpl->setCurrentBlock("container_standard_row");
 
-        $this->tpl->setVariable('TYPE_IMG', ilUtil::getTypeIconPath($item['type'], $item['obj_id'], 'tiny'));
+        $this->tpl->setVariable('TYPE_IMG', ilObject::_getIcon($item['obj_id'], 'tiny', $item['type']));
         $this->tpl->setVariable("TYPE_ALT_IMG", $this->lng->txt('obj_' . $item['type']));
 
         if ($item['timing_type'] == ilObjectActivation::TIMINGS_PRESETTING) {
@@ -992,7 +992,7 @@ class ilCourseContentGUI
             $this->tpl->setVariable("ROWCLASS", 'tblrowmarked');
         }
 
-        $this->tpl->setVariable('TYPE_IMG', ilUtil::getTypeIconPath($item['type'], $item['obj_id'], 'small'));
+        $this->tpl->setVariable('TYPE_IMG', ilObject::_getIcon($item['obj_id'], 'small', $item['type']));
         $this->tpl->setVariable("TYPE_ALT_IMG", $this->lng->txt('obj_' . $item['type']));
 
 
