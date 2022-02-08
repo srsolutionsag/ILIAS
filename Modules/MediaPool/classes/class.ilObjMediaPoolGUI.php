@@ -1766,7 +1766,7 @@ class ilObjMediaPoolGUI extends ilObject2GUI
                 $media_item->setHeight($wh["height"]);
 
                 $media_item->setHAlign("Left");
-                ilUtil::renameExecutables($mob_dir);
+                ilFileUtils::renameExecutables($mob_dir);
                 $mob->update();
 
 

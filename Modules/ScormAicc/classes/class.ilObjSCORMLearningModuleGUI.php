@@ -565,7 +565,7 @@ class ilObjSCORMLearningModuleGUI extends ilObjSAHSLearningModuleGUI
 
             //unzip and replace old extracted files
             ilFileUtils::unzip($file_path, true);
-            ilUtil::renameExecutables($this->object->getDataDirectory()); //(security)
+            ilFileUtils::renameExecutables($this->object->getDataDirectory()); //(security)
 
             //increase module version
             $this->object->setModuleVersion($module_version);

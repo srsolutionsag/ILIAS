@@ -998,4 +998,71 @@ class ilFileUtils
             ilFileUtils::delDir($tmpdir);
         }
     }
+    
+    /**
+     * @deprecated
+     */
+    public static function renameExecutables(string $a_dir) : void
+    {
+        $def_arr = explode(",", SUFFIX_REPL_DEFAULT);
+        foreach ($def_arr as $def) {
+            self::rRenameSuffix($a_dir, trim($def), "sec");
+        }
+        
+        $def_arr = explode(",", SUFFIX_REPL_ADDITIONAL);
+        foreach ($def_arr as $def) {
+            self::rRenameSuffix($a_dir, trim($def), "sec");
+        }
+    }
+    
+    /**
+    * Renames all files with certain suffix and gives them a new suffix.
+    * This words recursively through a directory.
+    *
+    * @deprecated
+    */
+    public static function rRenameSuffix(string $a_dir, string $a_old_suffix, string $a_new_suffix) : bool
+    {
+        if ($a_dir == "/" || $a_dir == "" || is_int(strpos($a_dir, ".."))
+            || trim($a_old_suffix) == "") {
+            return false;
+        }
+        
+        // check if argument is directory
+        if (!@is_dir($a_dir)) {
+            return false;
+        }
+        
+        // read a_dir
+        $dir = opendir($a_dir);
+        
+        while ($file = readdir($dir)) {
+            if ($file != "." and
+                $file != "..") {
+                // directories
+                if (@is_dir($a_dir . "/" . $file)) {
+                    ilFileUtils::rRenameSuffix($a_dir . "/" . $file, $a_old_suffix, $a_new_suffix);
+                }
+                
+                // files
+                if (@is_file($a_dir . "/" . $file)) {
+                    // first check for files with trailing dot
+                    if (strrpos($file, '.') == (strlen($file) - 1)) {
+                        rename($a_dir . '/' . $file, substr($a_dir . '/' . $file, 0, -1));
+                        $file = substr($file, 0, -1);
+                    }
+                    
+                    $path_info = pathinfo($a_dir . "/" . $file);
+                    
+                    if (strtolower($path_info["extension"]) ==
+                        strtolower($a_old_suffix)) {
+                        $pos = strrpos($a_dir . "/" . $file, ".");
+                        $new_name = substr($a_dir . "/" . $file, 0, $pos) . "." . $a_new_suffix;
+                        rename($a_dir . "/" . $file, $new_name);
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -476,7 +476,7 @@ class ilObjSAHSLearningModuleGUI extends ilObjectGUI
             ilUploadFiles::_copyUploadFile($_POST["uploaded_file"], $file_path);
             ilFileUtils::unzip($file_path);
         }
-        ilUtil::renameExecutables($newObj->getDataDirectory());
+        ilFileUtils::renameExecutables($newObj->getDataDirectory());
 
         $title = $newObj->readObject();
         if ($title != "") {

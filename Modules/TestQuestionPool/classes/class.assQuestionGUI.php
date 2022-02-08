@@ -1287,7 +1287,7 @@ abstract class assQuestionGUI
                         $this->object->getSuggestedSolutionPath() . $_FILES["file"]["name"]
                     );
                     if ($res) {
-                        ilUtil::renameExecutables($this->object->getSuggestedSolutionPath());
+                        ilFileUtils::renameExecutables($this->object->getSuggestedSolutionPath());
                         
                         // remove an old file download
                         if (is_array($solution_array["value"])) {

@@ -674,7 +674,7 @@ class ilObjMediaCastGUI extends ilObjectGUI
             $locationType = "LocalFile";
             $location = $title;
             ilFileUtils::moveUploadedFile($_FILES['file_' . $purpose]['tmp_name'], $file_name, $file);
-            ilUtil::renameExecutables($mob_dir);
+            ilFileUtils::renameExecutables($mob_dir);
         }
         
         // check if not automatic mimetype detection
