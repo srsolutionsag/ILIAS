@@ -1510,7 +1510,7 @@ class ilUtil
     }
 
 
-    public static function escapeShellArg($a_arg)
+    public static function escapeShellArg(string $a_arg) : string
     {
         setlocale(LC_CTYPE, "UTF8", "en_US.UTF-8"); // fix for PHP escapeshellcmd bug. See: http://bugs.php.net/bug.php?id=45132
         // see also ilias bug 5630
@@ -1518,15 +1518,9 @@ class ilUtil
     }
 
     /**
-     * escape shell cmd
-     *
-     * @access public
-     * @param
-     * @return
-     * @static
-     *
+     * @deprecated
      */
-    public static function escapeShellCmd($a_arg)
+    public static function escapeShellCmd(string $a_arg) : string
     {
         if (ini_get('safe_mode') == 1) {
             return $a_arg;
@@ -1536,15 +1530,9 @@ class ilUtil
     }
 
     /**
-     * exec command and fix spaces on windows
-     *
-     * @param	string $cmd
-     * @param	string $args
-     * @return array
-     * @static
-     *
+     * @deprecated
      */
-    public static function execQuoted($cmd, $args = null)
+    public static function execQuoted(string $cmd, ?string $args = null) : array
     {
         global $DIC;
 
@@ -1567,8 +1555,8 @@ class ilUtil
         elseif ($args) {
             $cmd .= " " . $args;
         }
+        $arr = [];
         exec($cmd, $arr);
-
         $DIC->logger()->root()->debug("ilUtil::execQuoted: " . $cmd . ".");
         return $arr;
     }
