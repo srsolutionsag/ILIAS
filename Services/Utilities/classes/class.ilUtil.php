@@ -1561,11 +1561,6 @@ class ilUtil
         return $arr;
     }
     
-    public static function isAPICall()
-    {
-        return  strpos($_SERVER["SCRIPT_FILENAME"], "api") !== false ||
-        strpos($_SERVER["SCRIPT_FILENAME"], "dummy") !== false;
-    }
 
     public static function KT_replaceParam($qstring, $paramName, $paramValue)
     {
