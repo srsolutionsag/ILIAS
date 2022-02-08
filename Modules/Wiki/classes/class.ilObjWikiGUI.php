@@ -748,7 +748,7 @@ class ilObjWikiGUI extends ilObjectGUI
         if ($a_mode == "edit") {
             $pages = ilWikiPage::getAllWikiPages($this->object->getId());
             foreach ($pages as $p) {
-                $options[$p["id"]] = ilUtil::shortenText($p["title"], 60, true);
+                $options[$p["id"]] = ilStr::shortenTextExtended($p["title"], 60, true);
             }
             $si = new ilSelectInputGUI($lng->txt("wiki_start_page"), "startpage_id");
             $si->setOptions($options);
@@ -1500,7 +1500,7 @@ class ilObjWikiGUI extends ilObjectGUI
         $options = array("" => $lng->txt("please_select"));
         foreach ($pages as $p) {
             if (!in_array($p["id"], $ipages_ids)) {
-                $options[$p["id"]] = ilUtil::shortenText($p["title"], 60, true);
+                $options[$p["id"]] = ilStr::shortenTextExtended($p["title"], 60, true);
             }
         }
         if (count($options) > 0) {

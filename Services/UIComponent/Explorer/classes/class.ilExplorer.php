@@ -778,32 +778,40 @@ class ilExplorer
             }
 
             //$tpl->setVariable("LINK_NAME", $a_node_id);
-            $tpl->setVariable("TITLE", ilUtil::shortenText(
-                $this->buildTitle($a_option["title"], $a_node_id, $a_option["type"]),
-                $this->textwidth,
-                true
-            ));
-            $tpl->setVariable("DESC", ilUtil::shortenText(
-                $this->buildDescription($a_option["description"], $a_node_id, $a_option["type"]),
-                $this->textwidth,
-                true
-            ));
+            $tpl->setVariable("TITLE",
+                ilStr::shortenTextExtended(
+                    $this->buildTitle($a_option["title"], $a_node_id, $a_option["type"]),
+                    $this->textwidth,
+                    true
+                )
+            );
+            $tpl->setVariable("DESC",
+                ilStr::shortenTextExtended(
+                    $this->buildDescription($a_option["description"], $a_node_id, $a_option["type"]),
+                    $this->textwidth,
+                    true
+                )
+            );
             $frame_target = $this->buildFrameTarget($a_option["type"], $a_node_id, $a_option["obj_id"]);
             if ($frame_target != "") {
                 $tpl->setVariable("TARGET", " target=\"" . $frame_target . "\"");
             }
         } else {			// output text only
             $tpl->setCurrentBlock("text");
-            $tpl->setVariable("OBJ_TITLE", ilUtil::shortenText(
-                $this->buildTitle($a_option["title"], $a_node_id, $a_option["type"]),
-                $this->textwidth,
-                true
-            ));
-            $tpl->setVariable("OBJ_DESC", ilUtil::shortenText(
-                $this->buildDescription($a_option["desc"], $a_node_id, $a_option["type"]),
-                $this->textwidth,
-                true
-            ));
+            $tpl->setVariable("OBJ_TITLE",
+                ilStr::shortenTextExtended(
+                    $this->buildTitle($a_option["title"], $a_node_id, $a_option["type"]),
+                    $this->textwidth,
+                    true
+                )
+            );
+            $tpl->setVariable("OBJ_DESC",
+                ilStr::shortenTextExtended(
+                    $this->buildDescription($a_option["desc"], $a_node_id, $a_option["type"]),
+                    $this->textwidth,
+                    true
+                )
+            );
         }
         $tpl->parseCurrentBlock();
 

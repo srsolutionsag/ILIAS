@@ -57,7 +57,7 @@ class ilLDAPRoleMappingTableGUI extends ilTable2GUI
     {
         $title = $this->ilObjDataCache->lookupTitle($this->rbacreview->getObjectOfRole($a_set["role"]));
         $this->tpl->setVariable("VAL_ID", $a_set['mapping_id']);
-        $this->tpl->setVariable("VAL_TITLE", ilUtil::shortenText($title, 30, true));
+        $this->tpl->setVariable("VAL_TITLE", ilStr::shortenTextExtended($title, 30, true));
         $this->tpl->setVariable("VAL_ROLE", $a_set["role_name"]);
         $this->tpl->setVariable("VAL_GROUP", $a_set["dn"]);
         $this->tpl->setVariable("VAL_URL", $a_set["url"]);

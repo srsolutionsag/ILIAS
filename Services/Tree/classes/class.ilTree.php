@@ -1148,7 +1148,7 @@ class ilTree
 
                 if ($row) {
                     $data["title"] = $row->title;
-                    $data["description"] = ilUtil::shortenText($row->description, ilObject::DESC_LENGTH, true);
+                    $data["description"] = ilStr::shortenTextExtended($row->description, ilObject::DESC_LENGTH, true);
                     $data["desc"] = $row->description;
                 }
 
