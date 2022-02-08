@@ -1561,33 +1561,6 @@ class ilUtil
         return $arr;
     }
     
-    /**
-     * convert php arrays to javascript arrays
-     *
-     * @author gigi@orsone.com
-     * @access	public
-     * @param	array
-     * @return	string
-     * @static
-     *
-     */
-    public static function array_php2js($data)
-    {
-        if (empty($data)) {
-            $data = array();
-        }
-
-        foreach ($data as $k => $datum) {
-            if (is_null($datum)) {
-                $data[$k] = 'null';
-            }
-            if (is_string($datum)) {
-                $data[$k] = "'" . $datum . "'";
-            }
-            if (is_array($datum)) {
-                $data[$k] = array_php2js($datum);
-            }
-        }
 
         return "[" . implode(', ', $data) . "]";
     }
@@ -1630,20 +1603,6 @@ class ilUtil
         }
 
         return [true, ''];
-    }
-
-    /**
-     *	 make time object from mysql_date_time
-     *
-     * @static
-     *
-     */
-    public static function date_mysql2time($mysql_date_time)
-    {
-        [$datum, $uhrzeit] = explode(" ", $mysql_date_time);
-        [$jahr, $monat, $tag] = explode("-", $datum);
-        [$std, $min, $sec] = explode(":", $uhrzeit);
-        return mktime((int) $std, (int) $min, (int) $sec, (int) $monat, (int) $tag, (int) $jahr);
     }
 
     /**
