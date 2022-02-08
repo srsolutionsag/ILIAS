@@ -1072,11 +1072,45 @@ class ilFileUtils
         return (string) $path;
     }
     
+    /**
+     * @deprecated should use DataSize instead
+     */
     public static function getUploadSizeLimitBytes() : string
     {
+        $convertPhpIniSizeValueToBytes = function ($phpIniSizeValue)
+        {
+            if (is_numeric($phpIniSizeValue)) {
+                return $phpIniSizeValue;
+            }
+        
+            $suffix = substr($phpIniSizeValue, -1);
+            $value = substr($phpIniSizeValue, 0, -1);
+        
+            switch (strtoupper($suffix)) {
+                case 'P':
+                    $value *= 1024;
+                // no break
+                case 'T':
+                    $value *= 1024;
+                // no break
+                case 'G':
+                    $value *= 1024;
+                // no break
+                case 'M':
+                    $value *= 1024;
+                // no break
+                case 'K':
+                    $value *= 1024;
+                    break;
+            }
+        
+            return $value;
+        };
+        
+        
         $uploadSizeLimitBytes = min(
-            ilUtil::convertPhpIniSizeValueToBytes(ini_get('post_max_size')),
-            ilUtil::convertPhpIniSizeValueToBytes(ini_get('upload_max_filesize'))
+            $convertPhpIniSizeValueToBytes(ini_get('post_max_size')),
+            $convertPhpIniSizeValueToBytes(ini_get('upload_max_filesize'))
         );
         
         return $uploadSizeLimitBytes;

@@ -1572,20 +1572,7 @@ class ilUtil
         return date("Y-m-d H:i:s");
     }
     
-    // validates a domain name (example: www.ilias.de)
-    public static function isDN($a_str)
-    {
-        return(preg_match("/^[a-z]+([a-z0-9-]*[a-z0-9]+)?(\.([a-z]+([a-z0-9-]*[a-z0-9]+)?)+)*$/", $a_str));
-    }
-
-    // validates an IP address (example: 192.168.1.1)
-    public static function isIPv4($a_str)
-    {
-        return(preg_match("/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\." .
-                          "(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/", $a_str));
-    }
-
-
+    
     /**
     * Get all objects of a specific type and check access
     * This function is not recursive, instead it parses the serialized rbac_pa entries
@@ -1843,36 +1830,7 @@ class ilUtil
 
         return round($size, $decimals) . $unit[$i];
     }
-    
-    public static function convertPhpIniSizeValueToBytes($phpIniSizeValue)
-    {
-        if (is_numeric($phpIniSizeValue)) {
-            return $phpIniSizeValue;
-        }
-
-        $suffix = substr($phpIniSizeValue, -1);
-        $value = substr($phpIniSizeValue, 0, -1);
-
-        switch (strtoupper($suffix)) {
-            case 'P':
-                $value *= 1024;
-                // no break
-            case 'T':
-                $value *= 1024;
-                // no break
-            case 'G':
-                $value *= 1024;
-                // no break
-            case 'M':
-                $value *= 1024;
-                // no break
-            case 'K':
-                $value *= 1024;
-                break;
-        }
-
-        return $value;
-    }
+   
 
     /**
     *  extract ref id from role title, e.g. 893 from 'il_crs_member_893'
@@ -1954,23 +1912,7 @@ class ilUtil
         return $ids ? $ids : array();
     }
 
-    /**
-    * Get MySQL timestamp in 4.1.x or higher format (yyyy-mm-dd hh:mm:ss)
-    * This function converts a timestamp, if MySQL 4.0 is used.
-    *
-    * @param	string		MySQL timestamp string
-    * @return	string		MySQL 4.1.x timestamp string
-    * @static
-    *
-    */
-    public static function getMySQLTimestamp($a_ts)
-    {
-        global $DIC;
-
-        $ilDB = $DIC->database();
-
-        return $a_ts;
-    }
+   
 
     /**
     * Quotes all members of an array for usage in DB query statement.
@@ -2125,14 +2067,7 @@ class ilUtil
         ilSession::clear("infopanel");
         //}
     }
-
-
-    public static function randomhash()
-    {
-        $random = new \ilRandom();
-        return md5($random->int(1, 9999999) + str_replace(" ", "", (string) microtime()));
-    }
-
+    
     public static function setCookie($a_cookie_name, $a_cookie_value = '', $a_also_set_super_global = true, $a_set_cookie_invalid = false)
     {
         /*
@@ -2186,23 +2121,7 @@ class ilUtil
         }
     }
 
-    /**
-     * printBacktrace
-     *
-     * @param int $a_limit limit nr of lines
-     */
-    public static function printBacktrace($a_limit = 0)
-    {
-        $bt = debug_backtrace();
-        $cnt = 0;
-        foreach ($bt as $t) {
-            if ($cnt != 0 && ($a_limit == 0 || $cnt <= $a_limit)) {
-                echo "<br>" . $t["file"] . ", " . $t["function"] . " [" . $t["line"] . "]";
-            }
-            $cnt++;
-        }
-        echo "<br>";
-    }
+   
 
     /**
      * Parse an ilias import id
@@ -2237,133 +2156,10 @@ class ilUtil
         return $parsed;
     }
 
-    /**
-     * Returns the unserialized ILIAS session data.
-     *
-     * @param array $data The serialized ILIAS session data from database
-     * @return array
-     */
-    public static function unserializeSession($data)
-    {
-        $vars = preg_split(
-            '/([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff^|]*)\|/',
-            $data,
-            -1,
-            PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
-        );
-
-        $result = array();
-
-        for ($i = 0; $vars[$i]; $i++) {
-            $result[$vars[$i++]] = unserialize($vars[$i]);
-        }
-
-        return $result;
-    }
+   
 
 
-    /**
-     * Send a file via range request, see
-     * http://mobiforge.com/design-development/content-delivery-mobile-devices
-     * alternatives could be
-     * - http://www.php.net/manual/en/function.http-send-file.php
-     * - http://stackoverflow.com/questions/157318/resumable-downloads-when-using-php-to-send-the-file
-     * - https://gist.github.com/codler/3906826
-     * - ...
-     * @param string $file filename
-     *
-     * @deprecated use ilFileDelivery Class
-     */
-    public function rangeDownload($file)
-    {
-        $fp = @fopen($file, 'rb');
-
-        $size = filesize($file); // File size
-        $length = $size;           // Content length
-        $start = 0;               // Start byte
-        $end = $size - 1;       // End byte
-        // Now that we've gotten so far without errors we send the accept range header
-        /* At the moment we only support single ranges.
-         * Multiple ranges requires some more work to ensure it works correctly
-         * and comply with the spesifications: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
-         *
-         * Multirange support annouces itself with:
-         * header('Accept-Ranges: bytes');
-         *
-         * Multirange content must be sent with multipart/byteranges mediatype,
-         * (mediatype = mimetype)
-         * as well as a boundry header to indicate the various chunks of data.
-         */
-        header("Accept-Ranges: 0-$length");
-        // header('Accept-Ranges: bytes');
-        // multipart/byteranges
-        // http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
-        if (isset($_SERVER['HTTP_RANGE'])) {
-            $c_start = $start;
-            $c_end = $end;
-            // Extract the range string
-            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
-            // Make sure the client hasn't sent us a multibyte range
-            if (strpos($range, ',') !== false) {
-
-                // (?) Shoud this be issued here, or should the first
-                // range be used? Or should the header be ignored and
-                // we output the whole content?
-                header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                header("Content-Range: bytes $start-$end/$size");
-                // (?) Echo some info to the client?
-                exit;
-            }
-            // If the range starts with an '-' we start from the beginning
-            // If not, we forward the file pointer
-            // And make sure to get the end byte if spesified
-            if ($range == '-') {
-
-                // The n-number of the last bytes is requested
-                $c_start = $size - substr($range, 1);
-            } else {
-                $range = explode('-', $range);
-                $c_start = $range[0];
-                $c_end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
-            }
-            /* Check the range and make sure it's treated according to the specs.
-             * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-             */
-            // End bytes can not be larger than $end.
-            $c_end = ($c_end > $end) ? $end : $c_end;
-            // Validate the requested range and return an error if it's not correct.
-            if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
-                header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                header("Content-Range: bytes $start-$end/$size");
-                // (?) Echo some info to the client?
-                exit;
-            }
-            $start = $c_start;
-            $end = $c_end;
-            $length = $end - $start + 1; // Calculate new content length
-            fseek($fp, $start);
-            header('HTTP/1.1 206 Partial Content');
-        }
-        // Notify the client the byte range we'll be outputting
-        header("Content-Range: bytes $start-$end/$size");
-        header("Content-Length: $length");
-
-        // Start buffered download
-        $buffer = 1024 * 8;
-        while (!feof($fp) && ($p = ftell($fp)) <= $end) {
-            if ($p + $buffer > $end) {
-
-                // In case we're only outputtin a chunk, make sure we don't
-                // read past the length
-                $buffer = $end - $p + 1;
-            }
-            set_time_limit(0); // Reset time limit for big files
-            echo fread($fp, $buffer);
-            flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
-        }
-
-        fclose($fp);
-    }
+  
 
 
     //
@@ -2494,29 +2290,4 @@ class ilUtil
     }
 
 
-    //
-    // used for disk quotas
-    //
-
-    public static function MB2Bytes($a_value)
-    {
-        return  ((int) $a_value) * pow(self::_getSizeMagnitude(), 2);
-    }
-
-    public static function Bytes2MB($a_value)
-    {
-        return  ((int) $a_value) / (pow(self::_getSizeMagnitude(), 2));
-    }
-    
-    /**
-     * Dump var
-     *
-     * @param null $mixed
-     */
-    public static function dumpVar($mixed = null)
-    {
-        echo '<pre>';
-        var_dump($mixed);
-        echo '</pre>';
-    }
-} // END class.ilUtil
+}
