@@ -1227,27 +1227,21 @@ class ilUtil
     }
     
     /**
-    * convert "y"/"n" to true/false
-    *
-    * @static
-    *
-    */
-    public static function yn2tf($a_yn)
+     * @deprecated use Refinery instead
+     */
+    public static function yn2tf(string $a_yn) : bool
     {
-        if (strtolower($a_yn) == "y") {
+        if (strtolower($a_yn) === "y") {
             return true;
         } else {
             return false;
         }
     }
-
+    
     /**
-    * convert true/false to "y"/"n"
-    *
-    * @static
-    *
-    */
-    public static function tf2yn($a_tf)
+     * @deprecated
+     */
+    public static function tf2yn(bool $a_tf) : string
     {
         if ($a_tf) {
             return "y";
