@@ -1251,11 +1251,9 @@ class ilUtil
     }
 
     /**
-     * @param array $left
-     * @param array $right
-     * @return int
+     * @deprecated
      */
-    public static function sort_func(array $left, array $right) : int
+    protected static function sort_func(array $left, array $right) : int
     {
         global $array_sortby,$array_sortorder;
 
@@ -1279,9 +1277,7 @@ class ilUtil
     }
 
     /**
-     * @param array $left
-     * @param array $right
-     * @return int
+     * @deprecated
      */
     public static function sort_func_numeric(array $left, array $right) : int
     {
@@ -1299,30 +1295,21 @@ class ilUtil
         return 0;
     }
     /**
-    * sortArray
-    *
-    * @param	array	array to sort
-    * @param	string	sort_column
-    * @param	string	sort_order (ASC or DESC)
-    * @param	bool	sort numeric?
-    *
-    * @return	array	sorted array
-    * @static
-    *
+    * @deprecated
     */
     public static function sortArray(
-        $array,
-        $a_array_sortby,
-        $a_array_sortorder = 0,
-        $a_numeric = false,
-        $a_keep_keys = false
-    ) {
+        array $array,
+        string $a_array_sortby_key,
+        string $a_array_sortorder = "asc",
+        bool $a_numeric = false,
+        bool $a_keep_keys = false
+    ) : array {
         if (!$a_keep_keys) {
-            return self::stableSortArray($array, $a_array_sortby, $a_array_sortorder, $a_numeric, $a_keep_keys);
+            return self::stableSortArray($array, $a_array_sortby_key, $a_array_sortorder, $a_numeric);
         }
 
         global $array_sortby,$array_sortorder;
-        $array_sortby = $a_array_sortby;
+        $array_sortby = $a_array_sortby_key;
 
         if ($a_array_sortorder == "desc") {
             $array_sortorder = "desc";
@@ -1342,7 +1329,6 @@ class ilUtil
                 usort($array, array("ilUtil", "sort_func"));
             }
         }
-        //usort($array,"ilUtil::sort_func");
 
         return $array;
     }
@@ -1352,16 +1338,10 @@ class ilUtil
     * of array elements which have the same sort value.
     * To sort an array by multiple sort keys, invoke this function for each sort key.
     *
-    * @param	array	array to sort
-    * @param	string	sort_column
-    * @param	string	sort_order (ASC or DESC)
-    * @param	bool	sort numeric?
-    *
-    * @return	array	sorted array
-    * @static
-    *
+    * @deprecated
     */
-    public static function stableSortArray($array, $a_array_sortby, $a_array_sortorder = 0, $a_numeric = false)
+    public static function stableSortArray(
+        array $array, string $a_array_sortby, string $a_array_sortorder = "asc", bool $a_numeric = false) : array
     {
         global $array_sortby,$array_sortorder;
 
@@ -1384,9 +1364,17 @@ class ilUtil
 
         return $sort_array;
     }
-
-    public static function mergesort(&$array, $cmp_function = 'strcmp')
+    
+    /**
+     * @param array $array
+     * @param callable $cmp_function
+     * @return void
+     */
+    private static function mergesort(array &$array, callable $cmp_function = null) : void
     {
+        if ($cmp_function === null) {
+            $cmp_function = 'strcmp';
+        }
         // Arrays of size < 2 require no action.
         if (count($array) < 2) {
             return;
@@ -1425,34 +1413,6 @@ class ilUtil
         while ($ptr2 < count($array2)) {
             $array[] = $array2[$ptr2++];
         }
-
-        return;
-    }
-
-    /**
-    * Make a multi-dimensional array to have only DISTINCT values for a certain "column".
-    * It's like using the DISTINCT parameter on a SELECT sql statement.
-    *
-    * @param	array	your multi-dimensional array
-    * @param	string	'column' to filter
-    * @return	array	filtered array
-    * @author	Unknown <tru@ascribedata.com> (found in PHP annotated manual)
-    * @static
-    *
-    */
-    public static function unique_multi_array($array, $sub_key)
-    {
-        $target = array();
-        $existing_sub_key_values = array();
-
-        foreach ($array as $key => $sub_array) {
-            if (!in_array($sub_array[$sub_key], $existing_sub_key_values)) {
-                $existing_sub_key_values[] = $sub_array[$sub_key];
-                $target[$key] = $sub_array;
-            }
-        }
-
-        return $target;
     }
 
 
