@@ -393,18 +393,16 @@ class ilUtil
     * for minutes and $prefix[s] for seconds.
     *
     * @access	public
-    * @param	string	$prefix Prefix of the select name
-    * @param  boolean $short Set TRUE for a short time input (only hours and minutes). Default is TRUE
-    * @param	integer $hour Default hour value
-    * @param	integer $minute Default minute value
-    * @param	integer $second Default second value
-    * @return	string	HTML select boxes
-    * @author Helmut Schottmüller <hschottm@tzi.de>
-    * @static
-    *
+    * @param string $prefix  Prefix of the select name
+    * @param boolean $short  Set TRUE for a short time input (only hours and minutes). Default is TRUE
+    * @param integer $hour   Default hour value
+    * @param integer $minute Default minute value
+    * @param integer $second Default second value
+    * @deprecated
     */
-    public static function makeTimeSelect($prefix, $short = true, $hour = "", $minute = "", $second = "", $a_use_default = true, $a_further_options = array())
-    {
+    public static function makeTimeSelect(
+        string $prefix, bool $short = true, int $hour = 0, int $minute = 0, int $second = 0, bool $a_use_default = true, array $a_further_options = []
+    ) : string {
         global $DIC;
 
         $lng = $DIC->language();
