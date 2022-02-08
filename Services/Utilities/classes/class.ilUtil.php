@@ -1418,13 +1418,9 @@ class ilUtil
     /**
     * checks if mime type is provided by getimagesize()
     *
-    * @param	string		$a_mime		mime format
-    *
-    * @return	boolean		returns true if size is deducible by getimagesize()_DiffEngine
-    * @static
-    *
+    * @deprecated
     */
-    public static function deducibleSize($a_mime)
+    public static function deducibleSize(string $a_mime) : bool
     {
         if (($a_mime == "image/gif") || ($a_mime == "image/jpeg") ||
         ($a_mime == "image/png") || ($a_mime == "application/x-shockwave-flash") ||
@@ -1438,20 +1434,16 @@ class ilUtil
 
 
     /**
-     * @param $a_script
-     *
      * @deprecated Use $DIC->ctrl()->redirectToURL() instead
      */
-    public static function redirect($a_script)
+    public static function redirect(string $a_script) : void
     {
         global $DIC;
 
         if (!isset($DIC['ilCtrl']) || !$DIC['ilCtrl'] instanceof ilCtrl) {
             (new InitCtrlService())->init($DIC);
-        } else {
-            $ctrl = $DIC->ctrl();
         }
-        $ctrl->redirectToURL($a_script);
+        $DIC->ctrl()->redirectToURL($a_script);
     }
 
     /**
@@ -1459,10 +1451,9 @@ class ilUtil
     *
     * e.g. "il__pg_3" -> "il_43_pg_3"
     *
-    * @static
-    *
+    * @deprecated
     */
-    public static function insertInstIntoID($a_value)
+    public static function insertInstIntoID(string $a_value) : string
     {
         if (substr($a_value, 0, 4) == "il__") {
             $a_value = "il_" . IL_INST_ID . "_" . substr($a_value, 4, strlen($a_value) - 4);
@@ -1474,14 +1465,15 @@ class ilUtil
     /**
     * checks if group name already exists. Groupnames must be unique for mailing purposes
     * static function
+    *
     * @access	public
     * @param	string	groupname
     * @param	integer	obj_id of group to exclude from the check.
-    * @return	boolean	true if exists
+    * @return    boolean	true if exists
     * @static
     *
     */
-    public static function groupNameExists($a_group_name, $a_id = 0)
+    public static function groupNameExists(string $a_group_name, ?int $a_id = null) : bool
     {
         global $DIC;
 
@@ -1497,7 +1489,7 @@ class ilUtil
             $ilErr->raiseError($message, $ilErr->WARNING);
         }
 
-        $clause = ($a_id) ? " AND obj_id != " . $ilDB->quote($a_id) . " " : "";
+        $clause = ($a_id !== null) ? " AND obj_id != " . $ilDB->quote($a_id) . " " : "";
 
         $q = "SELECT obj_id FROM object_data " .
         "WHERE title = " . $ilDB->quote($a_group_name, "text") . " " .
@@ -1505,38 +1497,16 @@ class ilUtil
         $clause;
 
         $r = $ilDB->query($q);
-
-        if ($r->numRows()) {
-            return true;
-        } else {
-            return false;
-        }
+    
+        return $r->numRows() > 0;
     }
-
+    
     /**
-    * get current memory usage as string
-    *
-    * @static
-    *
-    */
-    public static function getMemString()
+     * @deprecated
+     */
+    public static function isWindows() : bool
     {
-        $my_pid = getmypid();
-        return ("MEMORY USAGE (% KB PID ): " . `ps -eo%mem,rss,pid | grep $my_pid`);
-    }
-
-    /**
-    * check wether the current client system is a windows system
-    *
-    * @static
-    *
-    */
-    public static function isWindows()
-    {
-        if (strtolower(substr(php_uname(), 0, 3)) == "win") {
-            return true;
-        }
-        return false;
+        return (strtolower(substr(php_uname(), 0, 3)) === "win");
     }
 
 
@@ -1603,46 +1573,6 @@ class ilUtil
         return $arr;
     }
 
-    /**
-    * Calculates a Microsoft Excel date/time value
-    *
-    * Calculates a Microsoft Excel date/time value (nr of days after 1900/1/1 0:00) for
-    * a given date and time. The function only accepts dates after 1970/1/1, because the
-    * unix timestamp functions used in the function are starting with that date.
-    * If you don't enter parameters the date/time value for the actual date/time
-    * will be calculated.
-    *
-    * static function
-    *
-    * @param	integer $year Year
-    * @param	integer $month Month
-    * @param	integer $day Day
-    * @param	integer $hour Hour
-    * @param	integer $minute Minute
-    * @param	integer $second Second
-    * @return float The Microsoft Excel date/time value
-    * @access	public
-    * @static
-    *
-    */
-    public static function excelTime($year = "", $month = "", $day = "", $hour = "", $minute = "", $second = "")
-    {
-        $starting_time = mktime(0, 0, 0, 1, 2, 1970);
-        if (strcmp("$year$month$day$hour$minute$second", "") == 0) {
-            $target_time = time();
-        } else {
-            if ($year < 1970) {
-                return 0;
-            }
-        }
-        $target_time = mktime($hour, $minute, $second, $month, $day, $year);
-        $difference = $target_time - $starting_time;
-        $days = (($difference - ($difference % 86400)) / 86400);
-        $difference = $difference - ($days * 86400) + 3600;
-
-        // #15343 - using a global locale leads to , instead of . for (implicit) floats
-        return str_replace(",", ".", ($days + 25570 + ($difference / 86400)));
-    }
 
     /**
     * Rename uploaded executables for security reasons.
