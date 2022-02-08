@@ -2,6 +2,8 @@
 
 /* Copyright (c) 1998-2018 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+use ILIAS\Filesystem\Util\LegacyPathHelper;
+
 class ilObjectTileImage implements ilObjectTileImageInterface
 {
     protected ilObjectService $service;
@@ -176,7 +178,28 @@ class ilObjectTileImage implements ilObjectTileImageInterface
                 $this->getRelativeDirectory()
             ]
         );
-        ilUtil::rCopy($source_dir, $target_dir);
+        $sourceFS = LegacyPathHelper::deriveFilesystemFrom($source_dir);
+        $targetFS = LegacyPathHelper::deriveFilesystemFrom($target_dir);
+    
+        $sourceDir = LegacyPathHelper::createRelativePath($source_dir);
+        $targetDir = LegacyPathHelper::createRelativePath($target_dir);
+        
+    
+        $sourceList = $sourceFS->listContents($sourceDir, true);
+    
+        foreach ($sourceList as $item) {
+            if ($item->isDir()) {
+                continue;
+            }
+            try {
+                $itemPath = $targetDir . '/' . substr($item->getPath(), strlen($sourceDir));
+                $stream = $sourceFS->readStream($item->getPath());
+                $targetFS->writeStream($itemPath, $stream);
+            } catch (\ILIAS\Filesystem\Exception\FileAlreadyExistsException $e) {
+                // Do nothing with that type of exception
+            }
+        }
+        
         ilContainer::_writeContainerSetting($this->obj_id, 'tile_image', $ext);
     }
 }
