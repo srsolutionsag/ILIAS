@@ -6,6 +6,8 @@
 use ILIAS\Filesystem\Util\LegacyPathHelper;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\DTO\UploadResult;
+use ILIAS\FileDelivery\Delivery;
+use ILIAS\Filesystem\Stream\Streams;
 
 /**
  * Util class
@@ -678,60 +680,30 @@ class ilUtil
 
         return $img;
     }
-
+    
     /**
-    *   deliver data for download via browser.
-    *
-    * @static
-    *
-    */
-    public static function deliverData($a_data, $a_filename, $mime = "application/octet-stream", $charset = "")
-    {
-        $disposition = "attachment"; // "inline" to view file in browser or "attachment" to download to hard disk
-        //		$mime = "application/octet-stream"; // or whatever the mime type is
-
-        //if($_SERVER['HTTPS'])
-        if (ilHTTPS::getInstance()->isDetected()) {
-
-            // Added different handling for IE and HTTPS => send pragma after content informations
-            /**
-            * We need to set the following headers to make downloads work using IE in HTTPS mode.
-            */
-            #header("Pragma: ");
-            #header("Cache-Control: ");
-            #header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            #header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            #header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
-            #header("Cache-Control: post-check=0, pre-check=0", false);
-        } elseif ($disposition == "attachment") {
-            header("Cache-control: private");
-        } else {
-            header("Cache-Control: no-cache, must-revalidate");
-            header("Pragma: no-cache");
-        }
-
-        $ascii_filename = ilFileUtils::getASCIIFilename($a_filename);
-
-        if (strlen($charset)) {
-            $charset = "; charset=$charset";
-        }
-        header("Content-Type: $mime$charset");
-        header("Content-Disposition:$disposition; filename=\"" . $ascii_filename . "\"");
-        header("Content-Description: " . $ascii_filename);
-        header("Content-Length: " . (string) (strlen($a_data)));
-
-        //if($_SERVER['HTTPS'])
-        if (ilHTTPS::getInstance()->isDetected()) {
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-        }
-
-        header("Connection: close");
-        echo $a_data;
-        exit;
+     * @deprecated use ilFileDelivery
+     */
+    public static function deliverData(
+        string $a_data,
+        string $a_filename,
+        string $mime = "application/octet-stream"
+    ) : void {
+        global $DIC;
+        $delivery = new Delivery(
+            Delivery::DIRECT_PHP_OUTPUT,
+            $DIC->http()
+        );
+        $delivery->setMimeType($mime);
+        $delivery->setSendMimeType(true);
+        $delivery->setDisposition(Delivery::DISP_ATTACHMENT);
+        $delivery->setDownloadFileName($a_filename);
+        $delivery->setConvertFileNameToAsci(true);
+        $repsonse = $DIC->http()->response()->withBody(Streams::ofString($a_data));
+        $DIC->http()->saveResponse($repsonse);
+        $delivery->deliver();
     }
-
-
+    
 
     // convert utf8 to ascii filename
 

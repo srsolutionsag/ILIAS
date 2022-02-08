@@ -386,7 +386,10 @@ class ilObjAssessmentFolderGUI extends ilObjectGUI
         foreach ($csv as $row) {
             $csvoutput .= join($separator, $row) . "\n";
         }
-        ilUtil::deliverData($csvoutput, str_replace(" ", "_", "log_" . $from . "_" . $until . "_" . $available_tests[$test]) . ".csv");
+        ilUtil::deliverData(
+            $csvoutput,
+            str_replace(" ", "_", "log_" . $from . "_" . $until . "_" . $available_tests[$test]) . ".csv"
+        );
     }
 
     /**
