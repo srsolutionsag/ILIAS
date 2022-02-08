@@ -1123,7 +1123,7 @@ class ilObjUserGUI extends ilObjectGUI
             if ($a_mode == "create") {
                 $pw->setRequiredOnAuth(true);
             }
-            $pw->setInfo(ilUtil::getPasswordRequirementsInfo());
+            $pw->setInfo(ilSecuritySettingsChecker::getPasswordRequirementsInfo());
             $this->form_gui->addItem($pw);
         }
         // @todo: invisible/hidden passwords

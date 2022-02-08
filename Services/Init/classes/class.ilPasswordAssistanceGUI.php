@@ -350,7 +350,7 @@ class ilPasswordAssistanceGUI
         $form->addItem($username);
 
         $password = new ilPasswordInputGUI($this->lng->txt('password'), 'password');
-        $password->setInfo(\ilUtil::getPasswordRequirementsInfo());
+        $password->setInfo(ilSecuritySettingsChecker::getPasswordRequirementsInfo());
         $password->setRequired(true);
         $form->addItem($password);
 
@@ -475,7 +475,7 @@ class ilPasswordAssistanceGUI
             }
 
             $error_lng_var = '';
-            if (!ilUtil::isPasswordValidForUserContext($password, $userObj, $error_lng_var)) {
+            if (!ilSecuritySettingsChecker::isPasswordValidForUserContext($password, $userObj, $error_lng_var)) {
                 $message = $this->lng->txt($error_lng_var);
                 $is_successful = false;
             }

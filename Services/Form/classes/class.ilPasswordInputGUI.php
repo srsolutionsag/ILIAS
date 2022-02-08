@@ -196,7 +196,7 @@ class ilPasswordInputGUI extends ilSubEnabledFormPropertyGUI
             return false;
         }
         if (!$this->getSkipSyntaxCheck() &&
-            !ilUtil::isPassword($pass_value, $custom_error) &&
+            !ilSecuritySettingsChecker::isPassword($pass_value, $custom_error) &&
             $pass_value != "") {
             if ($custom_error != '') {
                 $this->setAlert($custom_error);

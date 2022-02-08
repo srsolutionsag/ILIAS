@@ -1705,7 +1705,7 @@ class ilStartUpGUI implements ilCtrlBaseClassInterface, ilCtrlSecurityInterface
             $user->setActive(true);
             $password = '';
             if ($oRegSettings->passwordGenerationEnabled()) {
-                $passwords = ilUtil::generatePasswords(1);
+                $passwords = ilSecuritySettingsChecker::generatePasswords(1);
                 $password = $passwords[0];
                 $user->setPasswd($password, ilObjUser::PASSWD_PLAIN);
                 $user->setLastPasswordChangeTS(time());
