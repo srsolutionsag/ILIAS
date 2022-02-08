@@ -490,25 +490,18 @@ class ilUtil
      * and the special ones (.arpa, .int etc.)
      * as well as with e-mail addresses based on IPs (e.g. webmaster@123.45.123.45)
      * Valid top level domains: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
-     * @author    Unknown <mail@philipp-louis.de> (source: http://www.php.net/preg_match)
-     * @access    public
-     * @param    string    email address
-     * @param ilMailRfc822AddressParserFactory|null $mailAddressParserFactory
-     * @return bool true if valid
-     * @static
+     *
+     * @deprecated use ilMailRfc822AddressParserFactory directly
      */
-    public static function is_email($a_email, ilMailRfc822AddressParserFactory $mailAddressParserFactory = null)
+    public static function is_email(string $a_email, ilMailRfc822AddressParserFactory $mailAddressParserFactory = null
+    ) : bool
     {
-        if (null === $a_email || !is_string($a_email)) {
-            return false;
-        }
-
         if ($mailAddressParserFactory === null) {
             $mailAddressParserFactory = new ilMailRfc822AddressParserFactory();
         }
 
         try {
-            $parser = $mailAddressParserFactory->getParser((string) $a_email);
+            $parser = $mailAddressParserFactory->getParser($a_email);
             $addresses = $parser->parse();
             return count($addresses) == 1 && $addresses[0]->getHost() != ilMail::ILIAS_HOST;
         } catch (ilException $e) {
@@ -519,14 +512,7 @@ class ilUtil
     /**
      * @deprecated
      */
-
-    /*
-    * validates a login
-    * @access	public
-    * @param	string	login
-    * @return	boolean	true if valid
-    */
-    public static function isLogin($a_login)
+    public static function isLogin(string $a_login) : bool
     {
         if (empty($a_login)) {
             return false;
