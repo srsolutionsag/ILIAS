@@ -209,20 +209,19 @@ class ilUtil
     * @param	string			style class
     * @param	array			additional attributes (key = attribute name, value = attribute value)
     * @param    boolean			disabled
-    * @static
-    *
+    * @deprecated
     */
     public static function formSelect(
         $selected,
-        $varname,
-        $options,
-        $multiple = false,
-        $direct_text = false,
-        $size = "0",
-        $style_class = "",
-        $attribs = "",
-        $disabled = false
-    ) {
+        string $varname,
+        array $options,
+        bool $multiple = false,
+        bool $direct_text = false,
+        int $size = 0,
+        string $style_class = "",
+        array $attribs = [],
+        bool $disabled = false
+    ) : string {
         global $DIC;
 
         $lng = $DIC->language();
@@ -291,27 +290,19 @@ class ilUtil
 
         return $str;
     }
-
+    
     /**
-    * ???
-    * @access	public
-    * @param	string
-    * @param	string
-    * @param	string
-    * @param	boolean	disabled checked checkboxes (default: false)
-    * @return	string
-    * @static
-    *
-    */
-    public static function formCheckbox($checked, $varname, $value, $disabled = false)
+     * @deprecated
+     */
+    public static function formCheckbox(bool $checked, string $varname, string $value, bool $disabled = false) : string
     {
         $str = "<input type=\"checkbox\" name=\"" . $varname . "\"";
 
-        if ($checked == 1) {
+        if ($checked === true) {
             $str .= " checked=\"checked\"";
         }
 
-        if ($disabled) {
+        if ($disabled === true) {
             $str .= " disabled=\"disabled\"";
         }
 
@@ -336,31 +327,25 @@ class ilUtil
 
         return $str;
     }
-
+    
     /**
-    * ???
-    * @access	public
-    * @param	string
-    * @param	string
-    * @param	string
-    * @return	string
-    * @static
-    *
-    */
-    public static function formRadioButton($checked, $varname, $value, $onclick = null, $disabled = false)
+     * @deprecated
+     */
+    public static function formRadioButton(
+        bool $checked, string $varname, string $value, string $onclick = null, bool $disabled = false) : string
     {
         $str = '<input ';
 
-        if ($onclick) {
+        if ($onclick !== null) {
             $str .= ('onclick="' . $onclick . '"');
         }
 
         $str .= (" type=\"radio\" name=\"" . $varname . "\"");
-        if ($checked == 1) {
+        if ($checked === true) {
             $str .= " checked=\"checked\"";
         }
 
-        if ($disabled) {
+        if ($disabled === true) {
             $str .= " disabled=\"disabled\"";
         }
 
@@ -372,41 +357,15 @@ class ilUtil
     }
 
 
-    /**
-     * create html input area
-     *
-     * @param string $varname    name of form variable
-     * @param string $value      value and id of input
-     * @param boolean $disabled   if true, input appears disabled
-     * @return string string
-     * @static
-     */
-    public static function formInput($varname, $value, $disabled = false)
-    {
-        $str = "<input type=\"input\" name=\"" . $varname . "\"";
-        if ($disabled) {
-            $str .= " disabled";
-        }
-
-        $str .= " value=\"" . $value . "\"";
-
-        $str .= " id=\"" . $value . "\" />\n";
-
-        return $str;
-    }
+   
 
 
     /**
     * switches style sheets for each even $a_num
     * (used for changing colors of different result rows)
-    *
-    * @param	integer	$a_num	the counter
-    * @param	string	$a_css1	name of stylesheet 1
-    * @param	string	$a_css2	name of stylesheet 2
-    * @return	string	$a_css1 or $a_css2
     * @deprecated
     */
-    public static function switchColor($a_num, $a_css1, $a_css2)
+    public static function switchColor(int $a_num, string $a_css1, string $a_css2) : string
     {
         if (!($a_num % 2)) {
             return $a_css1;
