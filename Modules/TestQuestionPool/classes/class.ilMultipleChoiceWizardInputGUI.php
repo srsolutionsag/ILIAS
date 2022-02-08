@@ -155,7 +155,7 @@ class ilMultipleChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                             $size_bytes = $_FILES[$this->getPostVar()]['size']['image'][$index];
                             // virus handling
                             if (strlen($tmpname)) {
-                                $vir = ilUtil::virusHandling($tmpname, $filename);
+                                $vir = ilVirusScanner::virusHandling($tmpname, $filename);
                                 if ($vir[0] == false) {
                                     $this->setAlert($lng->txt("form_msg_file_virus_found") . "<br />" . $vir[1]);
                                     return false;

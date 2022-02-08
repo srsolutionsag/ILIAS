@@ -146,7 +146,7 @@ class ilFileWizardInputGUI extends ilFileInputGUI
 
                 // virus handling
                 if ($pictures["tmp_name"][$index] != "") {
-                    $vir = ilUtil::virusHandling($temp_name, $filename);
+                    $vir = ilVirusScanner::virusHandling($temp_name, $filename);
                     if ($vir[0] == false) {
                         $this->setAlert($lng->txt("form_msg_file_virus_found") . "<br />" . $vir[1]);
                         $uploadcheck = false;

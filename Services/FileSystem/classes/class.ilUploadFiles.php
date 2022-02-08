@@ -88,7 +88,7 @@ class ilUploadFiles
         }
 
         // virus handling
-        $vir = ilUtil::virusHandling($file, $a_file);
+        $vir = ilVirusScanner::virusHandling($file, $a_file);
         if (!$vir[0]) {
             if ($a_raise_errors) {
                 $ilias->raiseError(

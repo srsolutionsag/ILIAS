@@ -396,7 +396,7 @@ class assFileUpload extends assQuestion implements ilObjQuestionScoringAdjustabl
 
         // virus handling
         if (strlen($temp_name)) {
-            $vir = ilUtil::virusHandling($temp_name, $filename);
+            $vir = ilVirusScanner::virusHandling($temp_name, $filename);
             if ($vir[0] == false) {
                 $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_msg_file_virus_found") . "<br />" . $vir[1], true);
                 return false;

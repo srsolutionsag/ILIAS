@@ -84,7 +84,7 @@ class ilFileUtils
                 continue;
             }
             
-            $vir = ilUtil::virusHandling($filearray["path"][$key], $value);
+            $vir = ilVirusScanner::virusHandling($filearray["path"][$key], $value);
             if (!$vir[0]) {
                 // Unlink file and throw exception
                 unlink($filearray['path'][$key]);

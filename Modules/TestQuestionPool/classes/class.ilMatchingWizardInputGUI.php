@@ -238,7 +238,7 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
 
                         // check suffixes
                         if ($tmpname != '' && is_array($this->getSuffixes())) {
-                            $vir = ilUtil::virusHandling($tmpname, $filename);
+                            $vir = ilVirusScanner::virusHandling($tmpname, $filename);
                             if ($vir[0] == false) {
                                 $this->setAlert($lng->txt("form_msg_file_virus_found") . "<br />" . $vir[1]);
                                 return false;

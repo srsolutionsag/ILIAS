@@ -1723,7 +1723,7 @@ class ilObjMediaPoolGUI extends ilObject2GUI
                 $file = $mob_dir . "/" . basename($fullpath);
 
                 // virus handling
-                $vir = ilUtil::virusHandling($fullpath, basename($fullpath));
+                $vir = ilVirusScanner::virusHandling($fullpath, basename($fullpath));
                 if (!$vir[0]) {
                     $this->main_tpl->setOnScreenMessage('failure', $this->lng->txt("file_is_infected") . "<br />" . $vir[1], true);
                     ilUtil::redirect("ilias.php?baseClass=ilMediaPoolPresentationGUI&cmd=listMedia&ref_id=" .
