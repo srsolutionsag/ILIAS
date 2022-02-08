@@ -1565,66 +1565,13 @@ class ilUtil
 
     /**
     * Return current timestamp in Y-m-d H:i:s format
-    *
-    * @static
     * @deprecated
     */
     public static function now() : string
     {
         return date("Y-m-d H:i:s");
     }
-
-    /**
-    * Convertes an array for CSV usage
-    *
-    * Processes an array as a CSV row and converts the array values to correct CSV
-    * values. The "converted" array is returned
-    *
-    * @author Helmut Schottmüller <hschottm@gmx.de>
-    * @param array $row The array containing the values for a CSV row
-    * @param string $quoteAll Indicates to quote every value (=TRUE) or only values containing quotes and separators (=FALSE, default)
-    * @param string $separator The value separator in the CSV row (used for quoting) (; = default)
-    * @return array The converted array ready for CSV use
-    * @access public
-    * @static
-    *
-    */
-    public static function &processCSVRow(&$row, $quoteAll = false, $separator = ";", $outUTF8 = false, $compatibleWithMSExcel = true)
-    {
-        $resultarray = array();
-        foreach ($row as $rowindex => $entry) {
-            $surround = false;
-            if ($quoteAll) {
-                $surround = true;
-            }
-            if (strpos($entry, "\"") !== false) {
-                $entry = str_replace("\"", "\"\"", $entry);
-                $surround = true;
-            }
-            if (strpos($entry, $separator) !== false) {
-                $surround = true;
-            }
-            if ($compatibleWithMSExcel) {
-                // replace all CR LF with LF (for Excel for Windows compatibility
-                $entry = str_replace(chr(13) . chr(10), chr(10), $entry);
-            }
-            if ($surround) {
-                if ($outUTF8) {
-                    $resultarray[$rowindex] = "\"" . $entry . "\"";
-                } else {
-                    $resultarray[$rowindex] = utf8_decode("\"" . $entry . "\"");
-                }
-            } else {
-                if ($outUTF8) {
-                    $resultarray[$rowindex] = $entry;
-                } else {
-                    $resultarray[$rowindex] = utf8_decode($entry);
-                }
-            }
-        }
-        return $resultarray;
-    }
-
+    
     // validates a domain name (example: www.ilias.de)
     public static function isDN($a_str)
     {
