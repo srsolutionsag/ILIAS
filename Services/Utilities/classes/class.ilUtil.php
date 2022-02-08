@@ -376,71 +376,13 @@ class ilUtil
 
 
     /**
-    * makeClickable
-    * In Texten enthaltene URLs und Mail-Adressen klickbar machen
-    *
-    * @access	public
-    * @param	string	$text: Der Text
-    * @param	boolean	$detectGotoLinks	if true, internal goto-links will be retargeted to _self and text is replaced by title
-    * @return	string	clickable link
-    * @static
     * @depracated Use the respective `Refinery` transformation `$refinery->string()->makeClickable("foo bar")` to convert URL-like string parts to an HTML anchor (`<a>`) element (the boolean flag is removed)
     */
-    public static function makeClickable($a_text, $detectGotoLinks = false)
+    public static function makeClickable(string $a_text, bool $detectGotoLinks = false) : string
     {
-        // New code, uses MediaWiki Sanitizer
-        $ret = $a_text;
-
-        // www-URL ohne ://-Angabe
-        $ret = preg_replace(
-            "/(^|[\s]+)(www\.)([A-Za-z0-9#&=?.\/\-]+)/i",
-            "$1http://$2$3",
-            $ret
-        );
-
-        // ftp-URL ohne ://-Angabe
-        $ret = preg_replace(
-            "/(^|[\s]+)(ftp\.)([A-Za-z0-9#&=?.\/\-]+)/i",
-            "$1ftp://$2$3",
-            $ret
-        );
-
-        // E-Mail (this does not work as expected, users must add mailto: manually)
-        //$ret = preg_replace("/(([a-z0-9_]|\-|\.)+@([^[\s]*)([A-Za-z0-9\-]))/i",
-        //	"mailto:$1", $ret);
-
-        // mask existing image tags
-        $ret = str_replace('src="http://', '"***masked_im_start***', $ret);
-
-        $parser = new ilMWParserAdapter();
-        $ret = $parser->replaceFreeExternalLinks($ret);
-
-        // unmask existing image tags
-        $ret = str_replace('"***masked_im_start***', 'src="http://', $ret);
-
-        // Should be Safe
-
-        if ($detectGotoLinks) {
-            // replace target blank with self and text with object title.
-            $regExp = "<a[^>]*href=\"(" . str_replace("/", "\/", ILIAS_HTTP_PATH) . "\/goto.php\?target=\w+_(\d+)[^\"]*)\"[^>]*>[^<]*<\/a>";
-            //			echo htmlentities($regExp);
-            $ret = preg_replace_callback(
-                "/" . $regExp . "/i",
-                array("ilUtil", "replaceLinkProperties"),
-                $ret
-            );
-
-            // Static links
-            $regExp = "<a[^>]*href=\"(" . str_replace("/", "\/", ILIAS_HTTP_PATH) . "\/goto_.*[a-z0-9]+_([0-9]+)\.html)\"[^>]*>[^<]*<\/a>";
-            //			echo htmlentities($regExp);
-            $ret = preg_replace_callback(
-                "/" . $regExp . "/i",
-                array("ilUtil", "replaceLinkProperties"),
-                $ret
-            );
-        }
-
-        return($ret);
+        global $DIC;
+        
+        return $DIC->refinery()->string()->makeClickable()->transform($a_text);
     }
 
     /**
