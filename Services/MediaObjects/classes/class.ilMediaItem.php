@@ -103,7 +103,76 @@ class ilMediaItem
     {
         return $this->nr;
     }
-
+    
+    /**
+    * returns the best supported image type by this PHP build
+    *
+    * @param	string	$desired_type	desired image type ("jpg" | "gif" | "png")
+    *
+    * @return    string                    supported image type ("jpg" | "gif" | "png" | "")
+    * @static
+    *
+    */
+    private static function getGDSupportedImageType(string $a_desired_type) : string
+    {
+        $a_desired_type = strtolower($a_desired_type);
+        // get supported Image Types
+        $im_types = ImageTypes();
+        
+        switch ($a_desired_type) {
+            case "jpg":
+            case "jpeg":
+                if ($im_types&IMG_JPG) {
+                    return "jpg";
+                }
+                if ($im_types&IMG_GIF) {
+                    return "gif";
+                }
+                if ($im_types&IMG_PNG) {
+                    return "png";
+                }
+                break;
+            
+            case "gif":
+                if ($im_types&IMG_GIF) {
+                    return "gif";
+                }
+                if ($im_types&IMG_JPG) {
+                    return "jpg";
+                }
+                if ($im_types&IMG_PNG) {
+                    return "png";
+                }
+                break;
+            
+            case "png":
+                if ($im_types&IMG_PNG) {
+                    return "png";
+                }
+                if ($im_types&IMG_JPG) {
+                    return "jpg";
+                }
+                if ($im_types&IMG_GIF) {
+                    return "gif";
+                }
+                break;
+            
+            case "svg":
+                if ($im_types&IMG_PNG) {
+                    return "png";
+                }
+                if ($im_types&IMG_JPG) {
+                    return "jpg";
+                }
+                if ($im_types&IMG_GIF) {
+                    return "gif";
+                }
+                break;
+        }
+        
+        return "";
+    }
+    
     public function setDuration(int $a_val) : void
     {
         $this->duration = $a_val;
@@ -699,7 +768,7 @@ class ilMediaItem
      */
     public function getMapWorkCopyType() : string
     {
-        return ilUtil::getGDSupportedImageType($this->getSuffix());
+        return self::getGDSupportedImageType($this->getSuffix());
     }
 
     /**
