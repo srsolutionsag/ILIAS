@@ -1561,30 +1561,6 @@ class ilUtil
         return $arr;
     }
     
-
-    public static function KT_replaceParam($qstring, $paramName, $paramValue)
-    {
-        if (preg_match("/&" . $paramName . "=/", $qstring)) {
-            return preg_replace("/&" . $paramName . "=[^&]+/", "&" . $paramName . "=" . urlencode($paramValue), $qstring);
-        } else {
-            return $qstring . "&" . $paramName . "=" . urlencode($paramValue);
-        }
-    }
-
-    public static function replaceUrlParameterString($url, $parametersArray)
-    {
-        foreach ($parametersArray as $paramName => $paramValue) {
-            $url = ilUtil::KT_replaceParam($url, $paramName, $paramValue);
-        }
-        return $url;
-    }
-    
-    public static function removeTrailingPathSeparators($path)
-    {
-        $path = preg_replace("/[\/\\\]+$/", "", $path);
-        return $path;
-    }
-
     /**
      * convert php arrays to javascript arrays
      *
@@ -2003,17 +1979,7 @@ class ilUtil
 
         return round($size, $decimals) . $unit[$i];
     }
-
-    public static function getUploadSizeLimitBytes()
-    {
-        $uploadSizeLimitBytes = min(
-            self::convertPhpIniSizeValueToBytes(ini_get('post_max_size')),
-            self::convertPhpIniSizeValueToBytes(ini_get('upload_max_filesize'))
-        );
-
-        return $uploadSizeLimitBytes;
-    }
-
+    
     public static function convertPhpIniSizeValueToBytes($phpIniSizeValue)
     {
         if (is_numeric($phpIniSizeValue)) {
@@ -2340,12 +2306,7 @@ class ilUtil
             $_COOKIE[$a_cookie_name] = $a_cookie_value;
         }
     }
-
-    public static function _sanitizeFilemame($a_filename)
-    {
-        return strip_tags(self::stripSlashes($a_filename));
-    }
-
+    
     public static function _getHttpPath()
     {
         global $DIC;

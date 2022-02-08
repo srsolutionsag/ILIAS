@@ -790,7 +790,7 @@ class ilFileUtils
     public static function getFileSizeInfo()
     {
         $max_filesize = ilUtil::formatBytes(
-            ilUtil::getUploadSizeLimitBytes()
+            self::getUploadSizeLimitBytes()
         );
         
         global $DIC;
@@ -1064,5 +1064,26 @@ class ilFileUtils
             }
         }
         return true;
+    }
+    
+    public static function removeTrailingPathSeparators(string $path) : string
+    {
+        $path = preg_replace("/[\/\\\]+$/", "", $path);
+        return (string) $path;
+    }
+    
+    public static function getUploadSizeLimitBytes() : string
+    {
+        $uploadSizeLimitBytes = min(
+            ilUtil::convertPhpIniSizeValueToBytes(ini_get('post_max_size')),
+            ilUtil::convertPhpIniSizeValueToBytes(ini_get('upload_max_filesize'))
+        );
+        
+        return $uploadSizeLimitBytes;
+    }
+    
+    public static function _sanitizeFilemame(string $a_filename) : string
+    {
+        return strip_tags(ilUtil::stripSlashes($a_filename));
     }
 }

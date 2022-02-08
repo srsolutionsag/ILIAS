@@ -134,8 +134,8 @@ class ilObjCertificateSettings extends ilObject
     public function getDefaultBackgroundImagePathWeb() : string
     {
         return str_replace(
-            ilUtil::removeTrailingPathSeparators(ILIAS_ABSOLUTE_PATH),
-            ilUtil::removeTrailingPathSeparators(ILIAS_HTTP_PATH),
+            ilFileUtils::removeTrailingPathSeparators(ILIAS_ABSOLUTE_PATH),
+            ilFileUtils::removeTrailingPathSeparators(ILIAS_HTTP_PATH),
             $this->getDefaultBackgroundImagePath()
         );
     }
@@ -143,8 +143,8 @@ class ilObjCertificateSettings extends ilObject
     public function getBackgroundImageThumbPathWeb() : string
     {
         return str_replace(
-            ilUtil::removeTrailingPathSeparators(ILIAS_ABSOLUTE_PATH),
-            ilUtil::removeTrailingPathSeparators(ILIAS_HTTP_PATH),
+            ilFileUtils::removeTrailingPathSeparators(ILIAS_ABSOLUTE_PATH),
+            ilFileUtils::removeTrailingPathSeparators(ILIAS_HTTP_PATH),
             $this->getDefaultBackgroundImageThumbPath()
         );
     }

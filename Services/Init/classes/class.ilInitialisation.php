@@ -400,7 +400,7 @@ class ilInitialisation
             $path = dirname($rq_uri);
 
             // dirname cuts the last directory from a directory path e.g content/classes return content
-            $module = ilUtil::removeTrailingPathSeparators(ILIAS_MODULE);
+            $module = ilFileUtils::removeTrailingPathSeparators(ILIAS_MODULE);
 
             $dirs = explode('/', $module);
             $uri = $path;
@@ -412,7 +412,7 @@ class ilInitialisation
         $iliasHttpPath = ilContext::modifyHttpPath(implode('', [$protocol, $host, $uri]));
 
         $f = new \ILIAS\Data\Factory();
-        $uri = $f->uri(ilUtil::removeTrailingPathSeparators($iliasHttpPath));
+        $uri = $f->uri(ilFileUtils::removeTrailingPathSeparators($iliasHttpPath));
 
         return define('ILIAS_HTTP_PATH', $uri->getBaseURI());
     }
