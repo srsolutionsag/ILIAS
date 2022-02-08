@@ -644,12 +644,19 @@ class ilMediaItem
     {
         return $this->parameters;
     }
-
+    
     public function getParameterString() : string
     {
-        return ilUtil::assembleParameterString($this->parameters);
+        if (is_array($this->parameters)) {
+            $target_arr = [];
+            foreach ($this->parameters as $par => $val) {
+                $target_arr[] = "$par=\"$val\"";
+            }
+            return implode(", ", $target_arr);
+        }
+        return "";
     }
-
+    
     public function getParameter(string $a_name) : string
     {
         return (string) ($this->parameters[$a_name] ?? "");

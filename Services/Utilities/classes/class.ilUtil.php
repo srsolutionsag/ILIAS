@@ -708,13 +708,9 @@ class ilUtil
     // convert utf8 to ascii filename
 
     /**
-    * append URL parameter string ("par1=value1&par2=value2...")
-    * to given URL string
-    *
-    * @static
-    *
-    */
-    public static function appendUrlParameterString($a_url, $a_par, $xml_style = false)
+     * @deprecated
+     */
+    public static function appendUrlParameterString(string $a_url, string $a_par, bool $xml_style = false) : string
     {
         $amp = $xml_style
             ? "&amp;"
@@ -728,29 +724,22 @@ class ilUtil
     }
 
     /**
-    * Strip slashes from array
-    *
-    * @static
-    *
-    */
-    public static function stripSlashesArray($a_arr, $a_strip_html = true, $a_allow = "")
+     * @deprecated
+     */
+    public static function stripSlashesArray(array $a_arr, bool $a_strip_html = true, string $a_allow = "") : array
     {
-        if (is_array($a_arr)) {
-            foreach ($a_arr as $k => $v) {
-                $a_arr[$k] = ilUtil::stripSlashes($v, $a_strip_html, $a_allow);
-            }
+        foreach ($a_arr as $k => $v) {
+            $a_arr[$k] = ilUtil::stripSlashes($v, $a_strip_html, $a_allow);
         }
-
+        
         return $a_arr;
     }
-
+    
     /**
-    * Strip slashes from array and sub-arrays
-    *
-    * @static
-    *
-    */
-    public static function stripSlashesRecursive($a_data, $a_strip_html = true, $a_allow = "")
+     * @param $data string|array
+     * @deprecated
+     */
+    public static function stripSlashesRecursive($a_data, bool $a_strip_html = true, string $a_allow = "") : array
     {
         if (is_array($a_data)) {
             foreach ($a_data as $k => $v) {
@@ -766,32 +755,23 @@ class ilUtil
 
         return $a_data;
     }
-
+    
     /**
-    * strip slashes if magic qoutes is enabled
-    *
-    * @param	boolean		strip also html tags
-    * @static
-    *
-    */
-    public static function stripSlashes($a_str, $a_strip_html = true, $a_allow = "")
+     * @deprecated
+     */
+    public static function stripSlashes(string $a_str, bool $a_strip_html = true, string $a_allow = "") : string
     {
         if (ini_get("magic_quotes_gpc")) {
             $a_str = stripslashes($a_str);
         }
-        //echo "<br><br>-".$a_strip_html."-".htmlentities($a_str);
-        //echo "<br>-".htmlentities(ilUtil::secureString($a_str, $a_strip_html, $a_allow));
+
         return ilUtil::secureString($a_str, $a_strip_html, $a_allow);
     }
-
+    
     /**
-    * strip slashes if magic qoutes is enabled
-    *
-    * @param	string		string
-    * @static
-    *
-    */
-    public static function stripOnlySlashes($a_str)
+     * @deprecated
+     */
+    public static function stripOnlySlashes(string $a_str) : string
     {
         if (ini_get("magic_quotes_gpc")) {
             $a_str = stripslashes($a_str);
@@ -799,20 +779,17 @@ class ilUtil
 
         return $a_str;
     }
-
+    
     /**
-    * Remove unsecure tags
-    *
-    * @static
-    *
-    */
-    public static function secureString($a_str, $a_strip_html = true, $a_allow = "")
+     * @deprecated
+     */
+    public static function secureString(string $a_str, bool $a_strip_html = true, string $a_allow = "") : string
     {
         // check whether all allowed tags can be made secure
         $only_secure = true;
         $allow_tags = explode(">", $a_allow);
         $sec_tags = ilUtil::getSecureTags();
-        $allow_array = array();
+        $allow_array = [];
         foreach ($allow_tags as $allow) {
             if ($allow != "") {
                 $allow = str_replace("<", "", $allow);
@@ -826,9 +803,10 @@ class ilUtil
 
         // default behaviour: allow only secure tags 1:1
         if (($only_secure || $a_allow == "") && $a_strip_html) {
-            if ($a_allow == "") {
-                $allow_array = array("b", "i", "strong", "em", "code", "cite",
-                    "gap", "sub", "sup", "pre", "strike", "bdo");
+            if ($a_allow === "") {
+                $allow_array = ["b", "i", "strong", "em", "code", "cite",
+                                "gap", "sub", "sup", "pre", "strike", "bdo"
+                ];
             }
 
             // this currently removes parts of strings like "a <= b"
@@ -854,13 +832,14 @@ class ilUtil
         return $a_str;
     }
 
-    public static function getSecureTags()
+    public static function getSecureTags() : array
     {
-        return array("strong", "em", "u", "strike", "ol", "li", "ul", "p", "div",
-            "i", "b", "code", "sup", "sub", "pre", "gap", "a", "img", "bdo");
+        return ["strong", "em", "u", "strike", "ol", "li", "ul", "p", "div",
+                "i", "b", "code", "sup", "sub", "pre", "gap", "a", "img", "bdo"
+        ];
     }
 
-    public static function maskSecureTags($a_str, $allow_array)
+    private static function maskSecureTags(string $a_str, array $allow_array) : string
     {
         foreach ($allow_array as $t) {
             switch ($t) {
@@ -874,13 +853,13 @@ class ilUtil
 
                 case "p":
                 case "div":
-                    $a_str = ilUtil::maskTag($a_str, $t, array(
-                        array("param" => "align", "value" => "left"),
-                        array("param" => "align", "value" => "center"),
-                        array("param" => "align", "value" => "justify"),
-                        array("param" => "align", "value" => "right")
-                        ));
-                    break;
+                    $a_str = ilUtil::maskTag($a_str, $t, [
+                        ["param" => "align", "value" => "left"],
+                        ["param" => "align", "value" => "center"],
+                        ["param" => "align", "value" => "justify"],
+                        ["param" => "align", "value" => "right"]
+                    ]);
+                break;
 
                 default:
                     $a_str = ilUtil::maskTag($a_str, $t);
@@ -891,7 +870,7 @@ class ilUtil
         return $a_str;
     }
 
-    public static function unmaskSecureTags($a_str, $allow_array)
+    private static function unmaskSecureTags($a_str, array $allow_array) : string
     {
         foreach ($allow_array as $t) {
             switch ($t) {
@@ -905,13 +884,13 @@ class ilUtil
 
                 case "p":
                 case "div":
-                    $a_str = ilUtil::unmaskTag($a_str, $t, array(
-                        array("param" => "align", "value" => "left"),
-                        array("param" => "align", "value" => "center"),
-                        array("param" => "align", "value" => "justify"),
-                        array("param" => "align", "value" => "right")
-                        ));
-                    break;
+                    $a_str = ilUtil::unmaskTag($a_str, $t, [
+                        ["param" => "align", "value" => "left"],
+                        ["param" => "align", "value" => "center"],
+                        ["param" => "align", "value" => "justify"],
+                        ["param" => "align", "value" => "right"]
+                    ]);
+                break;
 
                 default:
                     $a_str = ilUtil::unmaskTag($a_str, $t);
@@ -921,15 +900,11 @@ class ilUtil
 
         return $a_str;
     }
-
+    
     /**
-    * Remove unsecure characters from a plain text string.
-    * This function currently returns the string without doing any changes.
-    *
-    * @static
-    *
-    */
-    public static function securePlainString($a_str)
+     * @deprecated
+     */
+    public static function securePlainString(string $a_str) : string
     {
         if (ini_get("magic_quotes_gpc")) {
             return stripslashes($a_str);
@@ -953,7 +928,7 @@ class ilUtil
     * @static
     *
     */
-    public static function htmlencodePlainString($a_str, $a_make_links_clickable, $a_detect_goto_links = false)
+    public static function htmlencodePlainString(string $a_str, bool $a_make_links_clickable, bool $a_detect_goto_links = false) : string
     {
         $encoded = "";
 
@@ -1001,7 +976,7 @@ class ilUtil
     }
 
 
-    public static function maskAttributeTag($a_str, $tag, $tag_att)
+    private static function maskAttributeTag(string $a_str, string $tag, string $tag_att) : string
     {
         global $DIC;
 
@@ -1035,7 +1010,7 @@ class ilUtil
         return $a_str;
     }
 
-    public static function unmaskAttributeTag($a_str, $tag, $tag_att)
+    private static function unmaskAttributeTag(string $a_str, string $tag, string $tag_att) : string
     {
         global $DIC;
 
@@ -1062,78 +1037,65 @@ class ilUtil
         return $a_str;
     }
 
-    public static function maskTag($a_str, $t, $fix_param = "")
+    public static function maskTag(string $a_str, string $tag, array $fix_param = []) : string
     {
         $a_str = str_replace(
-            array("<$t>", "<" . strtoupper($t) . ">"),
-            "&lt;" . $t . "&gt;",
+            array("<$tag>", "<" . strtoupper($tag) . ">"),
+            "&lt;" . $tag . "&gt;",
             $a_str
         );
         $a_str = str_replace(
-            array("</$t>", "</" . strtoupper($t) . ">"),
-            "&lt;/" . $t . "&gt;",
+            array("</$tag>", "</" . strtoupper($tag) . ">"),
+            "&lt;/" . $tag . "&gt;",
             $a_str
         );
-
-        if (is_array($fix_param)) {
+        
             foreach ($fix_param	 as $p) {
                 $k = $p["param"];
                 $v = $p["value"];
                 $a_str = str_replace(
-                    "<$t $k=\"$v\">",
-                    "&lt;" . "$t $k=\"$v\"" . "&gt;",
+                    "<$tag $k=\"$v\">",
+                    "&lt;" . "$tag $k=\"$v\"" . "&gt;",
                     $a_str
                 );
             }
-        }
 
         return $a_str;
     }
-
-    public static function unmaskTag($a_str, $t, $fix_param = "")
+    
+    private static function unmaskTag(string $a_str, string $tag, array $fix_param = []) : string
     {
-        $a_str = str_replace("&lt;" . $t . "&gt;", "<" . $t . ">", $a_str);
-        $a_str = str_replace("&lt;/" . $t . "&gt;", "</" . $t . ">", $a_str);
-
-        if (is_array($fix_param)) {
-            foreach ($fix_param	 as $p) {
-                $k = $p["param"];
-                $v = $p["value"];
-                $a_str = str_replace(
-                    "&lt;$t $k=\"$v\"&gt;",
-                    "<" . "$t $k=\"$v\"" . ">",
-                    $a_str
-                );
-            }
+        $a_str = str_replace("&lt;" . $tag . "&gt;", "<" . $tag . ">", $a_str);
+        $a_str = str_replace("&lt;/" . $tag . "&gt;", "</" . $tag . ">", $a_str);
+        
+        foreach ($fix_param as $p) {
+            $k = $p["param"];
+            $v = $p["value"];
+            $a_str = str_replace(
+                "&lt;$tag $k=\"$v\"&gt;",
+                "<" . "$tag $k=\"$v\"" . ">",
+                $a_str
+            );
         }
         return $a_str;
     }
-
-    public static function secureLink($a_str)
+    
+    /**
+     * @deprecated
+     */
+    public static function secureLink(string $a_str) : string
     {
         $a_str = str_ireplace("javascript", "jvscrpt", $a_str);
         $a_str = str_ireplace(array("%00", "%0a", "%0d", "%1a", "&#00;", "&#x00;",
             "&#0;", "&#x0;", "&#x0a;", "&#x0d;", "&#10;", "&#13;"), "-", $a_str);
         return $a_str;
     }
-
+    
     /**
-    * strip only html tags (4.0) from text
-    * $allowed contains tags to be allowed, in format <a><b>
-    * tags a and b are allowed
-    * todo: needs to be optimized-> not very efficient
-    *
-    * @param	string		$a_str		input string
-    * @param	string		$a_allow	allowed tags, if an empty string is passed a default
-    *									set of tags is allowed
-    * @param	boolean		$a_rm_js	remove javascript attributes (onclick...)
-    * @static
-    *
-    */
-    public static function stripScriptHTML($a_str, $a_allow = "", $a_rm_js = true)
+     * @deprecated
+     */
+    public static function stripScriptHTML(string $a_str, string $a_allow = "", bool $a_rm_js = true) : string
     {
-        //$a_str = strip_tags($a_str, $a_allow);
-
         $negativestr = "a,abbr,acronym,address,applet,area,base,basefont," .
             "big,blockquote,body,br,button,caption,center,cite,code,col," .
             "colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame," .
@@ -1178,17 +1140,9 @@ class ilUtil
     }
 
     /**
-    * prepares string output for html forms
-    * @access	public
-    * @param	string
-    * @param	boolean		true: strip slashes, if magic_quotes is enabled
-    *						use this if $a_str comes from $_GET or $_POST var,
-    *						use false, if $a_str comes from database
-    * @return	string
-    * @static
-    *
+    * @deprecated
     */
-    public static function prepareFormOutput($a_str, $a_strip = false)
+    public static function prepareFormOutput(string $a_str, bool $a_strip = false) : string
     {
         if ($a_strip) {
             $a_str = ilUtil::stripSlashes($a_str);
@@ -1204,14 +1158,11 @@ class ilUtil
         $a_str = str_replace("\\", "&#92;", $a_str);
         return $a_str;
     }
-
+    
     /**
-     * Prepare secure href attribute
-     *
-     * @param
-     * @return
+     * @deprecated
      */
-    public static function secureUrl($url)
+    public static function secureUrl(string $url) : string
     {
         // check if url is valid (absolute or relative)
         if (filter_var($url, FILTER_VALIDATE_URL) === false &&
@@ -1227,34 +1178,11 @@ class ilUtil
         $url = htmlspecialchars($url, ENT_QUOTES);
         return $url;
     }
-
-
-
+    
     /**
-    * prepare a string for db writing (insert/update)
-    *
-    * @param	string		$a_str		string
-    *
-    * @return	string		escaped string
-    * @static
-    *
-    */
-    public static function prepareDBString($a_str)
-    {
-        return addslashes($a_str);
-    }
-
-
-    /**
-    * extracts parameter value pairs from a string into an array
-    *
-    * @param	string		$a_parstr		parameter string (format: par1="value1", par2="value2", ...)
-    *
-    * @return	array		array of parameter value pairs
-    * @static
-    *
-    */
-    public static function extractParameterString($a_parstr)
+     * @deprecated
+     */
+    public static function extractParameterString(string $a_parstr) : array
     {
         // parse parameters in array
         $par = array();
@@ -1294,43 +1222,10 @@ class ilUtil
                 }
             }
         }
-
-        if ($ok) {
-            return $par;
-        } else {
-            return false;
-        }
+    
+        return $ok ? $par : [];
     }
-
-    public static function assembleParameterString($a_par_arr)
-    {
-        if (is_array($a_par_arr)) {
-            $target_arr = array();
-            foreach ($a_par_arr as $par => $val) {
-                $target_arr[] = "$par=\"$val\"";
-            }
-            $target_str = implode(", ", $target_arr);
-        }
-
-        return $target_str;
-    }
-
-    /**
-    * dumps ord values of every character of string $a_str
-    *
-    * @static
-    *
-    */
-    public static function dumpString($a_str)
-    {
-        $ret = $a_str . ": ";
-        for ($i = 0; $i < strlen($a_str); $i++) {
-            $ret .= ord(substr($a_str, $i, 1)) . " ";
-        }
-        return $ret;
-    }
-
-
+    
     /**
     * convert "y"/"n" to true/false
     *
