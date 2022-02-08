@@ -46,14 +46,10 @@ class ilUtil
     /**
     * get image path (for images located in a template directory)
     *
-    * @access	public
-    * @param	string		full image filename (e.g. myimage.png)
-    * @param	boolean		should be set to true, if the image is within a module
-    *						template directory (e.g. content/templates/default/images/test.png)
-    * @static
+    * @deprecated use UI Service!
     *
     */
-    public static function getImagePath($img, $module_path = "", $mode = "output", $offline = false)
+    public static function getImagePath(string $img, string $module_path = "", string $mode = "output", bool $offline = false) : string
     {
         global $DIC;
 
@@ -90,18 +86,6 @@ class ilUtil
                 $current_skin . $module_path . "/images/" . $img;
         }
 
-        // temp svg patch
-        /*
-        $pi = pathinfo($img);
-        if ($pi["dirname"] != "") {
-            $pi["dirname"] = $pi["dirname"]."/";
-        }
-        $svg_img = ".".$module_path."/templates/default/images/".$pi["dirname"].$pi["filename"].".svg";
-        if (file_exists($svg_img))
-        {
-            return $svg_img;
-        }*/
-
 
         if ($offline) {
             return "./images/" . $img;
@@ -117,14 +101,10 @@ class ilUtil
     /**
     * get url of path
     *
-    * @author   Brandon Blackmoor <brandon.blackmoor@jfcom.mil>
-    * @access   public
-    * @param    $relative_path string     complete path to file, relative to web root
-    *                                       (e.g.  /data/pfplms103/mobs/mm_732/athena_standing.jpg)
-    * @static
-    *
+    * @param $relative_path string: complete path to file, relative to web root (e.g.  /data/pfplms103/mobs/mm_732/athena_standing.jpg)
+    * @deprecated
     */
-    public static function getHtmlPath($relative_path)
+    public static function getHtmlPath(string $relative_path) : string
     {
         if (substr($relative_path, 0, 2) == './') {
             $relative_path = (substr($relative_path, 1));
@@ -139,16 +119,15 @@ class ilUtil
     /**
     * get full style sheet file name (path inclusive) of current user
     *
-    * @param $mode string Output mode of the style sheet ("output" or "filesystem"). !"filesystem" generates the ILIAS
+    * @param $mode           string Output mode of the style sheet ("output" or "filesystem"). !"filesystem" generates the ILIAS
     * version number as attribute to force the reload of the style sheet in a different ILIAS version
-    * @param $a_css_name string The name of the style sheet. If empty, the default style name will be chosen
+    * @param $a_css_name     string The name of the style sheet. If empty, the default style name will be chosen
     * @param $a_css_location string The location of the style sheet e.g. a module path. This parameter only makes sense
     * when $a_css_name is used
-    * @access	public
-    * @static
-    *
+    * @deprecated
     */
-    public static function getStyleSheetLocation($mode = "output", $a_css_name = "", $a_css_location = "")
+    public static function getStyleSheetLocation(
+        string $mode = "output", string $a_css_name = "", string $a_css_location = "") : string
     {
         global $DIC;
 
@@ -185,11 +164,9 @@ class ilUtil
     /**
     * get full style sheet file name (path inclusive) of current user
     *
-    * @access	public
-    * @static
-    *
+    * @deprecated
     */
-    public static function getNewContentStyleSheetLocation($mode = "output")
+    public static function getNewContentStyleSheetLocation(string $mode = "output") : string
     {
         global $DIC;
 
