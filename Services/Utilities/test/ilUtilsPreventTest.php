@@ -28,8 +28,9 @@ class ilUtilsPreventTest extends TestCase
     {
         $r = new ReflectionClass(ilUtil::class);
         $methods = $this->extractMethodNames($r->getMethods());
+        var_export($methods);
         $amount_of_methods = count($methods);
-        $this->assertEquals(51, $amount_of_methods);
+        $this->assertEquals(47, $amount_of_methods);
         $this->assertEquals([
             0 => 'getImageTagByType',
             1 => 'getImagePath',
@@ -73,15 +74,11 @@ class ilUtilsPreventTest extends TestCase
             39 => '__extractId',
             40 => '_sortIds',
             41 => 'getSystemMessageHTML',
-            42 => 'sendInfo',
-            43 => 'sendFailure',
-            44 => 'sendQuestion',
-            45 => 'sendSuccess',
-            46 => 'setCookie',
-            47 => '_getHttpPath',
-            48 => 'parseImportId',
-            49 => 'fmtFloat',
-            50 => 'formatSize',
+            42 => 'setCookie',
+            43 => '_getHttpPath',
+            44 => 'parseImportId',
+            45 => 'fmtFloat',
+            46 => 'formatSize',
         ], $methods);
     }
     
