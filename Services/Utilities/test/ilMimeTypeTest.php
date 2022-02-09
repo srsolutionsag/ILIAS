@@ -14,14 +14,10 @@ use PHPUnit\Framework\TestCase;
  *      https://github.com/ILIAS-eLearning
  *
  *****************************************************************************/
-/**
- * Class ilMimeTypeTest
- */
+
 class ilMimeTypeTest extends TestCase
 {
-    /**
-     *
-     */
+
     public function testMimeTypeForYoutubeUrlCouldBeCorrectlyDetected() : void
     {
         $expected = 'video/youtube';
@@ -33,9 +29,7 @@ class ilMimeTypeTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     *
-     */
+
     public function testMimeTypeForVimeoUrlCouldBeCorrectlyDetected() : void
     {
         $expected = 'video/vimeo';
