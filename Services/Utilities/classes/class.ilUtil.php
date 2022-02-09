@@ -8,6 +8,8 @@ use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\DTO\UploadResult;
 use ILIAS\FileDelivery\Delivery;
 use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\HTTP\Cookies\CookieFactoryImpl;
+use function ILIAS\UI\examples\Symbol\Icon\Standard\default_icon;
 
 /**
  * Util class
@@ -1063,73 +1065,52 @@ class ilUtil
         return false;
     }
     
-    public static function formatBytes($size, $decimals = 0)
-    {
-        $unit = array('', 'K', 'M', 'G', 'T', 'P');
-
-        for ($i = 0, $maxUnits = count($unit); $size >= 1024 && $i <= $maxUnits; $i++) {
-            $size /= 1024;
-        }
-
-        return round($size, $decimals) . $unit[$i];
-    }
-   
-
     /**
-    *  extract ref id from role title, e.g. 893 from 'il_crs_member_893'
-    *	@param role_title with format like il_crs_member_893
-    *	@return	ref id or false
-    * @static
-    *
-    */
-
-    public static function __extractRefId($role_title)
+     *  extract ref id from role title, e.g. 893 from 'il_crs_member_893'
+     *
+     * @param string $role_title with format like il_crs_member_893
+     * @deprecated
+     */
+    public static function __extractRefId(string $role_title) : ?int
     {
         $test_str = explode('_', $role_title);
-
-        if ($test_str[0] == 'il') {
-            $test2 = (int) $test_str[3];
-            return is_numeric($test2) ? (int) $test2 : false;
+        $prefix = $test_str[0] ?? '';
+        
+        if ($prefix === 'il') {
+            $ref_id = $test_str[3] ?? null;
+            return is_numeric($ref_id) ? (int) $ref_id : null;
         }
-        return false;
+        return null;
     }
 
     /**
-    *  extract ref id from role title, e.g. 893 from 'il_122_role_893'
-    *	@param ilias id with format like il_<instid>_<objTyp>_ID
-    *   @param int inst_id  Installation ID must match inst id in param ilias_id
-    *	@return	id or false
-    * @static
-    *
-    *
+    * extract ref id from role title, e.g. 893 from 'il_122_role_893'
+     *
+    * @param string $ilias_id with format like il_<instid>_<objTyp>_ID
+    * @param int    $inst_id  Installation ID must match inst id in param ilias_id
+    * @deprecated
     */
 
-    public static function __extractId($ilias_id, $inst_id)
+    public static function __extractId(string $ilias_id, int $inst_id) : ?int
     {
         $test_str = explode('_', $ilias_id);
-
-        if ($test_str[0] == 'il' && $test_str[1] == $inst_id && count($test_str) == 4) {
-            $test2 = (int) $test_str[3];
-            return is_numeric($test2) ? (int) $test2 : false;
+    
+        $parsed_inst_id = (int) $test_str[1] ?? 0;
+        $prefix = $test_str[0] ?? '';
+        
+        if ($prefix === 'il' && $parsed_inst_id === $inst_id && count($test_str) === 4) {
+            return is_numeric($test_str[3]) ? (int) $test_str[3] : null;
         }
-        return false;
+        return null;
     }
 
     /**
     * Function that sorts ids by a given table field using WHERE IN
     * E.g: __sort(array(6,7),'usr_data','lastname','usr_id') => sorts by lastname
     *
-    * @param array Array of ids
-    * @param string table name
-    * @param string table field
-    * @param string id name
-    * @return array sorted ids
-    *
-    * @access protected
-    * @static
-    *
+    * @deprecated
     */
-    public static function _sortIds($a_ids, $a_table, $a_field, $a_id_name)
+    public static function _sortIds(array $a_ids, string $a_table, string $a_field, string $a_id_name) : array
     {
         global $DIC;
 
@@ -1149,10 +1130,11 @@ class ilUtil
             "ORDER BY " . $a_field;
 
         $res = $ilDB->query($query);
+        $ids = [];
         while ($row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT)) {
             $ids[] = $row->$a_id_name;
         }
-        return $ids ? $ids : array();
+        return $ids;
     }
     
     /**
@@ -1255,7 +1237,7 @@ class ilUtil
                 "tpl.infopanel.html",
                 "Services/Utilities"
             );
-            $tpl->setCurrentBlock("infopanel");
+//            $tpl->setCurrentBlock("infopanel");
 
             if (!empty($_SESSION["infopanel"]["text"])) {
                 $link = "<a href=\"" . $_SESSION["infopanel"]["link"] . "\" target=\"" .
@@ -1278,52 +1260,36 @@ class ilUtil
             $tpl->setVariable("INFO_ICONS", $link);
             $tpl->parseCurrentBlock();
         }
-
-        //if (!$a_keep)
-        //{
+        
         ilSession::clear("infopanel");
-        //}
+    }
+    /**
+     * @deprecated use HTTP-service instead
+     */
+    public static function setCookie(
+        string $a_cookie_name,
+        string $a_cookie_value = '',
+        bool $a_also_set_super_global = true,
+        bool $a_set_cookie_invalid = false
+    ) : void {
+        global $DIC;
+    
+        $cookie_factory = new CookieFactoryImpl();
+        $defalut_cookie_time = time() - (365 * 24 * 60 * 60);
+    
+        $cookie = $cookie_factory->create($a_cookie_name, $a_cookie_value)
+                                 ->withExpires($a_set_cookie_invalid ? 0 : $defalut_cookie_time)
+                                 ->withSecure(defined('IL_COOKIE_SECURE') ? IL_COOKIE_SECURE : false)
+                                 ->withPath(defined('IL_COOKIE_PATH') ? IL_COOKIE_PATH : '')
+                                 ->withDomain(defined('IL_COOKIE_DOMAIN') ? IL_COOKIE_DOMAIN : '')
+                                 ->withHttpOnly(defined('IL_COOKIE_HTTPONLY') ? IL_COOKIE_HTTPONLY : false);
+        $DIC->http()->cookieJar()->with($cookie);
     }
     
-    public static function setCookie($a_cookie_name, $a_cookie_value = '', $a_also_set_super_global = true, $a_set_cookie_invalid = false)
-    {
-        /*
-        if(!(bool)$a_set_cookie_invalid) $expire = IL_COOKIE_EXPIRE;
-        else $expire = time() - (365*24*60*60);
-        */
-        // Temporary fix for feed.php
-        if (!(bool) $a_set_cookie_invalid) {
-            $expire = 0;
-        } else {
-            $expire = time() - (365 * 24 * 60 * 60);
-        }
-        /* We MUST NOT set the global constant here, because this affects the session_set_cookie_params() call as well
-        if(!defined('IL_COOKIE_SECURE'))
-        {
-            define('IL_COOKIE_SECURE', false);
-        }
-        */
-        $secure = false;
-        if (defined('IL_COOKIE_SECURE')) {
-            $secure = IL_COOKIE_SECURE;
-        }
-
-        setcookie(
-            $a_cookie_name,
-            $a_cookie_value,
-            $expire,
-            IL_COOKIE_PATH,
-            IL_COOKIE_DOMAIN,
-            $secure,
-            IL_COOKIE_HTTPONLY
-        );
-
-        if ((bool) $a_also_set_super_global) {
-            $_COOKIE[$a_cookie_name] = $a_cookie_value;
-        }
-    }
-    
-    public static function _getHttpPath()
+    /**
+     * @deprecated
+     */
+    public static function _getHttpPath() : string
     {
         global $DIC;
 
@@ -1351,10 +1317,10 @@ class ilUtil
      * 'id' => '123'
      *
      *
-     * @param string il_id
+     * @deprecated
      *
      */
-    public static function parseImportId($a_import_id)
+    public static function parseImportId(string $a_import_id) : array
     {
         $exploded = explode('_', $a_import_id);
 
@@ -1372,33 +1338,7 @@ class ilUtil
         }
         return $parsed;
     }
-
-   
-
-
-  
-
-
-    //
-    //  used to be in ilFormat
-    //
-
-    /**
-     * Returns the magnitude used for size units.
-     *
-     * This function always returns the value 1024. Thus the value returned
-     * by this function is the same value that Windows and Mac OS X return for a
-     * file. The value is a GibiBit, MebiBit, KibiBit or byte unit.
-     *
-     * For more information about these units see:
-     * http://en.wikipedia.org/wiki/Megabyte
-     *
-     * @return <type>
-     */
-    protected static function _getSizeMagnitude()
-    {
-        return 1024;
-    }
+    
 
     /**
     * format a float
@@ -1406,32 +1346,31 @@ class ilUtil
     * this functions takes php's number_format function and
     * formats the given value with appropriate thousand and decimal
     * separator.
-    * @access	public
-    * @param	float		the float to format
-    * @param	integer		count of decimals
-    * @param	integer		display thousands separator
-    * @param	boolean		whether .0 should be suppressed
-    * @return	string		formatted number
+    *
+    * @deprecated
     */
-    protected static function fmtFloat($a_float, $a_decimals = 0, $a_dec_point = null, $a_thousands_sep = null, $a_suppress_dot_zero = false)
+    protected static function fmtFloat(
+        float $a_float, int $a_decimals = 0,
+        string $a_dec_point = null,
+        string $a_thousands_sep = null,
+        bool $a_suppress_dot_zero = false
+    ) : string
     {
         global $DIC;
 
         $lng = $DIC->language();
 
-        if ($a_dec_point == null) {
-            {
+        if ($a_dec_point === null) {
                 $a_dec_point = ".";
-            }
         }
-        if ($a_dec_point == '-lang_sep_decimal-') {
+        if ($a_dec_point === '-lang_sep_decimal-') {
             $a_dec_point = ".";
         }
 
-        if ($a_thousands_sep == null) {
+        if ($a_thousands_sep === null) {
             $a_thousands_sep = $lng->txt('lang_sep_thousand');
         }
-        if ($a_thousands_sep == '-lang_sep_thousand-') {
+        if ($a_thousands_sep === '-lang_sep_thousand-') {
             $a_thousands_sep = ",";
         }
 
@@ -1475,7 +1414,7 @@ class ilUtil
             $a_lng = $lng;
         }
 
-        $mag = self::_getSizeMagnitude();
+        $mag = 1024;
 
         if ($size >= $mag * $mag * $mag) {
             $scaled_size = $size / $mag / $mag / $mag;
