@@ -1568,10 +1568,6 @@ class ilObjLinkResourceGUI extends ilObject2GUI implements ilLinkCheckerGUIRowHa
         if ($this->message) {
             $this->tpl->setOnScreenMessage('info', $this->message);
         }
-
-        // display infopanel if something happened
-        ilUtil::infoPanel();
-        ;
     }
 
     public function addLocatorItems()

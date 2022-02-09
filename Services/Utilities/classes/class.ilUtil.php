@@ -1222,47 +1222,7 @@ class ilUtil
         $tpl->setOnScreenMessage("success", $a_info, $a_keep);
     }
 
-    public static function infoPanel($a_keep = true)
-    {
-        global $DIC;
-
-        $tpl = $DIC["tpl"];
-        $lng = $DIC->language();
-        $ilUser = $DIC->user();
-
-        if (!empty($_SESSION["infopanel"]) and is_array($_SESSION["infopanel"])) {
-            $tpl->addBlockFile(
-                "INFOPANEL",
-                "infopanel",
-                "tpl.infopanel.html",
-                "Services/Utilities"
-            );
-//            $tpl->setCurrentBlock("infopanel");
-
-            if (!empty($_SESSION["infopanel"]["text"])) {
-                $link = "<a href=\"" . $_SESSION["infopanel"]["link"] . "\" target=\"" .
-                    ilFrameTargetInfo::_getFrame("MainContent") .
-                    "\">";
-                $link .= $lng->txt($_SESSION["infopanel"]["text"]);
-                $link .= "</a>";
-            }
-
-            // deactivated
-            if (!empty($_SESSION["infopanel"]["img"])) {
-                $link .= "<td><a href=\"" . $_SESSION["infopanel"]["link"] . "\" target=\"" .
-                    ilFrameTargetInfo::_getFrame("MainContent") .
-                    "\">";
-                $link .= "<img src=\"" . "./templates/" . $ilUser->prefs["skin"] . "/images/" .
-                    $_SESSION["infopanel"]["img"] . "\" border=\"0\" vspace=\"0\"/>";
-                $link .= "</a></td>";
-            }
-
-            $tpl->setVariable("INFO_ICONS", $link);
-            $tpl->parseCurrentBlock();
-        }
-        
-        ilSession::clear("infopanel");
-    }
+    
     /**
      * @deprecated use HTTP-service instead
      */

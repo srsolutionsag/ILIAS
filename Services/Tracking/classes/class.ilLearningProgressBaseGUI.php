@@ -276,9 +276,7 @@ class ilLearningProgressBaseGUI
 
     public function __buildHeader() : void
     {
-        if ($this->getMode() == self::LP_CONTEXT_PERSONAL_DESKTOP) {
-            ilUtil::infoPanel();
-        }
+    
     }
 
     /**

@@ -366,9 +366,6 @@ class ilObjectGUI
             $this->addAdminLocatorItems();
             $tpl->setLocator();
 
-            //			ilUtil::sendInfo();
-            ilUtil::infoPanel();
-
             $this->setTitleAndDescription();
 
             if ($this->getCreationMode() != true) {
@@ -379,9 +376,6 @@ class ilObjectGUI
         }
         // set locator
         $this->setLocator();
-        // catch feedback message
-        //		ilUtil::sendInfo();
-        ilUtil::infoPanel();
 
         // in creation mode (parent) object and gui object
         // do not fit

@@ -1012,9 +1012,6 @@ class ilObjTestGUI extends ilObjectGUI
 
         // set locator
         $this->setLocator();
-        
-        // catch feedback message
-        ilUtil::infoPanel();
 
         // set title and description and title icon
         $this->setTitleAndDescription();

@@ -1695,7 +1695,6 @@ class ilObjForumGUI extends ilObjectGUI implements ilDesktopItemHandling, ilForu
         $this->ilHelp->setScreenIdComponent("frm");
 
         $this->tpl->loadStandardTemplate();
-        ilUtil::infoPanel();
 
         $this->tpl->setTitleIcon(ilObject::_getIcon("", "big", "frm"));
 
