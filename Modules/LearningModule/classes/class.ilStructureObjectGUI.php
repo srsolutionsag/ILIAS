@@ -311,7 +311,7 @@ class ilStructureObjectGUI extends ilLMObjectGUI
         // SHOW POSSIBLE SUB OBJECTS
         $this->tpl->setVariable("NUM_COLS", 3);
         $subobj = array("st");
-        $opts = ilUtil::formSelect(12, "new_type", $subobj);
+        $opts = ilLegacyFormElementsUtil::formSelect(12, "new_type", $subobj);
         $this->tpl->setCurrentBlock("add_object");
         $this->tpl->setVariable("SELECT_OBJTYPE", $opts);
         $this->tpl->setVariable("BTN_NAME", "create");

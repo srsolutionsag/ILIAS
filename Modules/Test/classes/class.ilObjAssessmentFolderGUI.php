@@ -430,7 +430,7 @@ class ilObjAssessmentFolderGUI extends ilObjectGUI
         $sorted_options = array();
         foreach ($available_tests as $key => $value) {
             $sorted_options[] = array(
-                'title' => ilUtil::prepareFormOutput($value) . " [" . $this->object->getNrOfLogEntries($key) . " " . $this->lng->txt("assessment_log_log_entries") . "]",
+                'title' => ilLegacyFormElementsUtil::prepareFormOutput($value) . " [" . $this->object->getNrOfLogEntries($key) . " " . $this->lng->txt("assessment_log_log_entries") . "]",
                 'key' => $key
             );
         }

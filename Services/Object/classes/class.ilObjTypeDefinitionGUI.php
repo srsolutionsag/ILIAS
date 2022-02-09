@@ -263,7 +263,7 @@ class ilObjTypeDefinitionGUI extends ilObjectGUI
                 }
 
                 $obj = $ops["ops_id"];
-                $ops_options = ilUtil::formSelect($ops_status, "id[$obj]", $options);
+                $ops_options = ilLegacyFormElementsUtil::formSelect($ops_status, "id[$obj]", $options);
 
                 //visible data part
                 $this->data["data"][] = array(

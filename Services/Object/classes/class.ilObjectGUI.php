@@ -1692,7 +1692,7 @@ class ilObjectGUI
         if (is_array($subobj)) {
 
             //build form
-            $opts = ilUtil::formSelect(12, "new_type", $subobj);
+            $opts = ilLegacyFormElementsUtil::formSelect(12, "new_type", $subobj);
             $this->tpl->setCurrentBlock("add_object");
             $this->tpl->setVariable("SELECT_OBJTYPE", $opts);
             $this->tpl->setVariable("BTN_NAME", "create");

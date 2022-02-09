@@ -172,10 +172,13 @@ class ilFileWizardInputGUI extends ilFileInputGUI
         foreach ($this->filenames as $value) {
             if (strlen($value)) {
                 $tpl->setCurrentBlock("image");
-                $tpl->setVariable("SRC_IMAGE", $this->getImagePathWeb() . ilUtil::prepareFormOutput($value));
-                $tpl->setVariable("PICTURE_FILE", ilUtil::prepareFormOutput($value));
+                $tpl->setVariable("SRC_IMAGE", $this->getImagePathWeb() . ilLegacyFormElementsUtil::prepareFormOutput(
+                        $value
+                    )
+                );
+                $tpl->setVariable("PICTURE_FILE", ilLegacyFormElementsUtil::prepareFormOutput($value));
                 $tpl->setVariable("ID", $this->getFieldId() . "[$i]");
-                $tpl->setVariable("ALT_IMAGE", ilUtil::prepareFormOutput($value));
+                $tpl->setVariable("ALT_IMAGE", ilLegacyFormElementsUtil::prepareFormOutput($value));
                 $tpl->parseCurrentBlock();
             }
             if ($this->getAllowMove()) {

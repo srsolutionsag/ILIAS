@@ -153,11 +153,22 @@ class ilPasteIntoMultipleItemsExplorer extends ilRepositoryExplorer
 
         switch ($this->type) {
             case self::SEL_TYPE_CHECK:
-                return ilUtil::formCheckbox((int) $this->isItemChecked($a_node_id), $this->post_var, $a_node_id, $disabled);
+                return ilLegacyFormElementsUtil::formCheckbox(
+                    (int) $this->isItemChecked($a_node_id),
+                    $this->post_var,
+                    $a_node_id,
+                    $disabled
+                );
                 break;
                 
             case self::SEL_TYPE_RADIO:
-                return ilUtil::formRadioButton((int) $this->isItemChecked($a_node_id), $this->post_var, $a_node_id, '', $disabled);
+                return ilLegacyFormElementsUtil::formRadioButton(
+                    (int) $this->isItemChecked($a_node_id),
+                    $this->post_var,
+                    $a_node_id,
+                    '',
+                    $disabled
+                );
                 break;
         }
     }

@@ -273,7 +273,9 @@ abstract class ilMultipleImagesInputGUI extends ilIdentifiedMultiValuesInputGUI
                 $tpl->setCurrentBlock('image');
                 
                 $tpl->setVariable('STORED_IMAGE_SRC', $this->fetchContentImageSourceFromValue($value));
-                $tpl->setVariable('STORED_IMAGE_ALT', ilUtil::prepareFormOutput($this->fetchContentImageTitleFromValue($value)));
+                $tpl->setVariable('STORED_IMAGE_ALT',
+                    ilLegacyFormElementsUtil::prepareFormOutput($this->fetchContentImageTitleFromValue($value))
+                );
                 $tpl->setVariable('STORED_IMAGE_FILENAME', $this->fetchContentImageTitleFromValue($value));
                 $tpl->setVariable("STORED_IMAGE_POST_VAR", $this->getMultiValuePostVarSubFieldPosIndexed($identifier, self::STORED_IMAGE_SUBFIELD_NAME, $i));
                 

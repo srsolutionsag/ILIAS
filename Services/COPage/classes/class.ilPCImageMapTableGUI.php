@@ -63,7 +63,7 @@ class ilPCImageMapTableGUI extends ilImageMapTableGUI
         $i = $a_set["Nr"];
         $this->tpl->setVariable(
             "CHECKBOX",
-            ilUtil::formCheckbox("", "area[]", $i)
+            ilLegacyFormElementsUtil::formCheckbox("", "area[]", $i)
         );
         $this->tpl->setVariable("VAR_NAME", "name_" . $i);
         $this->tpl->setVariable("VAL_NAME", trim($a_set["Link"]["Title"]));
@@ -71,7 +71,7 @@ class ilPCImageMapTableGUI extends ilImageMapTableGUI
         
         $this->tpl->setVariable(
             "VAL_HIGHL_MODE",
-            ilUtil::formSelect(
+            ilLegacyFormElementsUtil::formSelect(
                 $a_set["HighlightMode"],
                 "hl_mode_" . $i,
                 $this->highl_modes,
@@ -81,7 +81,7 @@ class ilPCImageMapTableGUI extends ilImageMapTableGUI
         );
         $this->tpl->setVariable(
             "VAL_HIGHL_CLASS",
-            ilUtil::formSelect(
+            ilLegacyFormElementsUtil::formSelect(
                 $a_set["HighlightClass"],
                 "hl_class_" . $i,
                 $this->highl_classes,

@@ -279,7 +279,7 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
                     $tpl->setCurrentBlock('image');
                     $tpl->setVariable('SRC_IMAGE', $imagename);
                     $tpl->setVariable('IMAGE_NAME', $value->picture);
-                    $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value->text));
+                    $tpl->setVariable('ALT_IMAGE', ilLegacyFormElementsUtil::prepareFormOutput($value->text));
                     $tpl->setVariable("TXT_DELETE_EXISTING", $lng->txt("delete_existing_file"));
                     $tpl->setVariable("IMAGE_ROW_NUMBER", $i);
                     $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());
@@ -296,7 +296,7 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
 
             if (is_object($value)) {
                 $tpl->setCurrentBlock("prop_text_propval");
-                $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value->text));
+                $tpl->setVariable("PROPERTY_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($value->text));
                 $tpl->parseCurrentBlock();
             }
             // this block does not exist in the template

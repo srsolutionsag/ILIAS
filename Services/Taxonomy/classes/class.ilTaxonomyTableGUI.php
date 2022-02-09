@@ -109,7 +109,7 @@ class ilTaxonomyTableGUI extends ilTable2GUI
 
         $this->tpl->setVariable("HREF_TITLE", $ret);
         
-        $this->tpl->setVariable("TITLE", ilUtil::prepareFormOutput($a_set["title"]));
+        $this->tpl->setVariable("TITLE", ilLegacyFormElementsUtil::prepareFormOutput($a_set["title"]));
         $this->tpl->setVariable("NODE_ID", $a_set["child"]);
     }
 }

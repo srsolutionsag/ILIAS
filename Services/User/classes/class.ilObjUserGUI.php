@@ -255,18 +255,20 @@ class ilObjUserGUI extends ilObjectGUI
             if ($definition['field_type'] == UDF_TYPE_TEXT) {
                 $this->tpl->setCurrentBlock("field_text");
                 $this->tpl->setVariable("FIELD_NAME", 'udf[' . $definition['field_id'] . ']');
-                $this->tpl->setVariable("FIELD_VALUE", ilUtil::prepareFormOutput($old));
+                $this->tpl->setVariable("FIELD_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($old));
             } else {
                 $this->tpl->setCurrentBlock("field_select");
-                $this->tpl->setVariable("SELECT_BOX", ilUtil::formSelect(
-                    $old,
-                    'udf[' . $definition['field_id'] . ']',
-                    $this->user_defined_fields->fieldValuesToSelectArray(
-                        $definition['field_values']
-                    ),
-                    false,
-                    true
-                ));
+                $this->tpl->setVariable("SELECT_BOX",
+                    ilLegacyFormElementsUtil::formSelect(
+                        $old,
+                        'udf[' . $definition['field_id'] . ']',
+                        $this->user_defined_fields->fieldValuesToSelectArray(
+                            $definition['field_values']
+                        ),
+                        false,
+                        true
+                    )
+                );
             }
             $this->tpl->parseCurrentBlock();
             $this->tpl->setCurrentBlock("user_defined");
@@ -1854,25 +1856,25 @@ class ilObjUserGUI extends ilObjectGUI
                 for ($i = 0; $i <= 60; $i++) {
                     $days[$i] = $i < 10 ? "0" . $i : $i;
                 }
-                return ilUtil::formSelect($a_selected, $a_varname, $days, false, true);
+                return ilLegacyFormElementsUtil::formSelect($a_selected, $a_varname, $days, false, true);
 
             case "hour":
                 for ($i = 0; $i < 24; $i++) {
                     $days[$i] = $i < 10 ? "0" . $i : $i;
                 }
-                return ilUtil::formSelect($a_selected, $a_varname, $days, false, true);
+                return ilLegacyFormElementsUtil::formSelect($a_selected, $a_varname, $days, false, true);
 
             case "day":
                 for ($i = 1; $i < 32; $i++) {
                     $days[$i] = $i < 10 ? "0" . $i : $i;
                 }
-                return ilUtil::formSelect($a_selected, $a_varname, $days, false, true);
+                return ilLegacyFormElementsUtil::formSelect($a_selected, $a_varname, $days, false, true);
 
             case "month":
                 for ($i = 1; $i < 13; $i++) {
                     $month[$i] = $i < 10 ? "0" . $i : $i;
                 }
-                return ilUtil::formSelect($a_selected, $a_varname, $month, false, true);
+                return ilLegacyFormElementsUtil::formSelect($a_selected, $a_varname, $month, false, true);
 
             case "year":
                 if ($a_selected < date('Y', time())) {
@@ -1884,7 +1886,7 @@ class ilObjUserGUI extends ilObjectGUI
                 for ($i = $start; $i < date("Y", time()) + 11; ++$i) {
                     $year[$i] = $i;
                 }
-                return ilUtil::formSelect($a_selected, $a_varname, $year, false, true);
+                return ilLegacyFormElementsUtil::formSelect($a_selected, $a_varname, $year, false, true);
         }
         return "";
     }
@@ -1915,7 +1917,7 @@ class ilObjUserGUI extends ilObjectGUI
         $action[4] = $this->lng->txt('internal_local_roles_only');
         $action[5] = $this->lng->txt('non_internal_local_roles_only');
 
-        return ilUtil::formSelect(
+        return ilLegacyFormElementsUtil::formSelect(
             ilSession::get("filtered_roles"),
             "filter",
             $action,

@@ -130,11 +130,20 @@ class ilECSNodeMappingLocalExplorer extends ilExplorer
 
         switch ($this->type) {
             case self::SEL_TYPE_CHECK:
-                return ilUtil::formCheckbox((int) $this->isItemChecked($a_node_id), $this->post_var, $a_node_id);
+                return ilLegacyFormElementsUtil::formCheckbox(
+                    (int) $this->isItemChecked($a_node_id),
+                    $this->post_var,
+                    $a_node_id
+                );
                 break;
 
             case self::SEL_TYPE_RADIO:
-                return ilUtil::formRadioButton((int) $this->isItemChecked($a_node_id), $this->post_var, $a_node_id, "document.getElementById('map').submit(); return false;");
+                return ilLegacyFormElementsUtil::formRadioButton(
+                    (int) $this->isItemChecked($a_node_id),
+                    $this->post_var,
+                    $a_node_id,
+                    "document.getElementById('map').submit(); return false;"
+                );
                 break;
         }
     }

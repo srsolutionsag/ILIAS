@@ -249,7 +249,7 @@ class ilImageWizardInputGUI extends ilTextInputGUI
                 $tpl->setCurrentBlock('image');
                 $tpl->setVariable('SRC_IMAGE', $imagename);
                 $tpl->setVariable('IMAGE_NAME', $value);
-                $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value));
+                $tpl->setVariable('ALT_IMAGE', ilLegacyFormElementsUtil::prepareFormOutput($value));
                 $tpl->setVariable("TXT_DELETE_EXISTING", $lng->txt("delete_existing_file"));
                 $tpl->setVariable("IMAGE_ROW_NUMBER", $i);
                 $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());

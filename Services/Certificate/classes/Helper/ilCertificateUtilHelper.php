@@ -19,7 +19,7 @@ class ilCertificateUtilHelper
 
     public function prepareFormOutput(string $string) : string
     {
-        return ilUtil::prepareFormOutput($string);
+        return ilLegacyFormElementsUtil::prepareFormOutput($string);
     }
 
     public function convertImage(

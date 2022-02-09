@@ -569,7 +569,7 @@ class ilObjUserFolderGUI extends ilObjectGUI
 
         if (is_array($subobj)) {
             //build form
-            $opts = ilUtil::formSelect(
+            $opts = ilLegacyFormElementsUtil::formSelect(
                 12,
                 "new_type",
                 $subobj
@@ -3121,7 +3121,7 @@ class ilObjUserFolderGUI extends ilObjectGUI
         $action[6] = $this->lng->txt("usr_filter_groupmember");
         $action[7] = $this->lng->txt("usr_filter_role");
 
-        return ilUtil::formSelect(
+        return ilLegacyFormElementsUtil::formSelect(
             ilSession::get("user_filter"),
             "user_filter",
             $action,

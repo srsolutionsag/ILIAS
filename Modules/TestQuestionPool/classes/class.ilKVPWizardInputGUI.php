@@ -265,10 +265,10 @@ class ilKVPWizardInputGUI extends ilTextInputGUI
         foreach ($this->values as $value) {
             if (is_array($value)) {
                 $tpl->setCurrentBlock("prop_key_propval");
-                $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value[0]));
+                $tpl->setVariable("PROPERTY_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($value[0]));
                 $tpl->parseCurrentBlock();
                 $tpl->setCurrentBlock("prop_value_propval");
-                $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value[1]));
+                $tpl->setVariable("PROPERTY_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($value[1]));
                 $tpl->parseCurrentBlock();
             }
             if ($this->getAllowMove()) {

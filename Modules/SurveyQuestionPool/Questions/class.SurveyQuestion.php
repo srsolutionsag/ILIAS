@@ -1473,7 +1473,7 @@ class SurveyQuestion
         string $txt_output,
         bool $prepare_for_latex_output = false
     ) : string {
-        return ilUtil::prepareTextareaOutput($txt_output, $prepare_for_latex_output);
+        return ilLegacyFormElementsUtil::prepareTextareaOutput($txt_output, $prepare_for_latex_output);
     }
 
     /**

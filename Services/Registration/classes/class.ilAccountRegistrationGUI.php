@@ -346,7 +346,7 @@ class ilAccountRegistrationGUI
             $this->lng->loadLanguageModule('tos');
             $this->tpl->setOnScreenMessage('failure', sprintf(
                 $this->lng->txt('tos_account_reg_not_possible'),
-                'mailto:' . ilUtil::prepareFormOutput(ilSystemSupportContacts::getMailsToAddress())
+                'mailto:' . ilLegacyFormElementsUtil::prepareFormOutput(ilSystemSupportContacts::getMailsToAddress())
             ));
         } else {
             $password = $this->__createUser($valid_role);

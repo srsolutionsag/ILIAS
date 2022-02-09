@@ -62,7 +62,7 @@ class ilLDAPRoleMappingTableGUI extends ilTable2GUI
         $this->tpl->setVariable("VAL_GROUP", $a_set["dn"]);
         $this->tpl->setVariable("VAL_URL", $a_set["url"]);
         $this->tpl->setVariable("VAL_MEMBER", $a_set["member_attribute"]);
-        $this->tpl->setVariable("VAL_INFO", ilUtil::prepareFormOutput($a_set['info']));
+        $this->tpl->setVariable("VAL_INFO", ilLegacyFormElementsUtil::prepareFormOutput($a_set['info']));
         $this->ctrl->setParameter($this->getParentObject(), 'mapping_id', $a_set['mapping_id']);
         $this->tpl->setVariable("EDIT_URL", $this->ctrl->getLinkTarget($this->getParentObject(), 'addRoleMapping'));
         $this->tpl->setVariable("EDIT_TXT", $this->lng->txt('copy'));

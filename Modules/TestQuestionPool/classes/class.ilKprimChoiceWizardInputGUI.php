@@ -164,7 +164,9 @@ class ilKprimChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                         $tpl->setCurrentBlock('image');
                         $tpl->setVariable('SRC_IMAGE', $imagename);
                         $tpl->setVariable('IMAGE_NAME', $value->getImageFile());
-                        $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value->getAnswertext()));
+                        $tpl->setVariable('ALT_IMAGE',
+                            ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext())
+                        );
                         $tpl->setVariable("TXT_DELETE_EXISTING", $this->lng->txt("delete_existing_file"));
                         $tpl->setVariable("IMAGE_ROW_NUMBER", $value->getPosition());
                         $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());
@@ -180,7 +182,9 @@ class ilKprimChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                 }
 
                 $tpl->setCurrentBlock("prop_text_propval");
-                $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value->getAnswertext()));
+                $tpl->setVariable("PROPERTY_VALUE",
+                    ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext())
+                );
                 $tpl->parseCurrentBlock();
 
                 $tpl->setCurrentBlock('singleline');
@@ -195,7 +199,9 @@ class ilKprimChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                 $tpl->parseCurrentBlock();
             } elseif (!$this->getSingleline()) {
                 $tpl->setCurrentBlock('multiline');
-                $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value->getAnswertext()));
+                $tpl->setVariable("PROPERTY_VALUE",
+                    ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext())
+                );
                 $tpl->setVariable("MULTILINE_ID", $this->getPostVar() . "[answer][{$value->getPosition()}]");
                 $tpl->setVariable("MULTILINE_ROW_NUMBER", $value->getPosition());
                 $tpl->setVariable("MULTILINE_POST_VAR", $this->getPostVar());

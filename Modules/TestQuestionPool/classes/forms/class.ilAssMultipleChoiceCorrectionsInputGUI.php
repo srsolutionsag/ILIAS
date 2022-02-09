@@ -96,7 +96,7 @@ class ilAssMultipleChoiceCorrectionsInputGUI extends ilMultipleChoiceWizardInput
                     $tpl->setCurrentBlock('image');
                     $tpl->setVariable('SRC_IMAGE', $imagename);
                     $tpl->setVariable('IMAGE_NAME', $value->getImage());
-                    $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value->getAnswertext()));
+                    $tpl->setVariable('ALT_IMAGE', ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext()));
                     $tpl->parseCurrentBlock();
                 } else {
                     $tpl->setCurrentBlock('image');
@@ -112,8 +112,12 @@ class ilAssMultipleChoiceCorrectionsInputGUI extends ilMultipleChoiceWizardInput
             $tpl->setCurrentBlock("row");
             $tpl->setVariable("POINTS_POST_VAR", $this->getPostVar());
             $tpl->setVariable("POINTS_ROW_NUMBER", $i);
-            $tpl->setVariable("PROPERTY_VALUE_CHECKED", ilUtil::prepareFormOutput($value->getPointsChecked()));
-            $tpl->setVariable("PROPERTY_VALUE_UNCHECKED", ilUtil::prepareFormOutput($value->getPointsUnchecked()));
+            $tpl->setVariable("PROPERTY_VALUE_CHECKED",
+                ilLegacyFormElementsUtil::prepareFormOutput($value->getPointsChecked())
+            );
+            $tpl->setVariable("PROPERTY_VALUE_UNCHECKED",
+                ilLegacyFormElementsUtil::prepareFormOutput($value->getPointsUnchecked())
+            );
             $tpl->parseCurrentBlock();
             
             $i++;

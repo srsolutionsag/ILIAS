@@ -76,7 +76,7 @@ class ilKprimChoiceCorrectionsInputGUI extends ilKprimChoiceWizardInputGUI
                 $tpl->setCurrentBlock('image');
                 $tpl->setVariable('SRC_IMAGE', $imagename);
                 $tpl->setVariable('IMAGE_NAME', $value->getImageFile());
-                $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value->getAnswertext()));
+                $tpl->setVariable('ALT_IMAGE', ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext()));
                 $tpl->parseCurrentBlock();
             }
             

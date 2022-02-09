@@ -739,16 +739,18 @@ class ilPortfolioPageGUI extends ilPageObjectGUI
                     "alpha" => $this->lng->txt("cont_mycourses_sortorder_alphabetical"),
                     "loc" => $this->lng->txt("cont_mycourses_sortorder_location")
                 );
-                $tpl->setVariable("SORT_SELECT", ilUtil::formSelect(
-                    $sorting,
-                    "srt",
-                    $options,
-                    false,
-                    true,
-                    0,
-                    "",
-                    array("onchange" => "form.submit()")
-                ));
+                $tpl->setVariable("SORT_SELECT",
+                    ilLegacyFormElementsUtil::formSelect(
+                        $sorting,
+                        "srt",
+                        $options,
+                        false,
+                        true,
+                        0,
+                        "",
+                        ["onchange" => "form.submit()"]
+                    )
+                );
                 $tpl->setVariable("SORT_FORM", $this->getCourseSortAction($ilCtrl));
             }
 

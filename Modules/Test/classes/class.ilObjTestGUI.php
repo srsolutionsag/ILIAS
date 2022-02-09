@@ -2442,12 +2442,16 @@ class ilObjTestGUI extends ilObjectGUI
             $max_points += $question_gui->object->getMaximumPoints();
         }
 
-        $template->setVariable("TITLE", ilUtil::prepareFormOutput($this->object->getTitle()));
-        $template->setVariable("PRINT_TEST", ilUtil::prepareFormOutput($this->lng->txt("tst_print")));
-        $template->setVariable("TXT_PRINT_DATE", ilUtil::prepareFormOutput($this->lng->txt("date")));
-        $template->setVariable("VALUE_PRINT_DATE", ilUtil::prepareFormOutput(strftime("%c", $print_date)));
-        $template->setVariable("TXT_MAXIMUM_POINTS", ilUtil::prepareFormOutput($this->lng->txt("tst_maximum_points")));
-        $template->setVariable("VALUE_MAXIMUM_POINTS", ilUtil::prepareFormOutput($max_points));
+        $template->setVariable("TITLE", ilLegacyFormElementsUtil::prepareFormOutput($this->object->getTitle()));
+        $template->setVariable("PRINT_TEST", ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("tst_print")));
+        $template->setVariable("TXT_PRINT_DATE", ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("date")));
+        $template->setVariable("VALUE_PRINT_DATE",
+            ilLegacyFormElementsUtil::prepareFormOutput(strftime("%c", $print_date))
+        );
+        $template->setVariable("TXT_MAXIMUM_POINTS",
+            ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("tst_maximum_points"))
+        );
+        $template->setVariable("VALUE_MAXIMUM_POINTS", ilLegacyFormElementsUtil::prepareFormOutput($max_points));
         
         if ($isPdfDeliveryRequest) {
             ilTestPDFGenerator::generatePDF($template->get(), ilTestPDFGenerator::PDF_OUTPUT_DOWNLOAD, $this->object->getTitleFilenameCompliant(), PDF_PRINT_VIEW_QUESTIONS);
@@ -2511,9 +2515,11 @@ class ilObjTestGUI extends ilObjectGUI
             $max_points += $question_gui->object->getMaximumPoints();
         }
 
-        $template->setVariable("TITLE", ilUtil::prepareFormOutput($this->object->getTitle()));
-        $template->setVariable("PRINT_TEST", ilUtil::prepareFormOutput($this->lng->txt("review_view")));
-        $template->setVariable("TXT_PRINT_DATE", ilUtil::prepareFormOutput($this->lng->txt("date")));
+        $template->setVariable("TITLE", ilLegacyFormElementsUtil::prepareFormOutput($this->object->getTitle()));
+        $template->setVariable("PRINT_TEST",
+            ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("review_view"))
+        );
+        $template->setVariable("TXT_PRINT_DATE", ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("date")));
         $usedRelativeDates = ilDatePresentation::useRelativeDates();
         ilDatePresentation::setUseRelativeDates(false);
         $template->setVariable(
@@ -2521,8 +2527,10 @@ class ilObjTestGUI extends ilObjectGUI
             ilDatePresentation::formatDate(new ilDateTime(time(), IL_CAL_UNIX))
         );
         ilDatePresentation::setUseRelativeDates($usedRelativeDates);
-        $template->setVariable("TXT_MAXIMUM_POINTS", ilUtil::prepareFormOutput($this->lng->txt("tst_maximum_points")));
-        $template->setVariable("VALUE_MAXIMUM_POINTS", ilUtil::prepareFormOutput($max_points));
+        $template->setVariable("TXT_MAXIMUM_POINTS",
+            ilLegacyFormElementsUtil::prepareFormOutput($this->lng->txt("tst_maximum_points"))
+        );
+        $template->setVariable("VALUE_MAXIMUM_POINTS", ilLegacyFormElementsUtil::prepareFormOutput($max_points));
 
         if ($isPdfDeliveryRequest) {
             ilTestPDFGenerator::generatePDF($template->get(), ilTestPDFGenerator::PDF_OUTPUT_DOWNLOAD, $this->object->getTitleFilenameCompliant(), PDF_PRINT_VIEW_QUESTIONS);

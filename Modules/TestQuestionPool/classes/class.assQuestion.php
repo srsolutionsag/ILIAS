@@ -693,8 +693,8 @@ abstract class assQuestion
                     break;
                 case "file":
                     $possible_texts = array_values(array_filter(array(
-                        ilUtil::prepareFormOutput($solution['value']['filename']),
-                        ilUtil::prepareFormOutput($solution['value']['name']),
+                        ilLegacyFormElementsUtil::prepareFormOutput($solution['value']['filename']),
+                        ilLegacyFormElementsUtil::prepareFormOutput($solution['value']['name']),
                         $this->lng->txt('tst_show_solution_suggested')
                     )));
 
@@ -2826,7 +2826,11 @@ abstract class assQuestion
     public function prepareTextareaOutput(string $txt_output, bool $prepare_for_latex_output = false, bool $omitNl2BrWhenTextArea = false)
     {
         include_once "./Services/Utilities/classes/class.ilUtil.php";
-        return ilUtil::prepareTextareaOutput($txt_output, $prepare_for_latex_output, $omitNl2BrWhenTextArea);
+        return ilLegacyFormElementsUtil::prepareTextareaOutput(
+            $txt_output,
+            $prepare_for_latex_output,
+            $omitNl2BrWhenTextArea
+        );
     }
 
     /**

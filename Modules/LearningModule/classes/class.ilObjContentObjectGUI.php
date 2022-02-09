@@ -2292,7 +2292,13 @@ class ilObjContentObjectGUI extends ilObjectGUI
         $this->tpl->setVariable("TXT_SET_PUBLIC_MODE", $this->lng->txt("set_public_mode"));
         $this->tpl->setVariable("TXT_CHOOSE_PUBLIC_MODE", $this->lng->txt("choose_public_mode"));
         $modes = array("complete" => $this->lng->txt("all_pages"), "selected" => $this->lng->txt("selected_pages_only"));
-        $select_public_mode = ilUtil::formSelect($this->lm->getPublicAccessMode(), "lm_public_mode", $modes, false, true);
+        $select_public_mode = ilLegacyFormElementsUtil::formSelect(
+            $this->lm->getPublicAccessMode(),
+            "lm_public_mode",
+            $modes,
+            false,
+            true
+        );
         $this->tpl->setVariable("SELECT_PUBLIC_MODE", $select_public_mode);
 
         $this->tpl->setVariable("TXT_EXPLORER_HEADER", $this->lng->txt("choose_public_pages"));

@@ -1061,7 +1061,7 @@ class ilObjCategoryGUI extends ilContainerGUI
             $role_obj = ilObjectFactory::getInstanceByObjId($role['obj_id']);
             
             $disabled = false;
-            $f_result[$counter]['checkbox'] = ilUtil::formCheckbox(
+            $f_result[$counter]['checkbox'] = ilLegacyFormElementsUtil::formCheckbox(
                 in_array($role['obj_id'], $ass_roles) ? 1 : 0,
                 'role_ids[]',
                 $role['obj_id'],

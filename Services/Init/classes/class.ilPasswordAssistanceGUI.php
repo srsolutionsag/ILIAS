@@ -159,7 +159,9 @@ class ilPasswordAssistanceGUI
                 '<br />',
                 sprintf(
                     $this->lng->txt('pwassist_enter_username_and_email'),
-                    '<a href="mailto:' . ilUtil::prepareFormOutput($this->settings->get('admin_email')) . '">' . ilUtil::prepareFormOutput($this->settings->get('admin_email')) . '</a>'
+                    '<a href="mailto:' . ilLegacyFormElementsUtil::prepareFormOutput(
+                        $this->settings->get('admin_email')
+                    ) . '">' . ilLegacyFormElementsUtil::prepareFormOutput($this->settings->get('admin_email')) . '</a>'
                 )
             )
         );
@@ -553,7 +555,9 @@ class ilPasswordAssistanceGUI
                 '<br />',
                 sprintf(
                     $this->lng->txt('pwassist_enter_email'),
-                    '<a href="mailto:' . ilUtil::prepareFormOutput($this->settings->get('admin_email')) . '">' . ilUtil::prepareFormOutput($this->settings->get('admin_email')) . '</a>'
+                    '<a href="mailto:' . ilLegacyFormElementsUtil::prepareFormOutput(
+                        $this->settings->get('admin_email')
+                    ) . '">' . ilLegacyFormElementsUtil::prepareFormOutput($this->settings->get('admin_email')) . '</a>'
                 )
             )
         );

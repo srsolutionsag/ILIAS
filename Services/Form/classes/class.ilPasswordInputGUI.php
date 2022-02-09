@@ -243,7 +243,7 @@ class ilPasswordInputGUI extends ilSubEnabledFormPropertyGUI
                 ? $this->getRetypeValue()
                 : $this->getValue();*/
             $retype_value = $this->getRetypeValue();
-            $ptpl->setVariable("PROPERTY_RETYPE_VALUE", ilUtil::prepareFormOutput($retype_value));
+            $ptpl->setVariable("PROPERTY_RETYPE_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($retype_value));
             if ($this->getDisabled()) {
                 $ptpl->setVariable(
                     "RDISABLED",
@@ -256,7 +256,7 @@ class ilPasswordInputGUI extends ilSubEnabledFormPropertyGUI
 
         if (strlen($this->getValue())) {
             $ptpl->setCurrentBlock("prop_password_propval");
-            $ptpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($this->getValue()));
+            $ptpl->setVariable("PROPERTY_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($this->getValue()));
             $ptpl->parseCurrentBlock();
         }
         $ptpl->setVariable("POST_VAR", $this->getPostVar());

@@ -255,7 +255,7 @@ class ilPCParagraphGUI extends ilPageContentGUI
         $tpl->setVariable("TXT_ANCHOR", $this->lng->txt("cont_anchor"));
 
         $lang = ilMDLanguageItem::_getLanguages();
-        $select_lang = ilUtil::formSelect($s_lang, "par_language", $lang, false, true);
+        $select_lang = ilLegacyFormElementsUtil::formSelect($s_lang, "par_language", $lang, false, true);
         $tpl->setVariable("SELECT_LANGUAGE", $select_lang);
         
         $tpl->setVariable("TXT_CHARACTERISTIC", $this->lng->txt("cont_characteristic"));

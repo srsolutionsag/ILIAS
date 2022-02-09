@@ -91,7 +91,7 @@ class ilAssSingleChoiceCorrectionsInputGUI extends ilSingleChoiceWizardInputGUI
                     $tpl->setCurrentBlock('image');
                     $tpl->setVariable('SRC_IMAGE', $imagename);
                     $tpl->setVariable('IMAGE_NAME', $value->getImage());
-                    $tpl->setVariable('ALT_IMAGE', ilUtil::prepareFormOutput($value->getAnswertext()));
+                    $tpl->setVariable('ALT_IMAGE', ilLegacyFormElementsUtil::prepareFormOutput($value->getAnswertext()));
                     $tpl->parseCurrentBlock();
                 } else {
                     $tpl->setCurrentBlock('image');
@@ -106,7 +106,7 @@ class ilAssSingleChoiceCorrectionsInputGUI extends ilSingleChoiceWizardInputGUI
             
             $tpl->setCurrentBlock("prop_points_propval");
             $tpl->setVariable("POINTS_POST_VAR", $this->getPostVar());
-            $tpl->setVariable("PROPERTY_VALUE", ilUtil::prepareFormOutput($value->getPoints()));
+            $tpl->setVariable("PROPERTY_VALUE", ilLegacyFormElementsUtil::prepareFormOutput($value->getPoints()));
             $tpl->parseCurrentBlock();
             
             $tpl->setCurrentBlock("row");

@@ -266,7 +266,7 @@ class ilInfoScreenGUI
     ) : void {
         $input = "<span class=\"form-inline\"><input class=\"form-control\" type=\"text\" name=\"$a_input_name\" id=\"$a_input_name\"";
         if (strlen($a_input_value)) {
-            $input .= " value=\"" . ilUtil::prepareFormOutput($a_input_value) . "\"";
+            $input .= " value=\"" . ilLegacyFormElementsUtil::prepareFormOutput($a_input_value) . "\"";
         }
         if (strlen($a_input_size)) {
             $input .= " size=\"" . $a_input_size . "\"";
