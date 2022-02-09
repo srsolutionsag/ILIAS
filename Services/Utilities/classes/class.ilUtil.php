@@ -1148,13 +1148,26 @@ class ilUtil
         global $DIC;
 
         $lng = $DIC->language();
-        $mtpl = new ilTemplate("tpl.message.html", true, true, "Services/Utilities");
-        $mtpl->setCurrentBlock($a_type . "_message");
-        $mtpl->setVariable("TEXT", $a_txt);
-        $mtpl->setVariable("MESSAGE_HEADING", $lng->txt($a_type . "_message"));
-        $mtpl->parseCurrentBlock();
-
-        return $mtpl->get();
+        
+        $box_factory = $DIC->ui()->factory()->messageBox();
+        switch ($a_type) {
+            case 'info';
+                $box = $box_factory->info($a_txt);
+                break;
+            case 'success';
+                $box = $box_factory->success($a_txt);
+                break;
+            case 'question';
+                $box = $box_factory->confirmation($a_txt);
+                break;
+            case 'failure';
+                $box = $box_factory->failure($a_txt);
+                break;
+            default:
+                throw new InvalidArgumentException();
+        }
+        
+        return $DIC->ui()->renderer()->render($box);
     }
     
     
