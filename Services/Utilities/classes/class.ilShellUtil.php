@@ -176,8 +176,8 @@ class ilShellUtil
             ? " -background color " . $a_background_color . " "
             : "";
         $convert_cmd = ilShellUtil::escapeShellArg($a_from) . " " . $bg_color . $geometry . ilShellUtil::escapeShellArg(
-                $format_str . $a_to
-            );
+            $format_str . $a_to
+        );
         ilShellUtil::execConvert($convert_cmd);
     }
     

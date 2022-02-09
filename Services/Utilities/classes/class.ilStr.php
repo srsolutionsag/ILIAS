@@ -206,9 +206,9 @@ class ilStr
             } else {
                 if ($a_dots) {
                     $a_str = ilStr::subStr($a_str, 0, $len - (strlen($a_str) - $p + 1)) . "\xe2\x80\xa6" . substr(
-                            $a_str,
-                            $p
-                        );
+                        $a_str,
+                        $p
+                    );
                 } else {
                     $a_str = ilStr::subStr($a_str, 0, $len - (strlen($a_str) - $p + 1)) . substr($a_str, $p);
                 }

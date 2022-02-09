@@ -129,7 +129,10 @@ class ilUtil
     * @deprecated
     */
     public static function getStyleSheetLocation(
-        string $mode = "output", string $a_css_name = "", string $a_css_location = "") : string
+        string $mode = "output",
+        string $a_css_name = "",
+        string $a_css_location = ""
+    ) : string
     {
         global $DIC;
 
@@ -230,9 +233,10 @@ class ilUtil
      *
      * @deprecated use ilMailRfc822AddressParserFactory directly
      */
-    public static function is_email(string $a_email, ilMailRfc822AddressParserFactory $mailAddressParserFactory = null
-    ) : bool
-    {
+    public static function is_email(
+        string $a_email,
+        ilMailRfc822AddressParserFactory $mailAddressParserFactory = null
+    ) : bool {
         if ($mailAddressParserFactory === null) {
             $mailAddressParserFactory = new ilMailRfc822AddressParserFactory();
         }
@@ -667,15 +671,15 @@ class ilUtil
             $a_str
         );
         
-            foreach ($fix_param	 as $p) {
-                $k = $p["param"];
-                $v = $p["value"];
-                $a_str = str_replace(
-                    "<$tag $k=\"$v\">",
-                    "&lt;" . "$tag $k=\"$v\"" . "&gt;",
-                    $a_str
-                );
-            }
+        foreach ($fix_param	 as $p) {
+            $k = $p["param"];
+            $v = $p["value"];
+            $a_str = str_replace(
+                "<$tag $k=\"$v\">",
+                "&lt;" . "$tag $k=\"$v\"" . "&gt;",
+                $a_str
+            );
+        }
 
         return $a_str;
     }
@@ -938,7 +942,11 @@ class ilUtil
     * @deprecated
     */
     public static function stableSortArray(
-        array $array, string $a_array_sortby, string $a_array_sortorder = "asc", bool $a_numeric = false) : array
+        array $array,
+        string $a_array_sortby,
+        string $a_array_sortorder = "asc",
+        bool $a_numeric = false
+    ) : array
     {
         global $array_sortby,$array_sortorder;
 
@@ -1727,6 +1735,4 @@ class ilUtil
 
         return $result;
     }
-
-
 }

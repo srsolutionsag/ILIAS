@@ -22,7 +22,7 @@ class ilMimeTypeTest extends TestCase
     /**
      *
      */
-    public function testMimeTypeForYoutubeUrlCouldBeCorrectlyDetected(): void
+    public function testMimeTypeForYoutubeUrlCouldBeCorrectlyDetected() : void
     {
         $expected = 'video/youtube';
         $actual = \ILIAS\FileUpload\MimeType::lookupMimeType(
@@ -36,7 +36,7 @@ class ilMimeTypeTest extends TestCase
     /**
      *
      */
-    public function testMimeTypeForVimeoUrlCouldBeCorrectlyDetected(): void
+    public function testMimeTypeForVimeoUrlCouldBeCorrectlyDetected() : void
     {
         $expected = 'video/vimeo';
         $actual = \ILIAS\FileUpload\MimeType::lookupMimeType(
