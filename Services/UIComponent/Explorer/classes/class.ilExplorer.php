@@ -1122,7 +1122,7 @@ class ilExplorer
             array_splice($a_nodes, $match, 1);
         }
 
-        $a_nodes = ilUtil::sortArray($a_nodes, $this->order_column, $this->order_direction);
+        $a_nodes = ilArrayUtil::sortArray($a_nodes, $this->order_column, $this->order_direction);
 
         // append adm node to end of list
         if (isset($match)) {

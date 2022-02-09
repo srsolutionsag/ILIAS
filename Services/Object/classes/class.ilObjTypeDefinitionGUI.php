@@ -82,7 +82,7 @@ class ilObjTypeDefinitionGUI extends ilObjectGUI
         $this->maxcount = count($this->data["data"]);
 
         // sorting array
-        $this->data["data"] = ilUtil::sortArray($this->data["data"], $_GET["sort_by"], $_GET["sort_order"]);
+        $this->data["data"] = ilArrayUtil::sortArray($this->data["data"], $_GET["sort_by"], $_GET["sort_order"]);
 
         // now compute control information
         foreach ($this->data["data"] as $key => $val) {
@@ -279,7 +279,7 @@ class ilObjTypeDefinitionGUI extends ilObjectGUI
         $this->maxcount = count($this->data["data"]);
 
         // sorting array
-        $this->data["data"] = ilUtil::sortArray($this->data["data"], $_GET["sort_by"], $_GET["sort_order"]);
+        $this->data["data"] = ilArrayUtil::sortArray($this->data["data"], $_GET["sort_by"], $_GET["sort_order"]);
 
         // now compute control information
         foreach ($this->data["data"] as $key => $val) {

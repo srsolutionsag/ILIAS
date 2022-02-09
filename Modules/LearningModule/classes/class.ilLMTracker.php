@@ -384,7 +384,7 @@ class ilLMTracker
 
             if (is_array($this->tree_arr["childs"][$a_obj_id])) {
                 // sort childs in correct order
-                $this->tree_arr["childs"][$a_obj_id] = ilUtil::sortArray(
+                $this->tree_arr["childs"][$a_obj_id] = ilArrayUtil::sortArray(
                     $this->tree_arr["childs"][$a_obj_id],
                     "lft",
                     "asc",

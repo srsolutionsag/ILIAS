@@ -257,7 +257,7 @@ class ilCategoryWizardInputGUI extends ilTextInputGUI
     public function getInput() : array
     {
         $val = $this->arrayArray($this->getPostVar());
-        $val = ilUtil::stripSlashesRecursive($val);
+        $val = ilArrayUtil::stripSlashesRecursive($val);
         return $val;
     }
 

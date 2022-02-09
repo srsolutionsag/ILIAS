@@ -172,7 +172,11 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
         $lng = $DIC['lng'];
         include_once "./Services/AdvancedEditing/classes/class.ilObjAdvancedEditing.php";
         if (is_array($_POST[$this->getPostVar()])) {
-            $_POST[$this->getPostVar()] = ilUtil::stripSlashesRecursive($_POST[$this->getPostVar()], true, ilObjAdvancedEditing::_getUsedHTMLTagsAsString("assessment"));
+            $_POST[$this->getPostVar()] = ilArrayUtil::stripSlashesRecursive(
+                $_POST[$this->getPostVar()],
+                true,
+                ilObjAdvancedEditing::_getUsedHTMLTagsAsString("assessment")
+            );
         }
         $foundvalues = $_POST[$this->getPostVar()];
         if (is_array($foundvalues)) {

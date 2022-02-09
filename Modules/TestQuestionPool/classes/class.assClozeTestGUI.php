@@ -209,8 +209,8 @@ class assClozeTestGUI extends assQuestionGUI implements ilGuiQuestionScoringAdju
                 ) {
                     $assClozeGapCombinationObject->saveGapCombinationToDb(
                         $this->object->getId(),
-                        ilUtil::stripSlashesRecursive($_POST['gap_combination']),
-                        ilUtil::stripSlashesRecursive($_POST['gap_combination_values'])
+                        ilArrayUtil::stripSlashesRecursive($_POST['gap_combination']),
+                        ilArrayUtil::stripSlashesRecursive($_POST['gap_combination_values'])
                     );
                 }
             }
@@ -1861,8 +1861,8 @@ class assClozeTestGUI extends assQuestionGUI implements ilGuiQuestionScoringAdju
             }
         }
 
-        $combinationPoints = ilUtil::stripSlashesRecursive($combinationPoints);
-        $combinationValues = ilUtil::stripSlashesRecursive($combinationValues);
+        $combinationPoints = ilArrayUtil::stripSlashesRecursive($combinationPoints);
+        $combinationValues = ilArrayUtil::stripSlashesRecursive($combinationValues);
 
         $assClozeGapCombinationObject = new assClozeGapCombination();
         $assClozeGapCombinationObject->clearGapCombinationsFromDb($this->object->getId());

@@ -368,7 +368,7 @@ class ilAnswerWizardInputGUI extends ilTextInputGUI
     protected function sanitizeSuperGlobalSubmitValue()
     {
         if (isset($_POST[$this->getPostVar()]) && is_array($_POST[$this->getPostVar()])) {
-            $_POST[$this->getPostVar()] = ilUtil::stripSlashesRecursive($_POST[$this->getPostVar()]);
+            $_POST[$this->getPostVar()] = ilArrayUtil::stripSlashesRecursive($_POST[$this->getPostVar()]);
         }
     }
 }

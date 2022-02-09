@@ -721,11 +721,11 @@ class ilPortfolioPageGUI extends ilPageObjectGUI
         $data = $this->getCoursesOfUser($user_id, ($sorting == "loc"));
         if (sizeof($data)) {
             if ($sorting != "loc") {
-                $data = ilUtil::sortArray($data, "title", "ASC");
+                $data = ilArrayUtil::sortArray($data, "title", "ASC");
             } else {
-                $data = ilUtil::sortArray($data, "path_sort", "ASC");
+                $data = ilArrayUtil::sortArray($data, "path_sort", "ASC");
             }
-                
+            
             $tpl = new ilTemplate("tpl.pc_my_courses.html", true, true, "Modules/Portfolio");
             $tpl->setVariable("TITLE", $this->lng->txt("prtf_page_element_my_courses_title"));
             $tpl->setVariable("INFO", $this->lng->txt("prtf_page_element_my_courses_info")); // #14464

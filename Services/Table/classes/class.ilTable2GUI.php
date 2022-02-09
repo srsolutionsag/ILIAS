@@ -1316,7 +1316,7 @@ class ilTable2GUI extends ilTableGUI
         if ($this->dataExists()) {
             // sort
             if (!$this->getExternalSorting() && $this->enabled["sort"]) {
-                $data = ilUtil::sortArray(
+                $data = ilArrayUtil::sortArray(
                     $data,
                     $this->getOrderField(),
                     $this->getOrderDirection(),
@@ -2626,7 +2626,7 @@ class ilTable2GUI extends ilTableGUI
             if (!$this->getExternalSorting() && $this->enabled["sort"]) {
                 $this->determineOffsetAndOrder(true);
 
-                $this->row_data = ilUtil::sortArray(
+                $this->row_data = ilArrayUtil::sortArray(
                     $this->row_data,
                     $this->getOrderField(),
                     $this->getOrderDirection(),

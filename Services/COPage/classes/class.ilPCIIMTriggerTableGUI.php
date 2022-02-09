@@ -96,7 +96,7 @@ class ilPCIIMTriggerTableGUI extends ilImageMapTableGUI
     {
         $triggers = $this->pc_media_object->getTriggers();
         
-        $triggers = ilUtil::sortArray($triggers, "Title", "asc", false, true);
+        $triggers = ilArrayUtil::sortArray($triggers, "Title", "asc", false, true);
         $this->setData($triggers);
     }
     

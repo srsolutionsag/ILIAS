@@ -434,7 +434,7 @@ class ilObjAssessmentFolderGUI extends ilObjectGUI
                 'key' => $key
             );
         }
-        $sorted_options = ilUtil::sortArray($sorted_options, 'title', 'asc');
+        $sorted_options = ilArrayUtil::sortArray($sorted_options, 'title', 'asc');
         $options = array('' => $this->lng->txt('please_choose'));
         foreach ($sorted_options as $option) {
             $options[$option['key']] = $option['title'];

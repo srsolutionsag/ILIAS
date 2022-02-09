@@ -4229,7 +4229,7 @@ s     */
             );
         }
 
-        $page_changes = ilUtil::sortArray($page_changes, "date", "desc");
+        $page_changes = ilArrayUtil::sortArray($page_changes, "date", "desc");
 
         return $page_changes;
     }

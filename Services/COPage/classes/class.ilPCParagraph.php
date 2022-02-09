@@ -1694,7 +1694,7 @@ class ilPCParagraph extends ilPageContent
         foreach ($a_terms as $k => $t) {
             $a_terms[$k]["termlength"] = strlen($t["term"]);
         }
-        $a_terms = ilUtil::sortArray($a_terms, "termlength", "asc", true);
+        $a_terms = ilArrayUtil::sortArray($a_terms, "termlength", "asc", true);
 
 
         if ($a_dom instanceof php4DOMDocument) {

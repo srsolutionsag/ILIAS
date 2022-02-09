@@ -54,7 +54,7 @@ class ilPCImageMapTableGUI extends ilImageMapTableGUI
         foreach ($areas as $k => $a) {
             $areas[$k]["title"] = $a["Link"]["Title"];
         }
-        $areas = ilUtil::sortArray($areas, "title", "asc", false, true);
+        $areas = ilArrayUtil::sortArray($areas, "title", "asc", false, true);
         $this->setData($areas);
     }
     

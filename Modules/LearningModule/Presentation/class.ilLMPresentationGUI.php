@@ -1952,7 +1952,7 @@ class ilLMPresentationGUI implements ilCtrlBaseClassInterface, ilCtrlSecurityInt
                 $term = ilGlossaryTerm::_lookGlossaryTerm($link["id"]);
                 $terms[$term . ":" . $key] = array("key" => $key, "link" => $link, "term" => $term);
             }
-            $terms = ilUtil::sortArray($terms, "term", "asc");
+            $terms = ilArrayUtil::sortArray($terms, "term", "asc");
             //ksort($terms);
 
             foreach ($terms as $t) {

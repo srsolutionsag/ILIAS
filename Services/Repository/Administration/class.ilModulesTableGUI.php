@@ -162,7 +162,7 @@ class ilModulesTableGUI extends ilTable2GUI
             );
         }
         
-        $data = ilUtil::sortArray($data, "sort_key", "asc", true);
+        $data = ilArrayUtil::sortArray($data, "sort_key", "asc", true);
         
         $this->setData($data);
     }
