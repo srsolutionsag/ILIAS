@@ -94,7 +94,9 @@ class ilObjectTileImage implements ilObjectTileImageInterface
                     $fullpath = CLIENT_WEB_DIR . '/' . $this->getRelativeDirectory() . '/' . $this->getFileName();
                     [$width, $height, $type, $attr] = getimagesize($fullpath);
                     $min = min($width, $height);
-                    ilUtil::execConvert($fullpath . "[0] -geometry " . $min . "x" . $min . "^ -gravity center -extent " . $min . "x" . $min . " " . $fullpath);
+                    ilShellUtil::execConvert(
+                        $fullpath . "[0] -geometry " . $min . "x" . $min . "^ -gravity center -extent " . $min . "x" . $min . " " . $fullpath
+                    );
                 }
             }
         }

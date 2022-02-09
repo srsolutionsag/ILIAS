@@ -519,7 +519,7 @@ class ilObjSCORMLearningModuleGUI extends ilObjSAHSLearningModuleGUI
         chdir($dir);
 
         //we need more flexible unzip here than ILIAS standard classes allow
-        $unzipcmd = $unzip . " -o " . ilUtil::escapeShellArg($source) . " " . $tocheck;
+        $unzipcmd = $unzip . " -o " . ilShellUtil::escapeShellArg($source) . " " . $tocheck;
         exec($unzipcmd);
         chdir($cdir);
         $tmp_file = $dir . "/" . $this->refId . "." . $tocheck;

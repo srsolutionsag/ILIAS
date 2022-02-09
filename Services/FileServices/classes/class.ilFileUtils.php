@@ -587,19 +587,19 @@ class ilFileUtils
             $source = "";
             foreach ($a_dir as $dir) {
                 $name = basename($dir);
-                $source .= " " . ilUtil::escapeShellArg($name);
+                $source .= " " . ilShellUtil::escapeShellArg($name);
             }
         } else {
             $name = basename($a_dir);
             if (trim($name) != "*") {
-                $source = ilUtil::escapeShellArg($name);
+                $source = ilShellUtil::escapeShellArg($name);
             } else {
                 $source = $name;
             }
         }
         
-        $zipcmd = "-r " . ilUtil::escapeShellArg($a_file) . " " . $source;
-        ilUtil::execQuoted($zip, $zipcmd);
+        $zipcmd = "-r " . ilShellUtil::escapeShellArg($a_file) . " " . $source;
+        ilShellUtil::execQuoted($zip, $zipcmd);
         chdir($cdir);
         return true;
     }
@@ -954,11 +954,11 @@ class ilFileUtils
         
         // real unzip
         if (!$overwrite) {
-            $unzipcmd = ilUtil::escapeShellArg($file);
+            $unzipcmd = ilShellUtil::escapeShellArg($file);
         } else {
-            $unzipcmd = "-o " . ilUtil::escapeShellArg($file);
+            $unzipcmd = "-o " . ilShellUtil::escapeShellArg($file);
         }
-        ilUtil::execQuoted($unzip, $unzipcmd);
+        ilShellUtil::execQuoted($unzip, $unzipcmd);
         
         chdir($cdir);
         

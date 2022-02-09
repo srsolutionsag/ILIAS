@@ -29,7 +29,7 @@ class ilCertificateUtilHelper
         string $geometry = '',
         string $backgroundColor = ''
     ) : void {
-        ilUtil::convertImage($from, $to, $targetFormat, $geometry, $backgroundColor);
+        ilShellUtil::convertImage($from, $to, $targetFormat, $geometry, $backgroundColor);
     }
 
     /**

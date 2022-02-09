@@ -840,8 +840,8 @@ class ilMediaItem
                 $med_file = $this->getDirectory() . "/" . $this->getLocation();
 
                 if (is_file($med_file)) {
-                    ilUtil::convertImage($med_file, $thumb_file, $format, "80");
-                    ilUtil::convertImage($med_file, $thumb_file_small, $format, "40");
+                    ilShellUtil::convertImage($med_file, $thumb_file, $format, "80");
+                    ilShellUtil::convertImage($med_file, $thumb_file_small, $format, "40");
                 }
             }
             if ($a_size == "small") {
@@ -877,7 +877,7 @@ class ilMediaItem
             : "";
 
         if ($this->getLocationType() != "Reference") {
-            ilUtil::convertImage(
+            ilShellUtil::convertImage(
                 $this->getDirectory() . "/" . $this->getLocation(),
                 $this->getMapWorkCopyName(),
                 $this->getMapWorkCopyType(),
@@ -899,7 +899,7 @@ class ilMediaItem
             }
 
             // now, create working copy
-            ilUtil::convertImage(
+            ilShellUtil::convertImage(
                 $this->getMapWorkCopyName(true),
                 $this->getMapWorkCopyName(),
                 $this->getMapWorkCopyType(),
