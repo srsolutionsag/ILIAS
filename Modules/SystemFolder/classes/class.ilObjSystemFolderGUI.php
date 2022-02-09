@@ -1770,6 +1770,7 @@ class ilObjSystemFolderGUI extends ilObjectGUI
     public static function _goto()
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
 
         $ilAccess = $DIC->access();
         $ilErr = $DIC["ilErr"];
@@ -1782,7 +1783,7 @@ class ilObjSystemFolderGUI extends ilObjectGUI
             exit;
         } else {
             if ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-                ilUtil::sendFailure(sprintf(
+                $main_tpl->setOnScreenMessage('failure', sprintf(
                     $lng->txt("msg_no_perm_read_item"),
                     ilObject::_lookupTitle(ilObject::_lookupObjId($a_target))
                 ), true);

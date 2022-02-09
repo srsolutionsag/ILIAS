@@ -502,6 +502,7 @@ class ilFileUtils
         $a_mode = "move_uploaded"
     ) : bool {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
         $target_filename = basename($a_target);
         
         $target_filename = ilFileUtils::getValidFilename($target_filename);
@@ -534,7 +535,7 @@ class ilFileUtils
             }
         } catch (ilException $e) {
             if (!$a_raise_errors) {
-                ilUtil::sendFailure($e->getMessage(), true);
+                $main_tpl->setOnScreenMessage('failure', $e->getMessage(), true);
             } else {
                 throw $e;
             }

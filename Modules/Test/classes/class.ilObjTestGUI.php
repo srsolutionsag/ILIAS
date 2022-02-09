@@ -3017,9 +3017,10 @@ class ilObjTestGUI extends ilObjectGUI
     
     public static function accessViolationRedirect()
     {
-        global $DIC; /* @var ILIAS\DI\Container $DIC */
+        global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate(); /* @var ILIAS\DI\Container $DIC */
         
-        ilUtil::sendInfo($DIC->language()->txt("no_permission"), true);
+        $main_tpl->setOnScreenMessage('info', $DIC->language()->txt("no_permission"), true);
         $DIC->ctrl()->redirectByClass('ilObjTestGUI', "infoScreen");
     }
     
@@ -3034,6 +3035,7 @@ class ilObjTestGUI extends ilObjectGUI
     public static function _goto($a_target)
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
         $ilAccess = $DIC['ilAccess'];
         $ilErr = $DIC['ilErr'];
         $lng = $DIC['lng'];
@@ -3047,7 +3049,7 @@ class ilObjTestGUI extends ilObjectGUI
             exit;
         //ilUtil::redirect("ilias.php?baseClass=ilObjTestGUI&cmd=infoScreen&ref_id=$a_target");
         } elseif ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-            ilUtil::sendInfo(sprintf(
+            $main_tpl->setOnScreenMessage('info', sprintf(
                 $lng->txt("msg_no_perm_read_item"),
                 ilObject::_lookupTitle(ilObject::_lookupObjId($a_target))
             ), true);

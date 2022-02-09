@@ -1505,6 +1505,7 @@ class ilObjForumGUI extends ilObjectGUI implements ilDesktopItemHandling, ilForu
     public static function _goto($a_target, $a_thread = 0, $a_posting = 0) : void
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
 
         $ilAccess = $DIC->access();
         $lng = $DIC->language();
@@ -1559,7 +1560,7 @@ class ilObjForumGUI extends ilObjectGUI implements ilDesktopItemHandling, ilForu
                 'showSummary'
             );
         } elseif ($ilAccess->checkAccess('read', '', ROOT_FOLDER_ID)) {
-            ilUtil::sendInfo(sprintf(
+            $main_tpl->setOnScreenMessage('info', sprintf(
                 $lng->txt('msg_no_perm_read_item'),
                 ilObject::_lookupTitle(ilObject::_lookupObjId($a_target))
             ), true);

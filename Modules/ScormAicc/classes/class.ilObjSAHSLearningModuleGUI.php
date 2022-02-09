@@ -725,6 +725,7 @@ class ilObjSAHSLearningModuleGUI extends ilObjectGUI
     public static function _goto($a_target) : void
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
         $ilAccess = $DIC->access();
         $ilErr = $DIC['ilErr'];
         $lng = $DIC->language();
@@ -745,7 +746,7 @@ class ilObjSAHSLearningModuleGUI extends ilObjectGUI
             exit;
         } else {
             if ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-                ilUtil::sendInfo(sprintf(
+                $main_tpl->setOnScreenMessage('info', sprintf(
                     $lng->txt("msg_no_perm_read_item"),
                     ilObject::_lookupTitle(ilObject::_lookupObjId($parts[0]))
                 ), true);

@@ -556,6 +556,7 @@ class ilStructureObjectGUI extends ilLMObjectGUI
         int $a_target_ref_id = 0
     ) : void {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
 
         $lng = $DIC->language();
         $ilAccess = $DIC->access();
@@ -583,7 +584,7 @@ class ilStructureObjectGUI extends ilLMObjectGUI
         }
         
         if ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-            ilUtil::sendFailure(sprintf(
+            $main_tpl->setOnScreenMessage('failure', sprintf(
                 $lng->txt("msg_no_perm_read_item"),
                 ilObject::_lookupTitle($lm_id)
             ), true);

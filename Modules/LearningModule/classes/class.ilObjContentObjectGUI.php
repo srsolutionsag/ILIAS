@@ -2457,6 +2457,7 @@ class ilObjContentObjectGUI extends ilObjectGUI
     public static function _goto(string $a_target) : void
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
 
         $ilAccess = $DIC->access();
         $ilErr = $DIC["ilErr"];
@@ -2470,7 +2471,7 @@ class ilObjContentObjectGUI extends ilObjectGUI
             $ctrl->setParameterByClass("ilLMPresentationGUI", "ref_id", $a_target);
             $ctrl->redirectByClass("ilLMPresentationGUI", "infoScreen");
         } elseif ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-            ilUtil::sendFailure(sprintf(
+            $main_tpl->setOnScreenMessage('failure', sprintf(
                 $lng->txt("msg_no_perm_read_item"),
                 ilObject::_lookupTitle(ilObject::_lookupObjId($a_target))
             ), true);
@@ -2925,7 +2926,7 @@ class ilObjContentObjectGUI extends ilObjectGUI
         $ilCtrl = $this->ctrl;
         $tpl = $this->tpl;
         $lng = $this->lng;
-            
+        
         $cgui = new ilConfirmationGUI();
         $ilCtrl->setParameter($this, "glo_ref_id", $this->requested_root_id);
         $cgui->setFormAction($ilCtrl->getFormAction($this));

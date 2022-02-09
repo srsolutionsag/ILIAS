@@ -1564,6 +1564,7 @@ class ilObjMediaPoolGUI extends ilObject2GUI
     public static function _goto(string $a_target) : void
     {
         global $DIC;
+        $main_tpl = $DIC->ui()->mainTemplate();
 
         $ilAccess = $DIC->access();
         $lng = $DIC->language();
@@ -1583,7 +1584,7 @@ class ilObjMediaPoolGUI extends ilObject2GUI
         } elseif ($ilAccess->checkAccess("visible", "", $ref_id)) {
             $ctrl->redirectByClass("ilMediaPoolPresentationGUI", "infoScreen");
         } elseif ($ilAccess->checkAccess("read", "", ROOT_FOLDER_ID)) {
-            ilUtil::sendFailure(sprintf(
+            $main_tpl->setOnScreenMessage('failure', sprintf(
                 $lng->txt("msg_no_perm_read_item"),
                 ilObject::_lookupTitle(ilObject::_lookupObjId($a_target))
             ), true);
