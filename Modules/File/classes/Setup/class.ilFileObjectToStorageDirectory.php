@@ -18,6 +18,10 @@ class ilFileObjectToStorageDirectory
      * @var ilFileObjectToStorageVersion[]
      */
     protected $versions = [];
+    /**
+     * @var bool
+     */
+    protected $failed_parsing = false;
 
     /**
      * ilFileObjectToStorageDirectory constructor.
@@ -50,6 +54,7 @@ class ilFileObjectToStorageDirectory
             );
         } catch (Throwable $t) {
             // there was an error reading the directory, there will be no versions
+            $this->failed_parsing = true;
             $g = [];
         }
         
@@ -77,7 +82,12 @@ class ilFileObjectToStorageDirectory
         }
         ksort($this->versions);
     }
-
+    
+    public function getPath() : string
+    {
+        return $this->path;
+    }
+    
     /**
      * @return array
      */
@@ -121,5 +131,10 @@ class ilFileObjectToStorageDirectory
         if (is_writable($this->path)) {
             touch(rtrim($this->path, "/") . "/" . ilFileObjectToStorageMigrationHelper::MIGRATED);
         }
+    }
+    
+    public function hasParsingFailed() : bool
+    {
+        return $this->failed_parsing;
     }
 }

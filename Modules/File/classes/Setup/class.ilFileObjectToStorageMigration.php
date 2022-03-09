@@ -133,8 +133,11 @@ class ilFileObjectToStorageMigration implements Setup\Migration
         if ($this->helper === null) {
             return;
         }
-        $item = $this->helper->getNext();
-        $this->runner->migrate($item);
+        $io = $environment->getResource(Environment::RESOURCE_ADMIN_INTERACTION);
+        do {
+            $item = $this->helper->getNext();
+            $migrated = !($item !== null) || $this->runner->migrate($item, $io);
+        } while ($migrated === false);
     }
 
     /**

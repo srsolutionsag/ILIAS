@@ -8,6 +8,8 @@ class ilFileObjectToStorageMigrationHelper
      * @var ilDBInterface
      */
     protected $database;
+    
+    protected $already_read_but_failed = [];
 
     /**
      * @param string        $base_path
@@ -19,21 +21,22 @@ class ilFileObjectToStorageMigrationHelper
         $this->database = $database;
     }
 
-    public function getNext() : ilFileObjectToStorageDirectory
+    public function getNext() : ?ilFileObjectToStorageDirectory
     {
-        $query = "SELECT file_id 
-                    FROM file_data 
-                    WHERE 
-                        (rid IS NULL OR rid = '')
-                        AND (file_id != ''  AND file_id IS NOT NULL) 
-                    LIMIT 1;";
+        $query = "SELECT file_id FROM file_data WHERE";
+        $query .= "(rid IS NULL OR rid = '') ";
+        $query .= "AND (file_id != ''  AND file_id IS NOT NULL) ";
+        if (count($this->already_read_but_failed) > 0) {
+            $query .= "AND file_id NOT IN (" . implode(",", $this->already_read_but_failed) . ") ";
+        }
+        $query .= "LIMIT 1;";
         $r = $this->database->query($query);
         $d = $this->database->fetchObject($r);
         if (!isset($d->file_id) || null === $d->file_id || '' === $d->file_id) {
-            throw new LogicException("error fetching file_id");
+            return null;
         }
-
-        $file_id = (int) $d->file_id;
+    
+        $file_id = $this->already_read_but_failed[] = (int) $d->file_id;
         return new ilFileObjectToStorageDirectory($file_id, $this->createPathFromId($file_id));
     }
 
