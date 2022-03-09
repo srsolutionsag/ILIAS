@@ -24,6 +24,8 @@ use ILIAS\ResourceStorage\Resource\InfoResolver\ClonedRevisionInfoResolver;
 use ILIAS\ResourceStorage\Policy\FileNamePolicy;
 use ILIAS\ResourceStorage\Policy\NoneFileNamePolicy;
 use ILIAS\ResourceStorage\StorageHandler\StorageHandlerFactory;
+use ILIAS\ResourceStorage\StorageHandler\StoringResultCollection;
+use ILIAS\ResourceStorage\StorageHandler\StoringResult;
 
 /**
  * Class ResourceBuilder
@@ -247,8 +249,10 @@ class ResourceBuilder
      * @description after you have modified a resource, you can store it here
      * @throws \ILIAS\ResourceStorage\Policy\FileNamePolicyException
      */
-    public function store(StorableResource $resource) : void
+    public function store(StorableResource $resource) : StoringResultCollection
     {
+        $results = new StoringResultCollection($resource->getIdentification());
+        
         foreach ($resource->getAllRevisions() as $revision) {
             $this->file_name_policy->check($revision->getInformation()->getSuffix());
         }
@@ -259,19 +263,21 @@ class ResourceBuilder
             $this->information_repository->getNamesForLocking(),
             $this->stakeholder_repository->getNamesForLocking(),
 
-        ), function () use ($resource) {
+        ), function () use ($resource, $results) {
             $this->resource_repository->store($resource);
 
             foreach ($resource->getAllRevisions() as $revision) {
-                $this->storeRevision($revision);
+                $results->add($this->storeRevision($revision));
             }
 
             foreach ($resource->getStakeholders() as $stakeholder) {
                 $this->stakeholder_repository->register($resource->getIdentification(), $stakeholder);
             }
         });
-
+    
         $r->runAndUnlock();
+        
+        return $results;
     }
 
     /**
@@ -315,21 +321,30 @@ class ResourceBuilder
      * @param Revision $revision
      * @throws \ILIAS\ResourceStorage\Policy\FileNamePolicyException
      */
-    public function storeRevision(Revision $revision) : void
+    public function storeRevision(Revision $revision) : StoringResult
     {
-        if ($revision instanceof UploadedFileRevision) {
-            // check policies
-            $this->file_name_policy->check($revision->getInformation()->getSuffix());
-            $this->primary_storage_handler->storeUpload($revision);
+        switch (true) {
+            case $revision instanceof UploadedFileRevision:
+                // check policies
+                $this->file_name_policy->check($revision->getInformation()->getSuffix());
+                $result = $this->primary_storage_handler->storeUpload($revision);
+                break;
+            case $revision instanceof FileStreamRevision:
+                $result = $this->primary_storage_handler->storeStream($revision);;
+                break;
+            case $revision instanceof CloneRevision:
+                $result = $this->primary_storage_handler->cloneRevision($revision);
+                break;
+            default:
+                $result = new StoringResult($revision);
+                $result->setFailed('cannot determine $revision as Upload, Stream or Clone');
+                break;
         }
-        if ($revision instanceof FileStreamRevision) {
-            $this->primary_storage_handler->storeStream($revision);
-        }
-        if ($revision instanceof CloneRevision) {
-            $this->primary_storage_handler->cloneRevision($revision);
-        }
+        
         $this->revision_repository->store($revision);
         $this->information_repository->store($revision->getInformation(), $revision);
+        
+        return $result;
     }
 
     /**

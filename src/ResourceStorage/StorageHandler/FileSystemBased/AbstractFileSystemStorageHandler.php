@@ -16,6 +16,7 @@ use ILIAS\ResourceStorage\Revision\Revision;
 use ILIAS\ResourceStorage\Revision\UploadedFileRevision;
 use ILIAS\ResourceStorage\StorageHandler\StorageHandler;
 use ILIAS\ResourceStorage\StorageHandler\PathGenerator\PathGenerator;
+use ILIAS\ResourceStorage\StorageHandler\StoringResult;
 
 /**
  * Class AbstractFileSystemStorageHandler
@@ -126,21 +127,29 @@ abstract class AbstractFileSystemStorageHandler implements StorageHandler
         return $this->fs->readStream($this->getRevisionPath($revision) . '/' . self::DATA);
     }
 
-    public function storeUpload(UploadedFileRevision $revision) : bool
+    public function storeUpload(UploadedFileRevision $revision) : StoringResult
     {
         global $DIC;
-
-        $DIC->upload()->moveOneFileTo($revision->getUpload(), $this->getRevisionPath($revision), $this->location,
-            self::DATA);
-
-        return true;
+        $result = new StoringResult($revision);
+        try {
+            $DIC->upload()->moveOneFileTo(
+                $revision->getUpload(),
+                $this->getRevisionPath($revision),
+                $this->location,
+                self::DATA
+            );
+        } catch (\Throwable $t) {
+            $result->setFailed('Failed to store upload: ' . $t->getMessage());
+        }
+        return $result;
     }
 
     /**
      * @inheritDoc
      */
-    public function storeStream(FileStreamRevision $revision) : bool
+    public function storeStream(FileStreamRevision $revision) : StoringResult
     {
+        $result = new StoringResult($revision);
         try {
             if ($revision->keepOriginal()) {
                 $stream = $revision->getStream();
@@ -159,23 +168,24 @@ abstract class AbstractFileSystemStorageHandler implements StorageHandler
                 $revision->getStream()->close();
             }
         } catch (\Throwable $t) {
-            return false;
+            $result->setFailed('failed to store stream: ' . $t->getMessage());
         }
 
-        return true;
+        return $result;
     }
-
-    public function cloneRevision(CloneRevision $revision) : bool
+    
+    public function cloneRevision(CloneRevision $revision) : StoringResult
     {
+        $result = new StoringResult($revision);
         $stream = $this->getStream($revision->getRevisionToClone());
         try {
             $this->fs->writeStream($this->getRevisionPath($revision) . '/' . self::DATA, $stream);
             $stream->close();
         } catch (\Throwable $t) {
-            return false;
+            $result->setFailed('failed to store stream: ' . $t->getMessage());
         }
-
-        return true;
+        
+        return $result;
     }
 
     /**

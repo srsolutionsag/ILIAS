@@ -45,21 +45,21 @@ interface StorageHandler
 
     /**
      * @param UploadedFileRevision $revision
-     * @return bool
+     * @return StoringResult
      */
-    public function storeUpload(UploadedFileRevision $revision) : bool;
+    public function storeUpload(UploadedFileRevision $revision) : StoringResult;
 
     /**
      * @param FileStreamRevision $revision
-     * @return bool
+     * @return StoringResult
      */
-    public function storeStream(FileStreamRevision $revision) : bool;
+    public function storeStream(FileStreamRevision $revision) : StoringResult;
 
     /**
      * @param CloneRevision $revision
-     * @return bool
+     * @return StoringResult
      */
-    public function cloneRevision(CloneRevision $revision) : bool;
+    public function cloneRevision(CloneRevision $revision) : StoringResult;
 
     /**
      * This only delets a revision of a Resource
