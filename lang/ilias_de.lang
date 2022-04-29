@@ -8,7 +8,7 @@
 * source code, too.
 *
 * If this is not the case or you just want to try ILIAS, you'll find
-* us at: 
+* us at:
 * https://www.ilias.de
 * https://github.com/ILIAS-eLearning
 *
@@ -9392,6 +9392,9 @@ file#:#storage_id#:#Storage ID
 file#:#upload_info#:#Datei
 file#:#upload_info_desc#:#Sie können die Dateien und die Dateiversionen im Tab "Versionen" verwalten.
 file#:#versionname#:#Titel
+file#:#on_click_action#:#Klick auf Titel
+file#:#action_show#:#Infoseite anzeigen
+file#:#action_download#:#Datei herunterladen
 file#:#version_uploaded#:#Version hochgeladen am
 fils#:#file_services#:#Datei-Services
 fils#:#file_services_description#:#Konfiguration der Datei-Service Einstellungen.
@@ -10327,7 +10330,7 @@ lso#:#lso_player_resume#:#Lernsequenz wieder aufnehmen
 lso#:#lso_player_review#:#Lernsequenz überarbeiten
 lso#:#lso_player_start#:#Lernsequenz starten
 lso#:#lso_player_suspend#:#Unterbrechen
-lso#:#lso_player_viewmodelabel#:#Bearbeitung der Lernsequenz 
+lso#:#lso_player_viewmodelabel#:#Bearbeitung der Lernsequenz
 lso#:#lso_print_list#:#Liste erstellen
 lso#:#lso_read#:#Lesezugriff auf Learning Sequence
 lso#:#lso_search_users#:#Benutzer suchen

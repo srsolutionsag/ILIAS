@@ -1251,7 +1251,7 @@ assessment#:#test_next_question#:#Next Question
 assessment#:#test_prev_question#:#Previous Question
 assessment#:#test_question_set_type_fixed_info#:#All testees see the same questions.<br>You can create questions directly in the test as well as reuse questions from a Question Pool. If you create new questions you can decide to save them in a Question Pool.
 assessment#:#test_question_set_type_fixed#:#Use of a fixed set of questions
-assessment#:#test_question_set_type_random_info#:#Every testee will see an individually generated set of questions. The questions are drawn from one or more Question Pools. 
+assessment#:#test_question_set_type_random_info#:#Every testee will see an individually generated set of questions. The questions are drawn from one or more Question Pools.
 assessment#:#test_question_set_type_random#:#Use of a random set of questions
 assessment#:#test_question_set_type#:#Selection of Test Questions
 assessment#:#test_results#:#Summary Test Results
@@ -9368,6 +9368,9 @@ file#:#storage_id#:#Storage ID
 file#:#upload_info_desc#:#Manage Uploads and Versions in Tab "Versions"
 file#:#upload_info#:#File
 file#:#versionname#:#Title
+file#:#on_click_action#:#Action on Click on Title
+file#:#action_show#:#Redirect User to the Info Page
+file#:#action_download#:#Enable Direct Download
 file#:#version_uploaded#:#Version uploaded
 fils#:#file_services_description#:#Configuration of File Service Settings.
 fils#:#file_services#:#File Services
@@ -14369,7 +14372,7 @@ search#:#search_tst_svy#:#Tests/Surveys
 search#:#search_type#:#Type
 search#:#search_user_extended#:#Extended User Search
 search#:#search_user_search_form#:#Global User Search
-search#:#search_user_search_info_form#:#Users can be found in the global search. Furthermore, data in personal profiles of users is indexed if the Lucene fulltext search is enabled. 
+search#:#search_user_search_info_form#:#Users can be found in the global search. Furthermore, data in personal profiles of users is indexed if the Lucene fulltext search is enabled.
 search#:#search_users#:#Search Users
 search#:#search_user#:#Users
 search#:#select_orgu#:#Select Organisational Units

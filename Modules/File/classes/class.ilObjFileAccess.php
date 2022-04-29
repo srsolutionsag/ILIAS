@@ -154,7 +154,26 @@ class ilObjFileAccess extends ilObjectAccess implements ilWACCheckingClass
         
         return $r->fetchRow(ilDBConstants::FETCHMODE_ASSOC);
     }
+
+    public static function _shouldDownloadDirectly(int $obj_id) : bool
+    {
+        global $DIC;
+
+        $result = $DIC->database()->fetchAssoc(
+            $DIC->database()->queryF(
+                "SELECT on_click_mode FROM file_data WHERE file_id = %s;",
+                ['integer'],
+                [$obj_id]
+            )
+        );
+
+        if (empty($result)) {
+            return false;
+        }
     
+        return (((int) $result['on_click_mode']) === ilObjFile::CLICK_MODE_DOWNLOAD);
+    }
+
     /**
      * lookup version
      * @return int|mixed
