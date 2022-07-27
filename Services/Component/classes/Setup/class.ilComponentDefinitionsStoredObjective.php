@@ -102,6 +102,9 @@ class ilComponentDefinitionsStoredObjective implements Setup\Objective
                 };
             }
         };
+        $GLOBALS["DIC"]["tree"] = new class() {
+
+        };
         if (!defined("ILIAS_LOG_ENABLED")) {
             define("ILIAS_LOG_ENABLED", false);
         }
