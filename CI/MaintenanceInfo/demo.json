@@ -1,0 +1,36 @@
+{
+  "component": {
+    "title": "Demo Component"
+  },
+  "coordinators": [
+    {
+      "ilias_user_id": 41,
+      "github_user_name": "chfsx",
+      "mantis_user_name": "fschmid"
+    },
+    {
+      "ilias_user_id": 89,
+      "github_user_name": "lorem",
+      "mantis_user_name": "ipsum"
+    }
+  ],
+  "maintainers": [
+    {
+      "type": 1,
+      "ilias_user_id": 42,
+      "github_user_name": "chfsx",
+      "mantis_user_name": "fschmid"
+    }
+  ],
+  "testers": [
+    {
+      "ilias_user_id": 43,
+      "github_user_name": "chfsx",
+      "mantis_user_name": "fschmid"
+    }
+  ],
+  "path": {
+    "directory": "CI/MaintenanceInfo"
+  },
+  "info_version": 3
+}
