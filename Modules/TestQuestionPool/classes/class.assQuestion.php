@@ -2513,7 +2513,7 @@ abstract class assQuestion
      */
     abstract public function calculateReachedPoints($active_id, $pass = null, $authorizedSolution = true, $returndetails = false);
 
-    public function deductHintPointsFromReachedPoints(ilAssQuestionPreviewSession $previewSession, $reachedPoints): ?int
+    public function deductHintPointsFromReachedPoints(ilAssQuestionPreviewSession $previewSession, $reachedPoints): ?float
     {
         global $DIC;
 
@@ -2555,7 +2555,7 @@ abstract class assQuestion
      * @param integer $active_id
      * @param integer $pass
      */
-    final public function adjustReachedPointsByScoringOptions($points, $active_id, $pass = null): int
+    final public function adjustReachedPointsByScoringOptions($points, $active_id, $pass = null): float
     {
         $count_system = ilObjTest::_getCountSystem($active_id);
         if ($count_system == 1) {
@@ -2845,7 +2845,7 @@ abstract class assQuestion
                         'qht_hint_id' => array('integer', $next_id),
                         'qht_question_fi' => array('integer', $this->original_id),
                         'qht_hint_index' => array('integer', $row["qht_hint_index"]),
-                        'qht_hint_points' => array('integer', $row["qht_hint_points"]),
+                        'qht_hint_points' => array('float', $row["qht_hint_points"]),
                         'qht_hint_text' => array('text', $row["qht_hint_text"]),
                     )
                 );

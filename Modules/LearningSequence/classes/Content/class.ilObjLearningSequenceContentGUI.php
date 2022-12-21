@@ -121,9 +121,13 @@ class ilObjLearningSequenceContentGUI
      */
     protected function confirmDelete(): void
     {
+        $r = $this->refinery;
         $ref_ids = $this->post_wrapper->retrieve(
             "id",
-            $this->refinery->kindlyTo()->listOf($this->refinery->kindlyTo()->int())
+            $r->byTrying([
+                $r->kindlyTo()->listOf($r->kindlyTo()->int()),
+                $r->always([])
+            ])
         );
 
         if (!$ref_ids || count($ref_ids) < 1) {
@@ -184,7 +188,7 @@ class ilObjLearningSequenceContentGUI
             $condition_type = $this->getFieldName(self::FIELD_POSTCONDITION_TYPE, $ref_id);
 
             $condition_type = $this->post_wrapper->retrieve($condition_type, $r->kindlyTo()->string());
-            $online = $this->post_wrapper->retrieve($online, $r->byTrying([$r->kindlyTo()->bool(), $r->always(true)]));
+            $online = $this->post_wrapper->retrieve($online, $r->byTrying([$r->kindlyTo()->bool(), $r->always(false)]));
             $order = $this->post_wrapper->retrieve($order, $r->kindlyTo()->int());
 
             $condition = $lsitem->getPostCondition()

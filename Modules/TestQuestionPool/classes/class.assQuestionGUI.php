@@ -42,6 +42,10 @@ abstract class assQuestionGUI
     protected const SUGGESTED_SOLUTION_COMMANDS_SAVE = 'saveSuggestedSolution';
     protected const SUGGESTED_SOLUTION_COMMANDS_DEFAULT = 'suggestedsolution';
 
+    public const CORRECTNESS_NOT_OK = 0;
+    public const CORRECTNESS_MOSTLY_OK = 1;
+    public const CORRECTNESS_OK = 2;
+
     protected const HAS_SPECIAL_QUESTION_COMMANDS = false;
 
     public const SESSION_PREVIEW_DATA_BASE_INDEX = 'ilAssQuestionPreviewAnswers';
@@ -202,7 +206,8 @@ abstract class assQuestionGUI
                 $form_prop_dispatch->setItem($form->getItemByPostVar(ilUtil::stripSlashes($this->request->raw('postvar'))));
                 $this->ctrl->forwardCommand($form_prop_dispatch);
                 break;
-
+            default:
+                $cmd = $this->ctrl->getCmd('editQuestion');
                 switch ($cmd) {
                     case self::SUGGESTED_SOLUTION_COMMANDS_CANCEL:
                     case self::SUGGESTED_SOLUTION_COMMANDS_SAVE:
@@ -664,7 +669,6 @@ abstract class assQuestionGUI
                 }
                 ilUtil::redirect(ilLink::_getLink($ref_id));
             }
-            $_GET["ref_id"] = $this->request->raw("calling_test");
 
             if ($this->request->raw('test_express_mode')) {
                 ilUtil::redirect(ilTestExpressPage::getReturnToPageLink($this->object->getId()));
@@ -2013,6 +2017,33 @@ abstract class assQuestionGUI
 
     public function saveCorrectionsFormProperties(ilPropertyFormGUI $form): void
     {
+    }
+
+
+    protected function generateCorrectnessIconsForCorrectness(int $correctness): string
+    {
+        switch ($correctness) {
+            case self::CORRECTNESS_NOT_OK:
+                $icon_name = 'icon_not_ok.svg';
+                $label = $this->lng->txt("answer_is_wrong");
+                break;
+            case self::CORRECTNESS_MOSTLY_OK:
+                $icon_name = 'icon_ok.svg';
+                $label = $this->lng->txt("answer_is_not_correct_but_positive");
+                break;
+            case self::CORRECTNESS_OK:
+                $icon_name = 'icon_ok.svg';
+                $label = $this->lng->txt("answer_is_right");
+                break;
+            default:
+                return '';
+        }
+        $path = ilUtil::getImagePath($icon_name);
+        $icon = $this->ui->factory()->symbol()->icon()->custom(
+            $path,
+            $label
+        );
+        return $this->ui->renderer()->render($icon);
     }
 
     /**
