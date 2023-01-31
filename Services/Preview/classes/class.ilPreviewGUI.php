@@ -16,40 +16,32 @@
  *********************************************************************/
 
 /**
- * User interface class for previewing objects.
- *
- * @author Stefan Born <stefan.born@phzh.ch>
- * @version $Id$
- *
- * @package ServicesPreview
+ * @deprecated Use IRSS Flavours instead
  */
 class ilPreviewGUI implements ilCtrlBaseClassInterface
 {
-    private ?int $node_id = null;
-    private ?int $obj_id = null;
     private ?\ilPreview $preview = null;
     /**
      * @var ilWorkspaceAccessHandler|ilAccessHandler|null
      */
     private ?object $access_handler = null;
-    private ?int $context = null;
     private ?\ilCtrl $ctrl = null;
     private ?\ilLanguage $lng = null;
-    private static bool $initialized = false;
 
     public const CONTEXT_REPOSITORY = 1;
     public const CONTEXT_WORKSPACE = 2;
+    private int $obj_id;
+    private ?int $node_id = null;
+    private int $context = self::CONTEXT_REPOSITORY;
+    private ilPreviewSettings $settings;
 
     /**
      * Creates a new preview GUI.
-     * @param int $a_node_id The node id.
-     * @param int $a_context The context of the preview.
-     * @param int $a_obj_id The object id.
      * @param ilWorkspaceAccessHandler|ilAccessHandler|null $a_access_handler The access handler to use.
      */
     public function __construct(
         ?int $a_node_id = null,
-        ?int $a_context = self::CONTEXT_REPOSITORY,
+        ?int $a_context = null,
         ?int $a_obj_id = null,
         ?object $a_access_handler = null
     ) {
@@ -57,7 +49,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         // assign values
         $this->ctrl = $DIC->ctrl();
         $this->lng = $DIC->language();
-        $ilAccess = $DIC['ilAccess'];
+        $this->settings = ilPreviewSettings::getInstance();
 
         $query = $DIC->http()->wrapper()->query();
         $base_class = $query->has('baseClass')
@@ -65,7 +57,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
             : null;
 
         // if we are the base class, get the id's from the query string
-        if (strtolower($base_class) === strtolower(__CLASS__)) {
+        if (strtolower($base_class) === strtolower(self::class)) {
             $this->node_id = $query->has('node_id')
                 ? $query->retrieve('node_id', $DIC->refinery()->kindlyTo()->int())
                 : 0;
@@ -81,14 +73,9 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         }
 
 
-
         // access handler NOT provided?
         if ($a_access_handler === null) {
-            if ($this->context === self::CONTEXT_WORKSPACE) {
-                $a_access_handler = new ilWorkspaceAccessHandler();
-            } else {
-                $a_access_handler = $ilAccess;
-            }
+            $a_access_handler = $this->context === self::CONTEXT_WORKSPACE ? new ilWorkspaceAccessHandler() : $DIC['ilAccess'];
         }
         $this->access_handler = $a_access_handler;
 
@@ -103,7 +90,7 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $this->obj_id = $a_obj_id;
 
         // create preview object
-        $this->preview = new ilPreview($this->obj_id);
+        $this->preview = ilPreview::getInstance($this->obj_id);
 
         // if the call is NOT async initialize our stuff
         if (!$this->ctrl->isAsynch()) {
@@ -113,18 +100,13 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
 
 
     /**
-    * execute command
-    */
-    public function executeCommand()
+     * execute command
+     */
+    public function executeCommand(): void
     {
         $cmd = $this->ctrl->getCmd("getPreviewHTML");
         $next_class = $this->ctrl->getNextClass($this);
-
-        switch ($next_class) {
-            default:
-                return $this->$cmd();
-                break;
-        }
+        $this->$cmd();
     }
 
     /**
@@ -162,10 +144,10 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         if ($this->access_handler->checkAccess("read", "", $this->node_id)) {
             // preview images available?
             $images = $this->preview->getImages();
-            if (count($images) > 0) {
+            if ($images !== []) {
                 foreach ($images as $image) {
                     $tmpl->setCurrentBlock("preview_item");
-                    $tmpl->setVariable("IMG_URL", ilWACSignedPath::signFile($image["url"]));
+                    $tmpl->setVariable("IMG_URL", $image["url"]);
                     $tmpl->setVariable("WIDTH", $image["width"]);
                     $tmpl->setVariable("HEIGHT", $image["height"]);
                     $tmpl->parseCurrentBlock();
@@ -220,28 +202,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $tmpl = new ilTemplate("tpl.preview_inline.html", true, true, "Services/Preview");
         $tmpl->setVariable("PREVIEW", $this->getPreviewHTML());
 
-        // rendering allowed?
-        if ($this->access_handler->checkAccess("read", "", $this->node_id)) {
-            $this->renderCommand(
-                $tmpl,
-                "render",
-                "preview_create",
-                "preview_status_creating",
-                array(ilPreview::RENDER_STATUS_NONE, ilPreview::RENDER_STATUS_FAILED)
-            );
-        }
-
-        // delete allowed?
-        if ($this->access_handler->checkAccess("write", "", $this->node_id)) {
-            $this->renderCommand(
-                $tmpl,
-                "delete",
-                "preview_delete",
-                "preview_status_deleting",
-                array(ilPreview::RENDER_STATUS_CREATED)
-            );
-        }
-
         return $tmpl->get();
     }
 
@@ -253,8 +213,13 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      * @param $loading_topic string The topic to get the loading text.
      * @param $a_display_status string[] An array containing the statuses when the command should be visible.
      */
-    private function renderCommand(ilTemplate $tmpl, string $a_cmd, string $btn_topic, string $loading_topic, array $a_display_status): void
-    {
+    private function renderCommand(
+        ilTemplate $tmpl,
+        string $a_cmd,
+        string $btn_topic,
+        string $loading_topic,
+        array $a_display_status
+    ): void {
         $preview_html_id = $this->getHtmlId();
         $preview_status = $this->preview->getRenderStatus();
         $loading_text = self::jsonSafeString($this->lng->txt($loading_topic));
@@ -275,35 +240,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $tmpl->parseCurrentBlock();
     }
 
-    /**
-     * Renders the preview and returns the HTML code that displays the preview.
-     * @return string The HTML code that displays the preview.
-     */
-    public function renderPreview(): string
-    {
-        // has read access?
-        if ($this->access_handler->checkAccess("read", "", $this->node_id)) {
-            // get the object
-            $obj = ilObjectFactory::getInstanceByObjId($this->obj_id);
-            $this->preview->create($obj);
-        }
-
-        return $this->getPreviewHTML();
-    }
-
-    /**
-     * Deletes the preview and returns the HTML code that displays the preview.
-     * @return string The HTML code that displays the preview.
-     */
-    public function deletePreview(): string
-    {
-        // has read access?
-        if ($this->access_handler->checkAccess("write", "", $this->node_id)) {
-            $this->preview->delete();
-        }
-
-        return $this->getPreviewHTML();
-    }
 
     /**
      * Gets the HTML id for the preview.
@@ -316,20 +252,15 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
 
     /**
      * Builds the URL to call the preview GUI.
-     * @param $a_cmd string The command to call.
-     * @param $a_async bool true, to create a URL to call asynchronous; otherwise, false.
+     * @param $command string The command to call.
      * @return string The created URL.
      */
-    private function buildUrl(string $a_cmd = "", bool $a_async = true): string
+    private function buildUrl(?string $command): string
     {
-        $link = "ilias.php?baseClass=ilPreviewGUI&node_id={$this->node_id}&context={$this->context}&obj_id={$this->obj_id}";
+        $link = "ilias.php?baseClass=ilPreviewGUI&node_id={$this->node_id}&context={$this->context}&obj_id={$this->obj_id}&cmdMode=asynch";
 
-        if ($a_async) {
-            $link .= "&cmdMode=asynch";
-        }
-
-        if (!empty($a_cmd)) {
-            $link .= "&cmd=$a_cmd";
+        if (!empty($command)) {
+            $link .= "&cmd=$command";
         }
 
         return $link;
@@ -341,7 +272,8 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
      */
     public static function initPreview(): void
     {
-        if (self::$initialized) {
+        static $initialized;
+        if (isset($initialized) && $initialized) {
             return;
         }
 
@@ -353,7 +285,9 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         ilTooltipGUI::init();
 
         // needed scripts & styles
-        $DIC->ui()->mainTemplate()->addJavaScript("./libs/bower/bower_components/jquery-mousewheel/jquery.mousewheel.js");
+        $DIC->ui()->mainTemplate()->addJavaScript(
+            "./libs/bower/bower_components/jquery-mousewheel/jquery.mousewheel.js"
+        );
         $DIC->ui()->mainTemplate()->addJavaScript("./Services/Preview/js/ilPreview.js");
 
         // create loading template
@@ -362,9 +296,9 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $tmpl->setVariable("TXT_NO_PREVIEW", "%%0%%");
         $tmpl->parseCurrentBlock();
 
-        $initialHtml = str_replace(array("\r\n", "\r"), "\n", $tmpl->get());
+        $initialHtml = str_replace(["\r\n", "\r"], "\n", $tmpl->get());
         $lines = explode("\n", $initialHtml);
-        $new_lines = array();
+        $new_lines = [];
         foreach ($lines as $i => $line) {
             if (!empty($line)) {
                 $new_lines[] = trim($line);
@@ -373,20 +307,25 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         $initialHtml = implode($new_lines);
 
         // add default texts and values
-        $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.texts.preview = \"" . self::jsonSafeString($DIC->language()->txt("preview")) . "\";");
-        $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.texts.showPreview = \"" . self::jsonSafeString($DIC->language()->txt("preview_show"))
-                                                  . "\";");
-        $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.texts.close = \"" . ilLegacyFormElementsUtil::prepareFormOutput(
-            $DIC->language()->txt("close")
-        ) . "\";");
-        $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.previewSize = " . ilPreviewSettings::getImageSize() . ";");
+        $DIC->ui()->mainTemplate()->addOnLoadCode(
+            "il.Preview.texts.preview = \"" . self::jsonSafeString($DIC->language()->txt("preview")) . "\";"
+        );
+        $DIC->ui()->mainTemplate()->addOnLoadCode(
+            "il.Preview.texts.showPreview = \"" . self::jsonSafeString($DIC->language()->txt("preview_show"))
+            . "\";"
+        );
+        $DIC->ui()->mainTemplate()->addOnLoadCode(
+            "il.Preview.texts.close = \"" . ilLegacyFormElementsUtil::prepareFormOutput(
+                $DIC->language()->txt("close")
+            ) . "\";"
+        );
         $DIC->ui()->mainTemplate()->addOnLoadCode(
             "il.Preview.initialHtml = " . json_encode($initialHtml, JSON_THROW_ON_ERROR) . ";"
         );
         $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.highlightClass = \"ilContainerListItemOuterHighlight\";");
         $DIC->ui()->mainTemplate()->addOnLoadCode("il.Preview.init();");
 
-        self::$initialized = true;
+        $initialized = true;
     }
 
     /**
@@ -402,7 +341,6 @@ class ilPreviewGUI implements ilCtrlBaseClassInterface
         }
 
         $text = htmlentities($text, ENT_COMPAT | ENT_HTML401, "UTF-8");
-        $text = str_replace("'", "&#039;", $text);
-        return $text;
+        return str_replace("'", "&#039;", $text);
     }
 }

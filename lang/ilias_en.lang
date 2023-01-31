@@ -5250,6 +5250,7 @@ common#:#preview_delete#:#Delete Preview
 common#:#preview_learner_info#:#If enabled, Course and Group administrators have the possibility to view the content form the perspective of a learner.
 common#:#preview_loading#:#Loading Preview...
 common#:#preview_none#:#Preview (not created yet)
+common#:#preview_not_possible#:#Creation of Previews is currently not possible, please read the documentation in Services/Preview/README.md.
 common#:#preview_renderers#:#Preview Renderers
 common#:#preview_settings#:#File Preview
 common#:#preview_show#:#Show Preview

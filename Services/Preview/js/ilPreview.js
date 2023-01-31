@@ -1,4 +1,4 @@
-﻿// the semi-colon before function invocation is a safety net against concatenated
+// the semi-colon before function invocation is a safety net against concatenated
 // scripts and/or other plugins which may not be closed properly.
 ;(function ($, window, document, undefined) {
     // constants
@@ -81,8 +81,7 @@
             // current element?
             if (id == null || currentId == id) {
                 hideTooltip();
-            }
-            else {
+            } else {
                 e.stopPropagation();
                 e.preventDefault();
 
@@ -201,8 +200,7 @@
             if (cache.hasOwnProperty(idToLoad)) {
                 $tooltip.qtip("api").set("position.target", $label);
                 callback(cache[idToLoad]);
-            }
-            else {
+            } else {
                 var loading = self.initialHtml.replace("%%0%%", options.loadingText);
                 // display spinner if needed
                 if (options.status == STATUS_NONE)
@@ -439,8 +437,7 @@
                         $next.addClass("ilPreviewDisabled");
                     else
                         $next.removeClass("ilPreviewDisabled");
-                }
-                else {
+                } else {
                     $tooltip.qtip("api").set("content.title", self.texts.preview);
                 }
 
@@ -491,8 +488,7 @@
                             showNextPreview();
                             break;
                     }
-                }
-                else {
+                } else {
                     isKeyPressed = false;
 
                     // which key was pressed?
@@ -558,8 +554,7 @@
                 mouseWheelHandler = handleMouseWheel;
                 $qtip.on("mousewheel", mouseWheelHandler);
                 $label.on("mousewheel", mouseWheelHandler);
-            }
-            else {
+            } else {
                 $prev.hide();
                 $next.hide();
             }

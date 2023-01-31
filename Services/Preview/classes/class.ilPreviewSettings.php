@@ -15,14 +15,11 @@
  *
  *********************************************************************/
 
+use ILIAS\ResourceStorage\Flavour\Engine\GDEngine;
+use ILIAS\ResourceStorage\Flavour\Engine\ImagickEngine;
+
 /**
- * This class encapsulates accesses to settings which are relevant for the
- * preview functionality of ILIAS.
- *
- * @author Stefan Born <stefan.born@phzh.ch>
- * @version $Id$
- *
- * @package ServicesPreview
+ * @deprecated Use IRSS Flavours instead
  */
 class ilPreviewSettings
 {
@@ -68,108 +65,11 @@ class ilPreviewSettings
      */
     private int $image_quality = self::IMAGE_QUALITY_DEFAULT;
 
-    /**
-     * Private constructor
-     */
-    private function __construct()
-    {
-        $this->settings = new ilSetting("preview");
-        $this->preview_enabled = (bool) $this->settings->get('preview_enabled', '0') === true;
-        $this->max_previews = $this->settings->get('max_previews_per_object', self::MAX_PREVIEWS_DEFAULT);
-    }
-
-    /**
-     * Sets whether the preview functionality is enabled.
-     *
-     * @param bool $a_value The new value
-     */
-    public static function setPreviewEnabled(bool $a_value): void
-    {
-        $instance = self::getInstance();
-        $instance->preview_enabled = $a_value === true;
-        $instance->settings->set('preview_enabled', $instance->preview_enabled);
-    }
-
-    /**
-     * Gets whether the preview functionality is enabled.
-     *
-     * @return bool The current value
-     */
-    public static function isPreviewEnabled(): bool
-    {
-        return self::getInstance()->preview_enabled;
-    }
-
-    /**
-     * Sets the maximum number of preview pictures per object.
-     *
-     * @param int $a_value The new value
-     */
-    public static function setMaximumPreviews(int $a_value): void
-    {
-        $instance = self::getInstance();
-        $instance->max_previews = self::adjustNumeric($a_value, self::MAX_PREVIEWS_MIN, self::MAX_PREVIEWS_MAX, self::MAX_PREVIEWS_DEFAULT);
-        $instance->settings->set('max_previews_per_object', $instance->max_previews);
-    }
-
-    /**
-     * Gets the maximum number of preview pictures per object.
-     *
-     * @return int The current value
-     */
-    public static function getMaximumPreviews(): int
-    {
-        return self::getInstance()->max_previews;
-    }
-
-    /**
-     * Sets the size of the preview images in pixels.
-     *
-     * @param int $a_value The new value
-     */
-    public static function setImageSize(int $a_value): void
-    {
-        $instance = self::getInstance();
-        $instance->image_size = self::adjustNumeric($a_value, self::IMAGE_SIZE_MIN, self::IMAGE_SIZE_MAX, self::IMAGE_SIZE_DEFAULT);
-        $instance->settings->set('preview_image_size', $instance->image_size);
-    }
-
-    /**
-     * Gets the size of the preview images in pixels.
-     *
-     * @return int The current value
-     */
-    public static function getImageSize(): int
-    {
-        return self::getInstance()->image_size;
-    }
-
-    /**
-     * Sets the quality (compression) of the preview images (1-100).
-     *
-     * @param int $a_value The new value
-     */
-    public static function setImageQuality(int $a_value): void
-    {
-        $instance = self::getInstance();
-        $instance->image_quality = self::adjustNumeric($a_value, self::IMAGE_QUALITY_MIN, self::IMAGE_QUALITY_MAX, self::IMAGE_QUALITY_DEFAULT);
-        $instance->settings->set('preview_image_quality', $instance->image_quality);
-    }
-
-    /**
-     * Gets the quality (compression) of the preview images (1-100).
-     *
-     * @return int The current value
-     */
-    public static function getImageQuality(): int
-    {
-        return self::getInstance()->image_quality;
-    }
 
     /**
      * Gets the instance of the ilPreviewSettings.
      */
-    private static function getInstance(): \ilPreviewSettings
+    public static function getInstance(): \ilPreviewSettings
     {
         if (self::$instance === null) {
             self::$instance = new ilPreviewSettings();
@@ -178,12 +78,126 @@ class ilPreviewSettings
         return self::$instance;
     }
 
-    private static function adjustNumeric($value, int $min, int $max, int $default): int
+    /**
+     * Private constructor
+     */
+    private function __construct()
+    {
+        $this->settings = new ilSetting("preview");
+        $this->preview_enabled = (bool)$this->settings->get('preview_enabled', '0');
+        $this->max_previews = (int)$this->settings->get('max_previews_per_object', self::MAX_PREVIEWS_DEFAULT);
+    }
+
+    public function isPreviewPossible(): bool
+    {
+        return (new GDEngine())->isRunning() && (new ImagickEngine())->isRunning();
+    }
+
+    /**
+     * Sets whether the preview functionality is enabled.
+     *
+     * @param bool $a_value The new value
+     */
+    public function setPreviewEnabled(bool $a_value): void
+    {
+        $this->preview_enabled = $a_value;
+        $this->settings->set('preview_enabled', $this->preview_enabled);
+    }
+
+    /**
+     * Gets whether the preview functionality is enabled.
+     *
+     * @return bool The current value
+     */
+    public function isPreviewEnabled(): bool
+    {
+        return $this->preview_enabled;
+    }
+
+    /**
+     * Sets the maximum number of preview pictures per object.
+     *
+     * @param int $a_value The new value
+     */
+    public function setMaximumPreviews(int $a_value): void
+    {
+        $this->max_previews = self::adjustNumeric(
+            $a_value,
+            self::MAX_PREVIEWS_MIN,
+            self::MAX_PREVIEWS_MAX,
+            self::MAX_PREVIEWS_DEFAULT
+        );
+        $this->settings->set('max_previews_per_object', $this->max_previews);
+    }
+
+    /**
+     * Gets the maximum number of preview pictures per object.
+     *
+     * @return int The current value
+     */
+    public function getMaximumPreviews(): int
+    {
+        return $this->max_previews;
+    }
+
+    /**
+     * Sets the size of the preview images in pixels.
+     *
+     * @param int $a_value The new value
+     */
+    public function setImageSize(int $a_value): void
+    {
+        $this->image_size = $this->adjustNumeric(
+            $a_value,
+            self::IMAGE_SIZE_MIN,
+            self::IMAGE_SIZE_MAX,
+            self::IMAGE_SIZE_DEFAULT
+        );
+        $this->settings->set('preview_image_size', $this->image_size);
+    }
+
+    /**
+     * Gets the size of the preview images in pixels.
+     *
+     * @return int The current value
+     */
+    public function getImageSize(): int
+    {
+        return $this->image_size;
+    }
+
+    /**
+     * Sets the quality (compression) of the preview images (1-100).
+     *
+     * @param int $a_value The new value
+     */
+    public function setImageQuality(int $a_value): void
+    {
+        $this->image_quality = $this->adjustNumeric(
+            $a_value,
+            self::IMAGE_QUALITY_MIN,
+            self::IMAGE_QUALITY_MAX,
+            self::IMAGE_QUALITY_DEFAULT
+        );
+        $this->settings->set('preview_image_quality', $this->image_quality);
+    }
+
+    /**
+     * Gets the quality (compression) of the preview images (1-100).
+     *
+     * @return int The current value
+     */
+    public function getImageQuality(): int
+    {
+        return $this->image_quality;
+    }
+
+    private function adjustNumeric(int $value, int $min, int $max, int $default): int
     {
         // is number?
         if (is_numeric($value)) {
             // don't allow to large numbers
-            $value = (int) $value;
+            $value = (int)$value;
             if ($value < $min) {
                 $value = $min;
             } elseif ($value > $max) {

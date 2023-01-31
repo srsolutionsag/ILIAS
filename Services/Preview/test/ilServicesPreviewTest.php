@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,8 +16,10 @@ declare(strict_types=1);
  *
  *********************************************************************/
 
-use PHPUnit\Framework\TestCase;
+declare(strict_types=1);
+
 use ILIAS\DI\Container;
+use PHPUnit\Framework\TestCase;
 
 class ilServicesPreviewTest extends TestCase
 {
@@ -52,7 +52,7 @@ class ilServicesPreviewTest extends TestCase
         return;
 
         $factory = new ilRendererFactory();
-        $preview = new ilPreview(0, 'file');
+        $preview = ilPreview::getInstance(0);
 
         $files_backup = $_FILES;
 

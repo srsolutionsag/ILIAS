@@ -16,10 +16,8 @@
  *
  *********************************************************************/
 
-use ILIAS\Setup;
 use ILIAS\Refinery;
-use ILIAS\Data;
-use ILIAS\UI;
+use ILIAS\Setup;
 
 class ilPreviewSetupAgent implements Setup\Agent
 {

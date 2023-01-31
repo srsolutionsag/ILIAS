@@ -5249,6 +5249,7 @@ common#:#preview_delete#:#Vorschau löschen
 common#:#preview_learner_info#:#Wenn aktiviert, wird Kurs- und Gruppenadministratoren die Möglichkeit angeboten, den Kurs oder die Gruppe aus Sicht eines fiktiven Kurs- bzw. Gruppenmitglieds zu betrachten.
 common#:#preview_loading#:#Lade Vorschau...
 common#:#preview_none#:#Vorschau (noch nicht vorhanden)
+common#:#preview_not_possible#:#Erstellung von Vorschaubildern ist derzeit nicht möglich, bitte lesen Sie die Dokumentation in Services/Preview/README.md.
 common#:#preview_renderers#:#Vorschau-Renderer
 common#:#preview_settings#:#Dateivorschau
 common#:#preview_show#:#Vorschau anzeigen

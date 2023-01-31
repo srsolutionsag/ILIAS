@@ -31,9 +31,9 @@ use ILIAS\HTTP\Services;
 class ilObjFileAccessSettingsGUI extends ilObjectGUI
 {
     public const CMD_EDIT_SETTINGS = 'editSettings';
-    public const CMD_SHOW_PREVIEW_RENDERERS = 'showPreviewRenderers';
 
-    protected ilSetting $folderSettings;
+    protected ilSetting $folder_settings;
+    protected ilPreviewSettings $preview_settings;
     protected Services $http;
 
     /**
@@ -46,7 +46,8 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
         global $DIC;
         $this->type = "facs";
         parent::__construct($a_data, $a_id, $a_call_by_reference, false);
-        $this->folderSettings = new ilSetting('fold');
+        $this->folder_settings = new ilSetting('fold');
+        $this->preview_settings = ilPreviewSettings::getInstance();
         $this->http = $DIC->http();
     }
 
@@ -102,11 +103,11 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
             $this->tabs_gui->addTarget(
                 'file_objects',
                 $this->ctrl->getLinkTarget($this, self::CMD_EDIT_SETTINGS),
-                array(self::CMD_EDIT_SETTINGS, "view")
+                [self::CMD_EDIT_SETTINGS, "view"]
             );
         }
         if ($this->rbac_system->checkAccess('edit_permission', $this->object->getRefId())) {
-            $this->tabs_gui->addTarget("perm_settings", $this->ctrl->getLinkTargetByClass('ilpermissiongui', "perm"), array(), 'ilpermissiongui');
+            $this->tabs_gui->addTarget("perm_settings", $this->ctrl->getLinkTargetByClass('ilpermissiongui', "perm"), [], 'ilpermissiongui');
         }
     }
 
@@ -116,12 +117,7 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
         $this->tabs_gui->addSubTabTarget(
             "settings",
             $this->ctrl->getLinkTarget($this, self::CMD_EDIT_SETTINGS),
-            array(self::CMD_EDIT_SETTINGS, "view")
-        );
-        $this->tabs_gui->addSubTabTarget(
-            "preview_renderers",
-            $this->ctrl->getLinkTarget($this, self::CMD_SHOW_PREVIEW_RENDERERS),
-            array(self::CMD_SHOW_PREVIEW_RENDERERS, "view")
+            [self::CMD_EDIT_SETTINGS, "view"]
         );
     }
 
@@ -157,7 +153,7 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
         $dl_prop->setSize(10);
         $dl_prop->setMinValue(1);
         $dl_prop->setSuffix($lng->txt("lang_size_mb"));
-        $dl_prop->setValue($this->folderSettings->get("bgtask_download_limit", null));
+        $dl_prop->setValue($this->folder_settings->get("bgtask_download_limit", null));
         $form->addItem($dl_prop);
 
         // Inline file extensions
@@ -169,10 +165,19 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
         $form->addItem($tai_prop);
 
         // enable preview
+        $preview_possible = $this->preview_settings->isPreviewPossible();
+
+        if (!$preview_possible) {
+            $no_preview = new ilNonEditableValueGUI();
+            $no_preview->setValue($lng->txt('preview_not_possible'));
+            $form->addItem($no_preview);
+        }
+
         $chk_prop = new ilCheckboxInputGUI($lng->txt("enable_preview"), "enable_preview");
         $chk_prop->setValue('1');
-        $chk_prop->setChecked(ilPreviewSettings::isPreviewEnabled());
+        $chk_prop->setChecked($this->preview_settings->isPreviewEnabled());
         $chk_prop->setInfo($lng->txt('enable_preview_info'));
+        $chk_prop->setDisabled(!$preview_possible);
         $form->addItem($chk_prop);
 
         // show amount of downloads
@@ -195,7 +200,8 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
         $num_prop->setMaxvalueShouldBeLess(false);
         $num_prop->setMaxLength(5);
         $num_prop->setSize(10);
-        $num_prop->setValue(ilPreviewSettings::getMaximumPreviews());
+        $num_prop->setDisabled(!$preview_possible);
+        $num_prop->setValue($this->preview_settings->getMaximumPreviews());
         $num_prop->setInfo($lng->txt('max_previews_per_object_info'));
         $form->addItem($num_prop);
 
@@ -257,60 +263,17 @@ class ilObjFileAccessSettingsGUI extends ilObjectGUI
                 (bool) ($post[ilObjFileAccessSettings::SETTING_SHOW_AMOUNT_OF_DOWNLOADS] ?? false)
             );
             $this->object->update();
-            $this->folderSettings->set("bgtask_download_limit", (int) $post["bg_limit"]);
+            $this->folder_settings->set("bgtask_download_limit", (int) $post["bg_limit"]);
             $enable_preview = (int) ($post["enable_preview"] ?? 0);
-            ilPreviewSettings::setPreviewEnabled($enable_preview === 1);
-            ilPreviewSettings::setMaximumPreviews($post["max_previews_per_object"]);
+            $this->preview_settings->setPreviewEnabled($enable_preview === 1);
+            $max_previews = (int) ($post["max_previews_per_object"] ?? 1);
+            $this->preview_settings->setMaximumPreviews($max_previews);
 
             $this->tpl->setOnScreenMessage('success', $DIC->language()->txt('settings_saved'), true);
             $DIC->ctrl()->redirect($this, self::CMD_EDIT_SETTINGS);
         }
-
         $form->setValuesByPost();
         $this->editSettings($form);
-    }
-
-
-    protected function showPreviewRenderers(): void
-    {
-        global $DIC;
-        $rbacsystem = $DIC['rbacsystem'];
-        $ilErr = $DIC['ilErr'];
-        $tpl = $DIC['tpl'];
-        $lng = $DIC['lng'];
-
-        $this->tabs_gui->setTabActive('file_objects');
-        $this->addFileObjectsSubTabs();
-        $this->tabs_gui->setSubTabActive('preview_renderers');
-
-        if (!$rbacsystem->checkAccess("visible,read", $this->object->getRefId())) {
-            $ilErr->raiseError($lng->txt("no_permission"), $ilErr->WARNING);
-        }
-
-        // set warning if ghostscript not installed
-        if (!ilGhostscriptRenderer::isGhostscriptInstalled()) {
-            $this->tpl->setOnScreenMessage('info', $lng->txt("ghostscript_not_configured"));
-        }
-
-        $factory = new ilRendererFactory();
-        $renderers = $factory->getRenderers();
-        $array_wrapper = array_map(function (ilFilePreviewRenderer $renderer): array {
-            return [
-                'name' => $renderer->getName(),
-                'is_plugin' => $renderer->isPlugin(),
-                'supported_repo_types' => $renderer->getSupportedRepositoryTypes(),
-                'supported_file_formats' => $renderer->getSupportedFileFormats(),
-                'object' => $renderer
-            ];
-        }, $renderers);
-
-
-        $table = new ilRendererTableGUI($this, self::CMD_SHOW_PREVIEW_RENDERERS);
-        $table->setMaxCount(count($renderers));
-        $table->setData($array_wrapper);
-
-        // set content
-        $tpl->setContent($table->getHTML());
     }
 
 
