@@ -730,24 +730,14 @@ class ilObjFileGUI extends ilObject2GUI
         if ($this->id_type == self::WORKSPACE_NODE_ID) {
             $info->addProperty($this->lng->txt("perma_link"), $this->getPermanentLinkWidget());
         }
+
+        $preview = new ilObjFilePreviewGUI($this->object_id);
+
         if (!$this->ctrl->isAsynch()
-            && ilPreview::hasPreview($this->object->getId(), $this->object->getType())
+            && $preview->has()
             && $this->checkPermissionBool("read")
         ) {
-            // get context for access checks later on
-            switch ($this->id_type) {
-                case self::WORKSPACE_NODE_ID:
-                case self::WORKSPACE_OBJECT_ID:
-                    $context = ilPreviewGUI::CONTEXT_WORKSPACE;
-                    break;
-
-                default:
-                    $context = ilPreviewGUI::CONTEXT_REPOSITORY;
-                    break;
-            }
-
-            $preview = new ilPreviewGUI($this->node_id, $context, $this->object->getId(), $this->access_handler);
-            $info->addProperty($this->lng->txt("preview"), $preview->getInlineHTML());
+            $info->addProperty($this->lng->txt("preview"), $preview->getRenderedTriggerComponents(true));
         }
 
         // forward the command

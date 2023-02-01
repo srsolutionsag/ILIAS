@@ -72,7 +72,7 @@ class ilPreviewSettings
     public static function getInstance(): \ilPreviewSettings
     {
         if (self::$instance === null) {
-            self::$instance = new ilPreviewSettings();
+            self::$instance = new self();
         }
 
         return self::$instance;
