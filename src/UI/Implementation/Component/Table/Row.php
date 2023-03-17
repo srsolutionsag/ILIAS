@@ -54,7 +54,7 @@ class Row implements T\Row
 
     public function withDisabledAction(string $action_id, bool $disable = true): T\Row
     {
-        if ($disable !== true) {
+        if (!$disable) {
             return $this;
         }
         $clone = clone $this;
@@ -80,7 +80,7 @@ class Row implements T\Row
     {
         return array_filter(
             $this->actions,
-            function ($id) {
+            function ($id): bool {
                 return !array_key_exists($id, $this->disabled_actions);
             },
             ARRAY_FILTER_USE_KEY
