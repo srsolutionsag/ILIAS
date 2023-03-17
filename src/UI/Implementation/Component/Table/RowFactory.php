@@ -43,7 +43,7 @@ class RowFactory implements T\RowFactory
 
     public function standard(string $id, array $record): T\Row
     {
-        $row = new StandardRow(
+        return new StandardRow(
             $this->table_has_singleactions,
             $this->table_has_multiactions,
             $this->columns,
@@ -51,6 +51,5 @@ class RowFactory implements T\RowFactory
             $id,
             $record
         );
-        return $row;
     }
 }
