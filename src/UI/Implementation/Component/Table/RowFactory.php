@@ -23,33 +23,22 @@ use ILIAS\UI\Component\Table as T;
 
 class RowFactory implements T\RowFactory
 {
-    protected bool $table_has_singleactions;
-    protected bool $table_has_multiactions;
-
-    /**
-     * @var <string, Column>
-     */
-    protected array $columns;
-
-    /**
-     * @var <string, Column>
-     */
-    protected array $row_actions;
-
     /**
      * @param <string, Column> $columns
      * @param <string, Action> $single_actions
      */
     public function __construct(
-        bool $table_has_singleactions,
-        bool $table_has_multiactions,
-        array $columns,
-        array $row_actions
+        protected bool $table_has_singleactions,
+        protected bool $table_has_multiactions,
+        /**
+         * @var <string, Column>
+         */
+        protected array $columns,
+        /**
+         * @var <string, Column>
+         */
+        protected array $row_actions
     ) {
-        $this->table_has_singleactions = $table_has_singleactions;
-        $this->table_has_multiactions = $table_has_multiactions;
-        $this->columns = $columns;
-        $this->row_actions = $row_actions;
     }
 
     public function standard(string $id, array $record): T\Row
