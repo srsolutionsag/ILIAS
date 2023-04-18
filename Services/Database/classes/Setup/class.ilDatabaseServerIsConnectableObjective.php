@@ -51,7 +51,7 @@ class ilDatabaseServerIsConnectableObjective extends \ilDatabaseObjective
 
     public function achieve(Setup\Environment $environment): Setup\Environment
     {
-        $db = \ilDBWrapperFactory::getWrapper($this->config->getType());
+        $db = $this->getDBInstanceForType($environment);
         $db->initFromIniFile($this->config->toMockIniFile());
         try {
             $connect = $db->connect();

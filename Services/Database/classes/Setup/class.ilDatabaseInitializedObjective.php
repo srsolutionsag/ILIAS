@@ -62,12 +62,19 @@ class ilDatabaseInitializedObjective implements Setup\Objective
         if ($environment->getResource(Setup\Environment::RESOURCE_DATABASE)) {
             return $environment;
         }
-
+        /** @var ilIniFile $client_ini */
         $client_ini = $environment->getResource(Setup\Environment::RESOURCE_CLIENT_INI);
 
         $type = $client_ini->readVariable("db", "type");
-        if ($type === "") {
+        if ($type === "" || !in_array($type, [ilDBConstants::TYPE_INNODB, ilDBConstants::TYPE_PDO_MYSQL_INNODB])) {
+            /** @var Setup\CLI\IOWrapper $io */
+            $io = $environment->getResource(Setup\Environment::RESOURCE_ADMIN_INTERACTION);
+            $io->inform(
+                "Saved database type is not supported anymore. Switching to InnoDB and store this to client.ini."
+            );
             $type = ilDBConstants::TYPE_INNODB;
+            $client_ini->setVariable("db", "type", $type);
+            $client_ini->write();
         }
 
         $db = \ilDBWrapperFactory::getWrapper($type);

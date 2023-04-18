@@ -55,7 +55,7 @@ class ilDatabaseCreatedObjective extends ilDatabaseObjective
     public function achieve(Setup\Environment $environment): Setup\Environment
     {
         $c = $this->config;
-        $db = \ilDBWrapperFactory::getWrapper($this->config->getType());
+        $db = $this->getDBInstanceForType($environment);
         $db->initFromIniFile($c->toMockIniFile());
 
         if (!$db->createDatabase($c->getDatabase(), "utf8", $c->getCollation())) {
@@ -73,7 +73,7 @@ class ilDatabaseCreatedObjective extends ilDatabaseObjective
     public function isApplicable(Setup\Environment $environment): bool
     {
         $c = $this->config;
-        $db = \ilDBWrapperFactory::getWrapper($this->config->getType());
+        $db = $this->getDBInstanceForType($environment);
         $db->initFromIniFile($c->toMockIniFile());
 
         $connect = $db->connect(true);
