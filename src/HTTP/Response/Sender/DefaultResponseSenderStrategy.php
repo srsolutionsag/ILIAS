@@ -1,22 +1,25 @@
 <?php
 
+/**
+ * This file is part of ILIAS, a powerful learning management system
+ * published by ILIAS open source e-Learning e.V.
+ *
+ * ILIAS is licensed with the GPL-3.0,
+ * see https://www.gnu.org/licenses/gpl-3.0.en.html
+ * You should have received a copy of said license along with the
+ * source code, too.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ * https://www.ilias.de
+ * https://github.com/ILIAS-eLearning
+ *
+ *********************************************************************/
+
 namespace ILIAS\HTTP\Response\Sender;
 
 use Psr\Http\Message\ResponseInterface;
 
-/******************************************************************************
- *
- * This file is part of ILIAS, a powerful learning management system.
- *
- * ILIAS is licensed with the GPL-3.0, you should have received a copy
- * of said license along with the source code.
- *
- * If this is not the case or you just want to try ILIAS, you'll find
- * us at:
- *      https://www.ilias.de
- *      https://github.com/ILIAS-eLearning
- *
- *****************************************************************************/
 /**
  * Class DefaultResponseSenderStrategy
  *
@@ -36,23 +39,30 @@ class DefaultResponseSenderStrategy implements ResponseSenderStrategy
      */
     public function sendResponse(ResponseInterface $response): void
     {
-        //check if the request is already send
+        // check if the request is already send
         if (headers_sent()) {
             throw new ResponseSendingException("Response was already sent.");
         }
 
-        //set status code
+        //s et status code
         http_response_code($response->getStatusCode());
 
-        //render all headers
+        // render all headers
+        // fixed for https://mantis.ilias.de/view.php?id=37385, see https://github.com/guzzle/psr7/blob/124aab5a1fa6adefb77a4ea51ada3804d49c278d/src/Message.php#L35
         foreach (array_keys($response->getHeaders()) as $key) {
-            header("$key: " . $response->getHeaderLine($key));
+            if (strtolower($key) === 'set-cookie') {
+                foreach ($response->getHeader($key) as $cookie) {
+                    header("$key: $cookie", false);
+                }
+            } else {
+                header("$key: " . $response->getHeaderLine($key));
+            }
         }
 
-        //rewind body stream
+        // rewind body stream
         $response->getBody()->rewind();
 
-        //detach psr-7 stream from resource
+        // detach psr-7 stream from resource
         $resource = $response->getBody()->detach();
 
         $sendStatus = false;
@@ -70,7 +80,7 @@ class DefaultResponseSenderStrategy implements ResponseSenderStrategy
             fclose($resource);
         }
 
-        //check if the body was successfully send to the client
+        // check if the body was successfully send to the client
         if ($sendStatus === false) {
             throw new ResponseSendingException("Could not send body content to client.");
         }
