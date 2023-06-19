@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="application/javascript">var il = il || {}; window.il = il;</script>
+    <script type="application/javascript" src="./core.js"></script>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Hello world - Counter example</h1>
+
+    <div class="c-component--unhydrated" data-hydrated-by="counter/createCounter">
+        <div id="cid3" class="c-counter">
+            <span>0</span>
+            <button id="cid1" class="c-button">+</button>
+            <button id="cid2" class="c-button">-</button>
+        </div>
+        <script type="application/javascript">
+            il.UI.JavaScriptBinding.addFunction('cid3', (component) => {
+              component.querySelectorAll('button').forEach((button) => {
+                button.addEventListener('click', () => {
+                  console.log(`Button ${button.textContent} clicked.`);
+                })
+              });
+            });
+        </script>
+    </div>
+
+    <div class="c-wrapper" style="margin-top: 25px;">
+        <button id="cid4" class="c-button" onclick="il.UI.hydrateComponents(document.body);">Hydrate!</button>
+    </div>
+
+    <script type="application/javascript">
+        // window.onload = () => {
+        //   il.UI.hydrateComponents(document.body);
+        // }
+    </script>
+</body>
+</html>

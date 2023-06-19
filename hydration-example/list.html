@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="application/javascript">var il = il || {};window.il = il;</script>
+    <script type="application/javascript" src="./core.js"></script>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Hello world - List example</h1>
+
+    <div class="c-component--unhydrated" data-hydrated-by="list/createList">
+        <div class="c-list" data-javascript-id="js_id_1">
+            <template>
+                <div class="c-component--unhydrated" data-hydrated-by="counter/createCounter">
+                    <div id="placeholder_id_3" class="c-counter">
+                        <span>0</span>
+                        <button id="placeholder_id_1" class="c-button">+</button>
+                        <button id="placeholder_id_2" class="c-button">-</button>
+                    </div>
+                    <script type="application/javascript">
+                      il.UI.JavaScriptBinding.addFunction('js_id_1/placeholder_id_3', (component) => {
+                        component.querySelectorAll('button').forEach((button) => {
+                          button.addEventListener('click', () => {
+                            console.log(`Button ${button.textContent} clicked.`);
+                          })
+                        });
+                      });
+                    </script>
+                </div>
+            </template>
+
+            <button id="cid1" class="c-button" style="margin-top: 25px;">Add Counter</button>
+        </div>
+        <script type="application/javascript">
+          il.UI.JavaScriptBinding.addFunction('cid2', (component) => {
+            component.querySelector('button').addEventListener('click', () => {
+              console.log('Counter added.');
+            });
+          });
+        </script>
+    </div>
+
+    <div class="c-wrapper" style="margin-top: 25px;">
+        <button id="cid3" class="c-button">Hydrate!</button>
+    </div>
+
+    <script type="application/javascript">
+      window.onload = () => {
+        document.getElementById('cid3')?.addEventListener('click', () => {
+          il.UI.hydrateComponents(document.body);
+        });
+      }
+    </script>
+</body>
+</html>
