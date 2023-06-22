@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <style>body { font-family: sans-serif; }</style>
     <script type="application/javascript">var il = il || {}; window.il = il;</script>
     <script type="application/javascript" src="./core.js"></script>
     <title>Test</title>
@@ -9,14 +10,14 @@
 <body>
     <h1>Hello world - Counter example</h1>
 
-    <div class="c-component--unhydrated" data-hydrated-by="counter/createCounter">
-        <div id="cid3" class="c-counter">
+    <div class="c-component--unhydrated" data-hydrated-by="counter/createCounter" data-javascript-id="js_id_1">
+        <div class="c-counter">
             <span>0</span>
             <button id="cid1" class="c-button">+</button>
             <button id="cid2" class="c-button">-</button>
         </div>
         <script type="application/javascript">
-            il.UI.JavaScriptBinding.addFunction('cid3', (component) => {
+            il.UI.JavaScriptBinding.addFunction('js_id_1', (component) => {
               component.querySelectorAll('button').forEach((button) => {
                 button.addEventListener('click', () => {
                   console.log(`Button ${button.textContent} clicked.`);
@@ -27,7 +28,7 @@
     </div>
 
     <div class="c-wrapper" style="margin-top: 25px;">
-        <button id="cid4" class="c-button" onclick="il.UI.hydrateComponents(document.body);">Hydrate!</button>
+        <button id="cid3" class="c-button" onclick="il.UI.hydrateComponents(document.body);">Hydrate!</button>
     </div>
 
     <script type="application/javascript">

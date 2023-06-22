@@ -43,17 +43,15 @@ il.UI.JavaScriptBinding = Object.create({
 });
 
 function hydrateElement(element) {
-  if (!element.hasAttribute('data-hydrated-by')) {
-    return;
+  if (element.hasAttribute('data-hydrated-by')) {
+    const hydrator = il.UI.JavaScriptBinding.getHydrator(element.getAttribute('data-hydrated-by'));
+    if (hydrator !== null) {
+      hydrator(element.firstElementChild);
+    }
   }
 
-  const hydrator = il.UI.JavaScriptBinding.getHydrator(element.getAttribute('data-hydrated-by'));
-  if (hydrator !== null) {
-    hydrator(element.firstElementChild);
-  }
-
-  if (element.firstElementChild.hasAttribute('id')) {
-    const customFunction = il.UI.JavaScriptBinding.getFunction(element.firstElementChild.getAttribute('id'));
+  if (element.hasAttribute('javascript-id')) {
+    const customFunction = il.UI.JavaScriptBinding.getFunction(element.getAttribute('javascript-id'));
     if (customFunction !== null) {
       customFunction(element.firstElementChild);
     }
@@ -75,7 +73,7 @@ il.UI.hydrateComponents = function hydrateComponents(element) {
   }
 };
 
-  // ============================================================
+// ============================================================
 // END: core bundle
 // ============================================================
 
@@ -136,13 +134,7 @@ il.UI.List.Renderer = class Renderer {
         break;
       }
 
-      const newId = il.UI.JavaScriptBinding.createId();
-      element.id = newId;
-
-      const customFunction = il.UI.JavaScriptBinding.getFunction(`${this.#parentId}/${currentId}`);
-      if (null !== customFunction) {
-        customFunction(element);
-      }
+      element.id = il.UI.JavaScriptBinding.createId();
     }
 
     il.UI.hydrateComponents(clone);
@@ -154,7 +146,6 @@ il.UI.List.Renderer = class Renderer {
 il.UI.List.createList = function createList(element) {
   const template = element.querySelector('template');
   const renderer = new il.UI.List.Renderer(element, template, element.id);
-  console.log(renderer);
 
   element.querySelector('button')?.addEventListener('click', () => {
     renderer.addListItem();

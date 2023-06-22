@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <style>body { font-family: sans-serif; }</style>
     <script type="application/javascript">var il = il || {}; window.il = il;</script>
     <script type="application/javascript" src="./core.js"></script>
     <title>Test</title>
@@ -9,44 +10,42 @@
 <body>
     <h1>Hello world - Signal example</h1>
 
-    <div class="c-component--unhydrated" data-hydrated-by="signal/createTriggerer">
-        <button id="cid1" class="c-button c-triggerer" data-triggered-signals='[
-            {
-                "id": "signal_id_1",
-                "event": "click",
-                "options": {
-                    "foo": "bar"
-                }
-            },
-            {
-                "id": "signal_id_2",
-                "event": "click",
-                "options": {
-                    "foo": "baz"
-                }
-            }
-        ]'>Send Signal</button>
+    <div class="c-component--unhydrated" data-javascript-id="js_id_1">
+        <button class="c-button">Send Signals</button>
         <script type="application/javascript">
-            il.UI.JavaScriptBinding.addFunction('cid1', (component) => {
+            il.UI.JavaScriptBinding.addFunction('js_id_1', (component) => {
               component.querySelectorAll('button').forEach((button) => {
                 button.addEventListener('click', () => {
-                  console.log(`Button ${button.textContent} clicked.`);
+                  il.UI.Signal.broadcast('signal_id_1', {
+                    event: "click",
+                    options: {
+                      foo: "baz"
+                    }
+                  });
+                  il.UI.Signal.broadcast('signal_id_2', {
+                    event: "click",
+                    options: {
+                      foo: "bar"
+                    }
+                  });
                 })
               });
             });
         </script>
     </div>
 
-    <div class="c-component--unhydrated" data-hydrated-by="signal/createListener">
-        <div id="cid2" class="c-trigerrable" data-triggering-signals='[
-            "signal_id_1",
-            "signal_id_2"
-        ]'>
-            <span>Nothing received yet.</span>
+    <div class="c-component--unhydrated" data-hydrated-by="receiver/createReceiver" data-javascript-id="js_id_2">
+        <div class="c-receiver">
+            <span>0</span> signals received.
         </div>
         <script type="application/javascript">
-          il.UI.JavaScriptBinding.addFunction('cid2', (component) => {
-            console.log('I am ready to be triggered.');
+          il.UI.JavaScriptBinding.addFunction('js_id_2', (component) => {
+            il.UI.Signal.on('signal_id_1', (signal) => {
+              component.
+            });
+            il.UI.Signal.on('signal_id_2', (signal) => {
+
+            });
           });
         </script>
     </div>
