@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -16,6 +15,7 @@
  *
  *********************************************************************/
 
+declare(strict_types=1);
 /**
  * Class ilDatabaseUTF8MB4UpdateSteps
  * Contains update steps to convert the database, all tables and columns to UTF8MB4
@@ -24,16 +24,19 @@
  */
 class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
 {
-    protected \ilDBInterface $db;
-    private string $charset;
-    private string $collation;
-    private string $dbName;
+    private const CHARSET_UTF_8_MB_4 = "utf8mb4";
+    private const COLLATION_UTF_8_MB_4_UNICODE_520_CI = "utf8mb4_unicode_520_ci";
+    private const COLLATION_UTF_8_MB_4_UNICODE_CI = "utf8mb4_unicode_ci";
+    private \ilDBInterface $db;
+    private ?string $charset = null;
+    private ?string $collation = null;
+    private ?string $db_name = null;
 
     public function prepare(\ilDBInterface $db): void
     {
         $this->db = $db;
-        $this->dbName = $this->db->getDbName();
-        $this->charset = "utf8mb4";
+        $this->db_name = $this->db->getDbName();
+        $this->charset = self::CHARSET_UTF_8_MB_4;
         $this->collation = $this->selectCollation();
     }
 
@@ -47,11 +50,11 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
      */
     private function selectCollation(): string
     {
-        $q = "SHOW COLLATION WHERE COLLATION LIKE 'utf8mb4_unicode_520_ci'";
+        $q = "SHOW COLLATION WHERE COLLATION LIKE '" . self::COLLATION_UTF_8_MB_4_UNICODE_520_CI . "'";
         if ($this->db->query($q)->fetch()) {
-            return "utf8mb4_unicode_520_ci";
+            return self::COLLATION_UTF_8_MB_4_UNICODE_520_CI;
         }
-        return "utf8mb4_unicode_ci";
+        return self::COLLATION_UTF_8_MB_4_UNICODE_CI;
     }
 
     /**
@@ -62,9 +65,9 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
      *
      * @return array    An array containing names of all tables of the database.
      */
-    private function getTables(): array
+    private function getTableNames(): array
     {
-        $q = "SHOW TABLES FROM $this->dbName";
+        $q = "SHOW TABLES FROM $this->db_name";
         $statement = $this->db->query($q);
         $tables = [];
         while ($data = $statement->fetch()) {
@@ -79,12 +82,12 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
      * @return array|false  False if the query does not return any data,
      *                      an array with keys charset and collation.
      */
-    private function getCharsetDB(): array|false
+    private function getDBCharset(): array|false
     {
         $q = "SELECT DEFAULT_CHARACTER_SET_NAME as charset, " .
              "DEFAULT_COLLATION_NAME as collation " .
              "FROM information_schema.SCHEMATA " .
-             "WHERE SCHEMA_NAME = '$this->dbName'";
+             "WHERE SCHEMA_NAME = '$this->db_name'";
         return $this->db->query($q)->fetch();
     }
 
@@ -105,7 +108,7 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
              "FROM information_schema.TABLES AS T " .
              "JOIN information_schema.COLLATION_CHARACTER_SET_APPLICABILITY AS CCSA " .
              "WHERE T.TABLE_COLLATION = CCSA.COLLATION_NAME " .
-             "AND TABLE_SCHEMA='$this->dbName' AND TABLE_NAME='$table'";
+             "AND TABLE_SCHEMA='$this->db_name' AND TABLE_NAME='$table'";
         return $this->db->query($q)->fetch();
     }
 
@@ -122,7 +125,7 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
         if (!$this->db->tableExists($table) || !$this->db->tableColumnExists($table, $column)) {
             return false;
         }
-        $q = "SELECT * FROM information_schema.COLUMNS WHERE table_schema = '$this->dbName' " .
+        $q = "SELECT * FROM information_schema.COLUMNS WHERE table_schema = '$this->db_name' " .
              "AND table_name = '$table' AND column_name = '$column'";
         return $this->db->query($q)->fetch();
     }
@@ -166,12 +169,12 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
      */
     private function convertCharsetDatabase(): void
     {
-        $db_info = $this->getCharsetDB();
+        $db_info = $this->getDBCharset();
 
         if ($db_info === false || $db_info["charset"] === $this->charset) {
             return;
         }
-        $q = "ALTER DATABASE $this->dbName " .
+        $q = "ALTER DATABASE $this->db_name " .
              "CHARACTER SET = $this->charset " .
              "COLLATE = $this->collation";
         $this->db->manipulate($q);
@@ -182,7 +185,7 @@ class ilDatabaseUTF8MB4UpdateSteps implements \ilDatabaseUpdateSteps
      */
     private function convertCharsetTables(): void
     {
-        $tables = $this->getTables();
+        $tables = $this->getTableNames();
         foreach ($tables as $table) {
             $table_info = $this->getCharsetTable($table);
             if ($table_info === false || $table_info["charset"] === $this->charset) {
