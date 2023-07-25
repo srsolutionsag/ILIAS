@@ -1626,43 +1626,6 @@ class ilUtil
         chdir($dir);
         $unzip = PATH_TO_UNZIP;
 
-        // the following workaround has been removed due to bug
-        // http://www.ilias.de/mantis/view.php?id=7578
-        // since the workaround is quite old, it may not be necessary
-        // anymore, alex 9 Oct 2012
-        /*
-                // workaround for unzip problem (unzip of subdirectories fails, so
-                // we create the subdirectories ourselves first)
-                // get list
-                $unzipcmd = "-Z -1 ".ilUtil::escapeShellArg($file);
-                $arr = ilUtil::execQuoted($unzip, $unzipcmd);
-                $zdirs = array();
-
-                foreach($arr as $line)
-                {
-                    if(is_int(strpos($line, "/")))
-                    {
-                        $zdir = substr($line, 0, strrpos($line, "/"));
-                        $nr = substr_count($zdir, "/");
-                        //echo $zdir." ".$nr."<br>";
-                        while ($zdir != "")
-                        {
-                            $nr = substr_count($zdir, "/");
-                            $zdirs[$zdir] = $nr;				// collect directories
-                            //echo $dir." ".$nr."<br>";
-                            $zdir = substr($zdir, 0, strrpos($zdir, "/"));
-                        }
-                    }
-                }
-
-                asort($zdirs);
-
-                foreach($zdirs as $zdir => $nr)				// create directories
-                {
-                    ilUtil::createDirectory($zdir);
-                }
-        */
-
         // real unzip
         if (!$overwrite) {
             $unzipcmd = ilUtil::escapeShellArg($file);
@@ -1684,6 +1647,11 @@ class ilUtil
                     $log->info("Removed symlink " . $name);
                 }
             }
+            if (is_file($name) && $name !== ilFileUtils::getValidFilename($name)) {
+                // rename file if it contains invalid suffix
+                $new_name = ilFileUtils::getValidFilename($name);
+                rename($name, $new_name);
+            }
         }
 
         // if flat, get all files and move them to original directory
@@ -1699,6 +1667,24 @@ class ilUtil
                 }
             }
             ilUtil::delDir($tmpdir);
+        }
+
+        // sanitize filenames
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($files as $fileinfo) {
+            $filename = $fileinfo->getFilename();
+            if ($filename == '.' || $filename == '..') {
+                continue;
+            }
+            $newname = ilFileUtils::getValidFilename($filename);
+            if ($newname != $filename) {
+                $newname = $fileinfo->getPath() . DIRECTORY_SEPARATOR . $newname;
+                $fileinfo->getPathname();
+                rename($fileinfo->getPathname(), $newname);
+            }
         }
     }
 
