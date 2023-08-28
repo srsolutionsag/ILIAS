@@ -46,8 +46,91 @@ class ilSystemStyleSkinContainerTest extends TestCase
     {
         global $DIC;
 
-        $this->save_dic = $DIC;
-        $DIC = new ilSystemStyleDICMock();
+        $this->save_dic = is_object($DIC) ? clone $DIC : $DIC;
+
+        $DIC = new \ILIAS\DI\Container();
+
+        $DIC['lng'] = function (\ILIAS\DI\Container $c) {
+            return $this->getMockBuilder(ilLanguage::class)->disableOriginalConstructor()->getMock();
+        };
+        $DIC['ilDB'] = function (\ILIAS\DI\Container $c) {
+            $db = $this->createMock(ilDBInterface::class);
+
+            $db->method('quote')->willReturnArgument(0);
+
+            $mock = null;
+            $db->method('query')->willReturnCallback(function ($query) use (&$mock) {
+                if (strpos($query, 'type = facs') !== false) {
+                    $mock = $this->createMock(ilDBStatement::class);
+                    $mock->method('rowCount')->willReturn(1);
+                    $mock->method('fetch')->willReturn(
+                        [
+                            'obj_id' => 4711,
+                            'description' => 'phpunit'
+                        ],
+                        null
+                    );
+                }
+
+                if (strpos($query, 'obj_id = 4711') !== false) {
+                    $mock = $this->createMock(ilDBStatement::class);
+                    $mock->method('rowCount')->willReturn(1);
+                    $mock->method('fetch')->willReturnOnConsecutiveCalls(
+                        ['ref_id' => 666],
+                        null
+                    );
+                }
+
+                return $this->createMock(ilDBStatement::class);
+            });
+
+
+            $db->method('numRows')->willReturnCallback(function () use (&$mock) {
+                return $mock->rowCount();
+            });
+            $db->method('fetchAssoc')->willReturnCallback(function () use (&$mock) {
+                return $mock->fetch(PDO::FETCH_ASSOC);
+            });
+
+            return $db;
+        };
+        $DIC['rbacsystem'] = function (\ILIAS\DI\Container $c) {
+            $rbac_system = $this->getMockBuilder(ilRbacSystem::class)->disableOriginalConstructor()->getMock();
+            $rbac_system->method('checkAccess')->willreturn(false);
+
+            return $rbac_system;
+        };
+        $DIC['ilSetting'] = function (\ILIAS\DI\Container $c) {
+            $settings = $this->getMockBuilder(ilSetting::class)->disableOriginalConstructor()->getMock();
+            $settings->method('get')->willReturnCallback(function (string $keyword) {
+                if ($keyword === 'suffix_custom_expl_black') {
+                    return 'php';
+                }
+
+                return $keyword;
+            });
+
+            return $settings;
+        };
+        $DIC['ilLoggerFactory'] = function (\ILIAS\DI\Container $c) {
+            $logger = $this->getMockBuilder(ilLogger::class)->disableOriginalConstructor()->getMock();
+
+            $logger_factory = new class extends ilLoggerFactory {
+                public static $logger;
+
+                public function __construct()
+                {
+                }
+
+                public static function getRootLogger() : ilLogger
+                {
+                    return self::$logger;
+                }
+            };
+            $logger_factory::$logger = $logger;
+
+            return $logger_factory;
+        };
 
         if (!defined('PATH_TO_LESSC')) {
             if (file_exists("ilias.ini.php")) {

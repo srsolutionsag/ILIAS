@@ -1,8 +1,6 @@
 <?php
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-include_once './libs/composer/vendor/autoload.php';
-include_once './Services/Logging/classes/public/class.ilLogLevel.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
