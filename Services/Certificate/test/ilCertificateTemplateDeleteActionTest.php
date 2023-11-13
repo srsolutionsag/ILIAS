@@ -47,6 +47,7 @@ class ilCertificateTemplateDeleteActionTest extends ilCertificateBaseTestCase
             ));
 
         $utilHelper = $this->getMockBuilder(ilCertificateUtilHelper::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $utilHelper
@@ -100,6 +101,7 @@ class ilCertificateTemplateDeleteActionTest extends ilCertificateBaseTestCase
             ));
 
         $utilHelper = $this->getMockBuilder(ilCertificateUtilHelper::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $utilHelper
