@@ -16,6 +16,8 @@
  *
  *********************************************************************/
 
+use ILIAS\Bibliographic\FieldFilter\Table;
+
 /**
  * Class ilBiblFieldFilterGUI
  *
@@ -25,6 +27,7 @@
 class ilBiblFieldFilterGUI
 {
     use \ILIAS\components\OrgUnit\ARHelper\DIC;
+
     public const FILTER_ID = 'filter_id';
     public const CMD_STANDARD = 'index';
     public const CMD_ADD = 'add';
@@ -38,8 +41,8 @@ class ilBiblFieldFilterGUI
     public const CMD_RESET_FILTER = 'resetFilter';
     public const CMD_TRANSLATE = 'translate';
     protected \ilBiblFactoryFacade $facade;
-    private \ilGlobalTemplateInterface $main_tpl;
-
+    protected Table $table;
+    protected \ilGlobalTemplateInterface $main_tpl;
 
     /**
      * ilBiblFieldFilterGUI constructor.
@@ -49,27 +52,37 @@ class ilBiblFieldFilterGUI
         global $DIC;
         $this->main_tpl = $DIC->ui()->mainTemplate();
         $this->facade = $facade;
+        $this->table = new Table(
+            $this,
+            $this->facade
+        );
     }
-
 
     public function renderInterruptiveModal(): void
     {
         $f = $this->dic()->ui()->factory();
         $r = $this->dic()->ui()->renderer();
         $ilBiblFieldFilter = $this->getFieldFilterFromRequest();
-        $form_action = $this->ctrl()->getFormActionByClass(ilBiblFieldFilterGUI::class, ilBiblFieldFilterGUI::CMD_DELETE);
+        $form_action = $this->ctrl()->getFormActionByClass(
+            ilBiblFieldFilterGUI::class, ilBiblFieldFilterGUI::CMD_DELETE
+        );
         $delete_modal = $f->modal()->interruptive(
             $this->lng()->txt("delete"),
             $this->lng()->txt('msg_confirm_delete_filter'),
             $form_action
         )->withAffectedItems(
-            [$f->modal()->interruptiveItem()->standard((string) $ilBiblFieldFilter->getId(), $this->facade->translationFactory()->translate($this->facade->fieldFactory()->findById($ilBiblFieldFilter->getFieldId())))]
+            [
+                $f->modal()->interruptiveItem()->standard(
+                    (string) $ilBiblFieldFilter->getId(), $this->facade->translationFactory()->translate(
+                    $this->facade->fieldFactory()->findById($ilBiblFieldFilter->getFieldId())
+                )
+                )
+            ]
         );
 
         echo $r->render([$delete_modal]);
         exit;
     }
-
 
     public function executeCommand(): void
     {
@@ -80,7 +93,6 @@ class ilBiblFieldFilterGUI
                 $this->performCommand();
         }
     }
-
 
     protected function performCommand(): void
     {
@@ -106,26 +118,23 @@ class ilBiblFieldFilterGUI
         }
     }
 
-
     public function index(): void
     {
         if ($this->access()->checkAccess('write', "", $this->facade->iliasRefId())) {
-            $button = $this->dic()->ui()->factory()->button()->primary($this->lng()->txt("add_filter"), $this->ctrl()->getLinkTarget($this, self::CMD_ADD));
+            $button = $this->dic()->ui()->factory()->button()->primary(
+                $this->lng()->txt("add_filter"), $this->ctrl()->getLinkTarget($this, self::CMD_ADD)
+            );
             $this->toolbar()->addText($this->dic()->ui()->renderer()->render([$button]));
         }
 
-        $table = new ilBiblFieldFilterTableGUI($this, $this->facade);
-        $table = new ilTable($this, $this->facade);
-        $this->tpl()->setContent($table->getHTML());
+        $this->tpl()->setContent($this->table->getHTML());
     }
-
 
     protected function add(): void
     {
         $ilBiblSettingsFilterFormGUI = new ilBiblFieldFilterFormGUI($this, new ilBiblFieldFilter(), $this->facade);
         $this->tpl()->setContent($ilBiblSettingsFilterFormGUI->getHTML());
     }
-
 
     protected function create(): void
     {
@@ -141,13 +150,11 @@ class ilBiblFieldFilterGUI
         $this->tpl()->setContent($form->getHTML());
     }
 
-
     public function edit(): void
     {
         $ilBiblSettingsFilterFormGUI = $this->initEditForm();
         $this->tpl()->setContent($ilBiblSettingsFilterFormGUI->getHTML());
     }
-
 
     public function update(): void
     {
@@ -163,21 +170,19 @@ class ilBiblFieldFilterGUI
         $this->tpl()->setContent($form->getHTML());
     }
 
-
     public function delete(): void
     {
-        global $DIC;
-        $items = $this->http()->request()->getParsedBody()['interruptive_items'];
-        if (is_array($items)) {
-            foreach ($items as $filter_id) {
-                $il_bibl_field = $this->facade->filterFactory()->findById($filter_id);
-                $il_bibl_field->delete();
-            }
+        $token = $this->table->getIdToken()->getName();
+        $items = $this->http()->request()->getQueryParams()[$token] ?? [];
+
+        foreach ($items as $filter_id) {
+            $il_bibl_field = $this->facade->filterFactory()->findById((int) $filter_id);
+            $il_bibl_field->delete();
         }
-        $this->main_tpl->setOnScreenMessage('success', $DIC->language()->txt('filter_deleted'), true);
+
+        $this->main_tpl->setOnScreenMessage('success', $this->lng()->txt('filter_deleted'), true);
         $this->ctrl()->redirect($this, self::CMD_STANDARD);
     }
-
 
     /**
      * cancel
@@ -187,14 +192,23 @@ class ilBiblFieldFilterGUI
         $this->ctrl()->redirect($this, self::CMD_STANDARD);
     }
 
-
     private function getFieldFilterFromRequest(): \ilBiblFieldFilterInterface
     {
+        $table = new Table(
+            $this,
+            $this->facade
+        );
+
+        $token = $table->getIdToken()->getName();
+        if (isset($this->http()->request()->getQueryParams()[$token])) {
+            $field_id = $this->http()->request()->getQueryParams()[$token] ?? null;
+            return $this->facade->filterFactory()->findById($field_id[0] ?? 0);
+        }
+
         $field = $this->http()->request()->getQueryParams()[self::FILTER_ID];
 
         return $this->facade->filterFactory()->findById($field);
     }
-
 
     protected function initEditForm(): ilBiblFieldFilterFormGUI
     {
@@ -204,12 +218,13 @@ class ilBiblFieldFilterGUI
             $this->ctrl()->getLinkTargetByClass(ilBiblFieldFilterGUI::class, ilBiblFieldFilterGUI::CMD_STANDARD)
         );
 
-        $ilBiblSettingsFilterFormGUI = new ilBiblFieldFilterFormGUI($this, $this->getFieldFilterFromRequest(), $this->facade);
+        $ilBiblSettingsFilterFormGUI = new ilBiblFieldFilterFormGUI(
+            $this, $this->getFieldFilterFromRequest(), $this->facade
+        );
         $ilBiblSettingsFilterFormGUI->fillForm();
 
         return $ilBiblSettingsFilterFormGUI;
     }
-
 
     protected function applyFilter(): void
     {
@@ -218,7 +233,6 @@ class ilBiblFieldFilterGUI
         $table->resetOffset();
         $this->ctrl()->redirect($this, self::CMD_STANDARD);
     }
-
 
     protected function resetFilter(): void
     {

@@ -13,7 +13,11 @@ class DataRetrieval1 implements I\DataRetrieval
     use \ILIAS\Modules\OrgUnit\ARHelper\DIC;
     protected \ilBiblAdminFactoryFacadeInterface $facade;
 
-    public function __construct(protected \ILIAS\UI\Factory $ui_factory, protected \ILIAS\UI\Renderer $ui_renderer, ilBiblAdminFactoryFacadeInterface $facade)
+    public function __construct(
+        protected \ILIAS\UI\Factory $ui_factory,
+        protected \ILIAS\UI\Renderer $ui_renderer,
+        ilBiblAdminFactoryFacadeInterface $facade
+    )
     {
         $this->facade = $facade;
     }

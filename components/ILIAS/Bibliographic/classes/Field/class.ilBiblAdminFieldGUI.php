@@ -101,8 +101,8 @@ abstract class ilBiblAdminFieldGUI
     {
         $this->setSubTabs();
 
-        //$table = new ilBiblAdminFieldTableGUI($this, $this->facade);
-        $table = new ilTable1($this, $this->facade);
+        $table = new ilBiblAdminFieldTableGUI($this, $this->facade);
+//        $table = new ilTable1($this, $this->facade);
         $this->tpl()->setContent($table->getHTML());
     }
 
