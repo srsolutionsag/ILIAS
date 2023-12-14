@@ -115,6 +115,7 @@ class ilBiblFieldFilterGUI
         }
 
         $table = new ilBiblFieldFilterTableGUI($this, $this->facade);
+        $table = new ilTable($this, $this->facade);
         $this->tpl()->setContent($table->getHTML());
     }
 
