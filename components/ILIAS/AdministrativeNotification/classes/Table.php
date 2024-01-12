@@ -109,7 +109,8 @@ class Table
     {
         return new URI(
             ILIAS_HTTP_PATH . "/" . $this->ctrl->getLinkTarget(
-                $this->calling_gui, $command
+                $this->calling_gui,
+                $command
             )
         );
     }

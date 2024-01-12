@@ -13,14 +13,12 @@ use ILIAS\UI\Component\Table as I;
 class DataRetrieval implements I\DataRetrieval
 {
     private \ilLanguage $lng;
-    private \ilLanguage $lng;
 
     public function __construct(
         protected \ilBiblAdminFactoryFacadeInterface $facade
     ) {
         global $DIC;
         $this->lng = $DIC['lng'];
-        $this->ctrl = $DIC['ilCtrl'];
     }
 
     public function getRows(
@@ -30,8 +28,7 @@ class DataRetrieval implements I\DataRetrieval
         Order $order,
         ?array $filter_data,
         ?array $additional_parameters
-    ): \Generator
-    {
+    ): \Generator {
         $records = $this->getRecords($order);
         foreach ($records as $idx => $record) {
             $row_id = (string)$record['id'];
@@ -56,8 +53,7 @@ class DataRetrieval implements I\DataRetrieval
     public function getTotalRowCount(
         ?array $filter_data,
         ?array $additional_parameters
-    ): ?int
-    {
+    ): ?int {
         return count($this->facade->fieldFactory()->getAvailableFieldsForObjId($this->facade->iliasObjId()));
     }
 }

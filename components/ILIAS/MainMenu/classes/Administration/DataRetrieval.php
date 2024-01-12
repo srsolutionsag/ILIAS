@@ -11,8 +11,7 @@ use ILIAS\UI\Component\Table as I;
  */
 class DataRetrieval implements I\DataRetrieval
 {
-
-    private \ilLanguage $lng;
+    /*private \ilLanguage $lng;
 
     public function __construct(
         protected \ilMMItemFacade $facade
@@ -57,5 +56,5 @@ class DataRetrieval implements I\DataRetrieval
         ?array $additional_parameters
     ): ?int {
         return count($this->facade->filterFactory()->getAllForObjectId($this->facade->iliasObjId()));
-    }
+    }*/
 }

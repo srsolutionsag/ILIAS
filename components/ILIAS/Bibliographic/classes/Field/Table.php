@@ -42,7 +42,7 @@ class Table
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrieval(
-             $facade
+            $facade
         );
 
         $this->components[] = $this->ui_factory->table()->data(
@@ -84,7 +84,7 @@ class Table
         return [
             'translate' => $this->ui_factory->table()->action()->single(
                 $this->lng->txt("translate"),
-                $this->url_builder->withURI($this->getURIWithTargetClass(\ilBiblTranslationGUI::class,\ilBiblTranslationGUI::CMD_DEFAULT)),
+                $this->url_builder->withURI($this->getURIWithTargetClass(\ilBiblTranslationGUI::class, \ilBiblTranslationGUI::CMD_DEFAULT)),
                 $this->id_token
             )
         ];
@@ -98,16 +98,18 @@ class Table
     {
         return new URI(
             ILIAS_HTTP_PATH . "/" . $this->ctrl->getLinkTarget(
-                $this->calling_gui, $command
+                $this->calling_gui,
+                $command
             )
         );
     }
 
-    protected function getURIWithTargetClass(string $target_gui,string $command): URI
+    protected function getURIWithTargetClass(string $target_gui, string $command): URI
     {
         return new URI(
             ILIAS_HTTP_PATH . "/" . $this->ctrl->getLinkTargetByClass(
-                $target_gui, $command
+                $target_gui,
+                $command
             )
         );
     }

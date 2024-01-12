@@ -11,7 +11,7 @@ use ILIAS\UI\URLBuilderToken;
  */
 class Table
 {
-    private \ILIAS\UI\Factory $ui_factory;
+    /*private \ILIAS\UI\Factory $ui_factory;
     private \ILIAS\UI\Renderer $ui_renderer;
     private \ilCtrlInterface $ctrl;
     private \ilLanguage $lng;
@@ -95,11 +95,12 @@ class Table
             )
         ];
     }
-
+*/
     /**
      * @description Unfortunately, I have not yet found an easier way to generate this URI. However, it is important
      * that it points to the calling-gui
      */
+    /*
     protected function getURI(string $command): URI
     {
         return new URI(
@@ -123,5 +124,6 @@ class Table
     {
         return $this->id_token;
     }
+    */
 
 }

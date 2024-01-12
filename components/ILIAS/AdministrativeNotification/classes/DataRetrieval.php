@@ -17,7 +17,8 @@ class DataRetrieval implements I\DataRetrieval
 {
     private \ilLanguage $lng;
 
-    public function __construct() {
+    public function __construct()
+    {
         global $DIC;
         $this->lng = $DIC['lng'];
     }
@@ -29,8 +30,7 @@ class DataRetrieval implements I\DataRetrieval
         Order $order,
         ?array $filter_data,
         ?array $additional_parameters
-    ): \Generator
-    {
+    ): \Generator {
         $records = $this->getRecords($order);
         foreach ($records as $idx => $record) {
             $row_id = (string)$record['id'];
@@ -66,11 +66,13 @@ class DataRetrieval implements I\DataRetrieval
         return count(ilADNNotification::getArray());
     }
 
-    protected function formatDate(DateTimeImmutable $timestamp): string {
+    protected function formatDate(DateTimeImmutable $timestamp): string
+    {
         return ilDatePresentation::formatDate(new ilDateTime($timestamp->getTimestamp(), IL_CAL_UNIX));
     }
 
-    protected function getLanguagesTextForNotification(Array $record): string {
+    protected function getLanguagesTextForNotification(array $record): string
+    {
         $has_language_limitation = $record['has_language_limitation'];
         $limited_to_languages = $record['limited_to_languages'];
         // text is all by default
@@ -87,7 +89,7 @@ class DataRetrieval implements I\DataRetrieval
                     array_map(
                         function (string $lng_code): string {
                             return $this->lng->txt("meta_l_" . $lng_code);
-                            },
+                        },
                         $limited_to_languages
                     )
                 );
