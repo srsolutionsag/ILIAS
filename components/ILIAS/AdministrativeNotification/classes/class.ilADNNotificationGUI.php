@@ -16,6 +16,8 @@
  *
  *********************************************************************/
 
+use ILIAS\AdministrativeNotification\Table;
+
 /**
  * Class ilADNNotificationGUI
  * @ilCtrl_IsCalledBy ilADNNotificationGUI: ilObjAdministrativeNotificationGUI
@@ -34,6 +36,13 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
     public const CMD_CANCEL = 'cancel';
     public const CMD_DELETE = 'delete';
     public const CMD_RESET = 'reset';
+    protected Table $table;
+
+    public function __construct(ilADNTabHandling $tab_handling)
+    {
+        parent::__construct($tab_handling);
+
+    }
 
     protected function dispatchCommand($cmd): string
     {
@@ -70,6 +79,7 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
 
     protected function index(): string
     {
+        $this->table = new Table($this);
         if ($this->access->hasUserPermissionTo('write')) {
             $btn_add_msg = $this->ui->factory()->button()->standard(
                 $this->lng->txt('common_add_msg'),
@@ -78,7 +88,8 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
             $this->toolbar->addComponent($btn_add_msg);
         }
 
-        return (new ilADNNotificationTableGUI($this, self::CMD_DEFAULT))->getHTML();
+        //return (new ilADNNotificationTableGUI($this, self::CMD_DEFAULT))->getHTML();
+        return (new \ILIAS\AdministrativeNotification\Table($this))->getHTML();
     }
 
     protected function add(): string

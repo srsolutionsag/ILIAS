@@ -16,6 +16,8 @@
  *
  *********************************************************************/
 
+use ILIAS\Bibliographic\Field\Table;
+
 /**
  * Class ilBiblAdminFieldGUI
  * @author Benjamin Seglias   <bs@studer-raimann.ch>
@@ -38,6 +40,7 @@ abstract class ilBiblAdminFieldGUI
     public const CMD_RESET_FILTER = 'resetFilter';
     public const CMD_SAVE = 'save';
     protected \ilBiblAdminFactoryFacadeInterface $facade;
+    protected Table $table;
     private \ilGlobalTemplateInterface $main_tpl;
 
     /**
@@ -48,6 +51,10 @@ abstract class ilBiblAdminFieldGUI
         global $DIC;
         $this->main_tpl = $DIC->ui()->mainTemplate();
         $this->facade = $facade;
+        $this->table = new Table(
+            $this,
+            $this->facade
+        );
     }
 
     public function executeCommand(): void
@@ -100,10 +107,9 @@ abstract class ilBiblAdminFieldGUI
     protected function index(): void
     {
         $this->setSubTabs();
-
-        $table = new ilBiblAdminFieldTableGUI($this, $this->facade);
-//        $table = new ilTable1($this, $this->facade);
-        $this->tpl()->setContent($table->getHTML());
+        //$table = new ilBiblAdminFieldTableGUI($this, $this->facade);
+        //$this->tpl()->setContent($table->getHTML());
+        $this->tpl()->setContent($this->table->getHTML());
     }
 
     protected function setSubTabs(): void
