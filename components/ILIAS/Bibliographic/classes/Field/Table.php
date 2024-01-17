@@ -61,12 +61,11 @@ class Table
         );
 
         // these are the query parameters this instance is controlling
-        $query_params_namespace = ['bibl', 'admin'];
+        $query_params_namespace = ['bibl'];
         [$url_builder, $this->id_token] = $url_builder->acquireParameters(
             $query_params_namespace,
-            "row_id"
+            ilBiblAdminFieldGUI::FIELD_IDENTIFIER
         );
-
         return $url_builder;
     }
 
