@@ -46,7 +46,7 @@ class DataRetrieval implements I\DataRetrieval
         [$order_field, $order_direction] = $order->join([], fn($ret, $key, $value) => [$key, $value]);
         //usort($records, fn($a, $b) => $a[$order_field] <=> $b[$order_field]);
         if ($order_direction === 'DESC') {
-        //    $records = array_reverse($records);
+            //    $records = array_reverse($records);
         }
         //return $records;
         return [];
@@ -57,6 +57,6 @@ class DataRetrieval implements I\DataRetrieval
         ?array $additional_parameters
     ): ?int {
         return null;
-            //count($this->facade->filterFactory()->getAllForObjectId($this->facade->iliasObjId()));
+        //count($this->facade->filterFactory()->getAllForObjectId($this->facade->iliasObjId()));
     }
 }
