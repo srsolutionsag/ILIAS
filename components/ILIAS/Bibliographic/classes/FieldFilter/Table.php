@@ -56,7 +56,7 @@ class Table
         $query_params_namespace = ['bibl', 'filter'];
         [$url_builder, $this->id_token] = $url_builder->acquireParameters(
             $query_params_namespace,
-            "row_id"
+            \ilBiblFieldFilterGUI::FILTER_ID
         );
 
         return $url_builder;
@@ -96,7 +96,8 @@ class Table
     {
         return new URI(
             ILIAS_HTTP_PATH . "/" . $this->ctrl->getLinkTarget(
-                $this->calling_gui, $command
+                $this->calling_gui,
+                $command
             )
         );
     }
