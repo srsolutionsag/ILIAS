@@ -5,6 +5,7 @@ namespace ILIAS\MainMenu\Administration;
 use ILIAS\UI\URLBuilder;
 use ILIAS\Data\URI;
 use ILIAS\UI\URLBuilderToken;
+use ilMMAbstractItemGUI;
 use ilMMItemRepository;
 
 /**
@@ -57,7 +58,7 @@ class Table
         $query_params_namespace = ['mm', 'top_item'];
         [$url_builder, $this->id_token] = $url_builder->acquireParameters(
             $query_params_namespace,
-            "row_id"
+            ilMMAbstractItemGUI::IDENTIFIER
         );
 
         return $url_builder;
@@ -91,7 +92,7 @@ class Table
             ),
             'delete' => $this->ui_factory->table()->action()->standard(
                 $this->lng->txt(\ilMMTopItemGUI::CMD_DELETE),
-                $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_DELETE)),
+                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_DELETE)),
                 $this->id_token
             ),
             'move' => $this->ui_factory->table()->action()->single(

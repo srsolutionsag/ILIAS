@@ -62,6 +62,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
     private function dispatchCommand(string $cmd): string
     {
         global $DIC;
+        $this->saveFieldIdsInRequest();
         switch ($cmd) {
             case self::CMD_VIEW_TOP_ITEMS:
                 $this->access->checkAccessAndThrowException("visible,read");
@@ -81,6 +82,10 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
             case self::CMD_EDIT:
                 $this->access->checkAccessAndThrowException('write');
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_TOP_ITEMS, true, self::class);
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
 
                 return $this->edit($DIC);
             case self::CMD_UPDATE:
@@ -95,6 +100,10 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
                 break;
             case self::CMD_DELETE:
                 $this->access->checkAccessAndThrowException('write');
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->delete();
                 break;
             case self::CMD_CANCEL:
@@ -118,6 +127,10 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
                 return $this->selectParent();
             case self::CMD_MOVE:
                 $this->access->checkAccessAndThrowException('write');
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->move();
                 break;
         }
@@ -140,8 +153,8 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
 
     public function executeCommand(): void
     {
+        $this->saveFieldIdsInRequest();
         $next_class = $this->ctrl->getNextClass();
-
         if ($next_class === '') {
             $cmd = $this->determineCommand(self::CMD_VIEW_TOP_ITEMS, self::CMD_DELETE);
             $this->tpl->setContent($this->dispatchCommand($cmd));
@@ -151,6 +164,10 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
 
         switch ($next_class) {
             case strtolower(ilMMItemTranslationGUI::class):
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_TOP_ITEMS, true);
                 $g = new ilMMItemTranslationGUI($this->getMMItemFromRequest(), $this->repository);
                 $this->ctrl->forwardCommand($g);
@@ -204,6 +221,33 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
         //return $table->getHTML();
 
         return $this->table->getHTML();
+    }
+
+    protected function getFieldIdFromRequest(): int
+    {
+        $query_params = $this->http->request()->getQueryParams(); // aka $_GET
+        $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
+        $field_ids = $query_params[$name] ?? []; // array of field ids
+        return (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+    }
+
+    private function saveFieldIdsInRequest(): void
+    {
+        $field_id = $this->getFieldIdFromRequest();
+
+        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $field_id);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function getFieldFromRequest(): ilMMItemFacadeInterface
+    {
+        global $DIC;
+        $field_id = $this->getFieldIdFromRequest();
+
+        return $this->repository->getItemFacade($DIC->globalScreen()->identification()->fromSerializedIdentification($field_id));
+        //return $this->facade->fieldFactory()->findById($field_id); // get field from id from the factory
     }
 
     protected function cancel(): void
