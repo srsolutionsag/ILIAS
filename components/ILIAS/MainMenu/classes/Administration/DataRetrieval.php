@@ -9,7 +9,6 @@ use ilMMAbstractItemGUI;
 use ilMMItemRepository;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
 
-
 /**
  *
  */

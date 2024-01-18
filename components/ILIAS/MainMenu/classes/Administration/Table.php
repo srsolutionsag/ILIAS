@@ -22,7 +22,8 @@ class Table
     protected array $components = [];
 
     public function __construct(
-        private \ilMMTopItemGUI $calling_gui, ilMMItemRepository $item_repository,
+        private \ilMMTopItemGUI $calling_gui,
+        ilMMItemRepository $item_repository,
     ) {
         global $DIC;
         $this->ui_factory = $DIC['ui.factory'];
@@ -104,7 +105,8 @@ class Table
     {
         return new URI(
             ILIAS_HTTP_PATH . "/" . $this->ctrl->getLinkTarget(
-                $this->calling_gui, $command
+                $this->calling_gui,
+                $command
             )
         );
     }
