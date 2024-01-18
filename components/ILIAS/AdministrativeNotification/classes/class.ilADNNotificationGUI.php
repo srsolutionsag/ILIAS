@@ -41,7 +41,7 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
     public function __construct(ilADNTabHandling $tab_handling)
     {
         parent::__construct($tab_handling);
-
+        $this->table = new Table($this);
     }
 
     protected function dispatchCommand($cmd): string
@@ -57,32 +57,16 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
             case self::CMD_CREATE:
                 return $this->create();
             case self::CMD_EDIT:
-                $field = $this->getFieldFromRequest();
-                if ($field === null) {
-                    throw new ilException("Field not found");
-                }
                 return $this->edit();
             case self::CMD_DUPLICATE:
-                $field = $this->getFieldFromRequest();
-                if ($field === null) {
-                    throw new ilException("Field not found");
-                }
                 $this->duplicate();
                 break;
             case self::CMD_UPDATE:
                 return $this->update();
             case self::CMD_DELETE:
-                $field = $this->getFieldFromRequest();
-                if ($field === null) {
-                    throw new ilException("Field not found");
-                }
                 $this->delete();
                 break;
             case self::CMD_RESET:
-                $field = $this->getFieldFromRequest();
-                if ($field === null) {
-                    throw new ilException("Field not found");
-                }
                 $this->reset();
                 break;
             case self::CMD_DEFAULT:
@@ -103,22 +87,7 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
             );
             $this->toolbar->addComponent($btn_add_msg);
         }
-        return (new \ILIAS\AdministrativeNotification\Table($this))->getHTML();
-    }
-
-    protected function getFieldIdFromRequest(): int
-    {
-        $query_params = $this->http->request()->getQueryParams(); // aka $_GET
-        $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
-        $field_ids = $query_params[$name] ?? []; // array of field ids
-        return (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
-    }
-
-    private function getFieldFromRequest(): ActiveRecord
-    {
-        $field_id = $this->getFieldIdFromRequest();
-
-        return ilADNNotification::findOrFail($field_id); // get field from id
+        return $this->table->getHTML();
     }
 
     protected function add(): string
@@ -200,14 +169,23 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
     /** @noinspection PhpIncompatibleReturnTypeInspection */
     protected function getNotificationFromRequest(): ilADNNotification
     {
-        if (isset($this->http->request()->getParsedBody()[self::IDENTIFIER])) {
+        /*if (isset($this->http->request()->getParsedBody()[self::IDENTIFIER])) {
             $identifier = $this->http->request()->getParsedBody()[self::IDENTIFIER];
         } elseif (isset($this->http->request()->getParsedBody()['interruptive_items'][0])) {
             $identifier = $this->http->request()->getParsedBody()['interruptive_items'][0];
         } else {
             $identifier = $this->http->request()->getQueryParams()[self::IDENTIFIER] ?? null;
         }
-
         return ilADNNotification::findOrFail($identifier);
+        */
+
+        $query_params = $this->http->request()->getQueryParams(); // aka $_GET
+        $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
+        $field_ids = $query_params[$name] ?? []; // array of field ids
+        $field_id = (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+
+        return ilADNNotification::findOrFail($field_id);
     }
+
+
 }
