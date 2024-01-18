@@ -80,18 +80,23 @@ class Table
     {
         return [
             'edit' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt("edit"),
+                $this->lng->txt(\ilMMTopItemGUI::CMD_EDIT),
                 $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_EDIT)),
                 $this->id_token
             ),
             'translate' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt("translate"),
-                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_TRANSLATE)),
+                $this->lng->txt(\ilMMTopItemGUI::CMD_TRANSLATE),
+                $this->url_builder->withURI($this->getURI(\ilMMItemTranslationGUI::CMD_DEFAULT)),
                 $this->id_token
             ),
-            'move' => $this->ui_factory->table()->action()->standard(
-                $this->lng->txt("move"),
-                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_MOVE)),
+            'delete' => $this->ui_factory->table()->action()->standard(
+                $this->lng->txt(\ilMMTopItemGUI::CMD_DELETE),
+                $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_DELETE)),
+                $this->id_token
+            ),
+            'move' => $this->ui_factory->table()->action()->single(
+                $this->lng->txt(\ilMMTopItemGUI::CMD_MOVE . '_to_item'),
+                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_SELECT_PARENT)),
                 $this->id_token
             )
         ];
