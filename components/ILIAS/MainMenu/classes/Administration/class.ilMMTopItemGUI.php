@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
 use ILIAS\DI\Container;
+use ILIAS\MainMenu\Administration\Table;
 use ILIAS\UI\Component\Input\Container\Form\Standard;
 
 /**
@@ -47,6 +48,16 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
     public const CMD_UPLOAD = 'upload';
     public const CMD_SELECT_PARENT = 'selectParent';
     public const CMD_MOVE = 'move';
+    protected Table $table;
+
+    public function __construct(ilMMTabHandling $tab_handling)
+    {
+        parent::__construct($tab_handling);
+        $this->table = new Table(
+            $this,
+            new ilMMItemRepository()
+        );
+    }
 
     private function dispatchCommand(string $cmd): string
     {
@@ -190,8 +201,9 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
         // TABLE
         $table = new ilMMTopItemTableGUI($this, new ilMMItemRepository(), $this->access);
         $table->setShowRowsSelector(false);
+        //return $table->getHTML();
 
-        return $table->getHTML();
+        return $this->table->getHTML();
     }
 
     protected function cancel(): void

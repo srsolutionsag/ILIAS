@@ -53,7 +53,7 @@ class Table
         $query_params_namespace = ['msg', 'notifications'];
         [$url_builder, $this->id_token] = $url_builder->acquireParameters(
             $query_params_namespace,
-            "row_id"
+            'row_id'
         );
 
         return $url_builder;

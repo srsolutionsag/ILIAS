@@ -5,13 +5,14 @@ namespace ILIAS\MainMenu\Administration;
 use ILIAS\UI\URLBuilder;
 use ILIAS\Data\URI;
 use ILIAS\UI\URLBuilderToken;
+use ilMMItemRepository;
 
 /**
  *
  */
 class Table
 {
-    /*private \ILIAS\UI\Factory $ui_factory;
+    private \ILIAS\UI\Factory $ui_factory;
     private \ILIAS\UI\Renderer $ui_renderer;
     private \ilCtrlInterface $ctrl;
     private \ilLanguage $lng;
@@ -21,8 +22,7 @@ class Table
     protected array $components = [];
 
     public function __construct(
-        private \ilMMTopItemGUI $calling_gui,
-        private \ilMMItemFacade $facade
+        private \ilMMTopItemGUI $calling_gui, ilMMItemRepository $item_repository,
     ) {
         global $DIC;
         $this->ui_factory = $DIC['ui.factory'];
@@ -34,7 +34,7 @@ class Table
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrieval(
-            $facade
+            $item_repository
         );
 
         $this->components[] = $this->ui_factory->table()->data(
@@ -49,7 +49,7 @@ class Table
     private function initURIBuilder(): URLBuilder
     {
         $url_builder = new URLBuilder(
-            $this->getURI(\ilBiblFieldFilterGUI::CMD_STANDARD)
+            $this->getURI(\ilMMTopItemGUI::CMD_VIEW_TOP_ITEMS)
         );
 
         // these are the query parameters this instance is controlling
@@ -62,6 +62,7 @@ class Table
         return $url_builder;
     }
 
+
     protected function initColumns(): array
     {
         return [
@@ -69,9 +70,8 @@ class Table
             'active' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_active')),
             'subentries' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_subentries')),
             'css_id' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_css_id')),
-            't<pe' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_type')),
+            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_type')),
             'provider' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_provider'))   ,
-            'filter_type' => $this->ui_factory->table()->column()->text($this->lng->txt('filter_type'))
         ];
     }
 
@@ -95,12 +95,11 @@ class Table
             )
         ];
     }
-*/
+
     /**
      * @description Unfortunately, I have not yet found an easier way to generate this URI. However, it is important
      * that it points to the calling-gui
      */
-    /*
     protected function getURI(string $command): URI
     {
         return new URI(
@@ -124,6 +123,4 @@ class Table
     {
         return $this->id_token;
     }
-    */
-
 }
