@@ -11,7 +11,7 @@ use ilMMItemRepository;
 /**
  *
  */
-class Table
+class TableTopItems
 {
     private \ILIAS\UI\Factory $ui_factory;
     private \ILIAS\UI\Renderer $ui_renderer;
@@ -35,7 +35,7 @@ class Table
         $this->url_builder = $this->initURIBuilder();
         $columns = $this->initColumns();
         $actions = $this->initActions();
-        $data_retrieval = new DataRetrieval(
+        $data_retrieval = new DataRetrievalTopItems(
             $item_repository
         );
 
