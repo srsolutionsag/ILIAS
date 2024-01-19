@@ -19,6 +19,7 @@
 declare(strict_types=1);
 
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
+use ILIAS\MainMenu\Administration\TableSubItems;
 
 /**
  * Class ilMMTopItemGUI
@@ -45,6 +46,17 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
     public const CMD_RESET_FILTER = 'resetFilter';
     public const CMD_RENDER_INTERRUPTIVE = 'render_interruptive_modal';
     public const CMD_CANCEL = 'cancel';
+    protected TableSubItems $table;
+
+    public function __construct(ilMMTabHandling $tab_handling)
+    {
+        parent::__construct($tab_handling);
+        $this->table = new TableSubItems(
+            $this,
+            new ilMMItemRepository(),
+            $this->access
+        );
+    }
 
     private function dispatchCommand(string $cmd): string
     {
@@ -62,6 +74,10 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
                 return $this->create($DIC);
             case self::CMD_EDIT:
                 $this->access->checkAccessAndThrowException('write');
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, ilMMSubItemGUI::CMD_VIEW_SUB_ITEMS, true, self::class);
 
                 return $this->edit($DIC);
@@ -89,10 +105,18 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
                 break;
             case self::CMD_MOVE:
                 $this->access->checkAccessAndThrowException('write');
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->move();
                 break;
             case self::CMD_DELETE:
                 $this->access->checkAccessAndThrowException('write');
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->delete();
                 break;
             case self::CMD_CANCEL:
@@ -135,6 +159,10 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
 
         switch ($next_class) {
             case strtolower(ilMMItemTranslationGUI::class):
+                $field = $this->getFieldFromRequest();
+                if ($field === null) {
+                    throw new ilException("Field not found");
+                }
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_SUB_ITEMS, true, $this->ctrl->getCallHistory()[2][ilCtrlInterface::PARAM_CMD_CLASS] ?? '');
                 $g = new ilMMItemTranslationGUI($this->getMMItemFromRequest(), $this->repository);
                 $this->ctrl->forwardCommand($g);
@@ -239,10 +267,37 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
         }
 
         // TABLE
-        $table = new ilMMSubItemTableGUI($this, $this->repository, $this->access);
-        $table->setShowRowsSelector(false);
+        //$table = new ilMMSubItemTableGUI($this, $this->repository, $this->access);
+        //$table->setShowRowsSelector(false);
 
-        return $table->getHTML();
+        return $this->table->getHTML();
+    }
+
+    protected function getFieldIdFromRequest(): int
+    {
+        $query_params = $this->http->request()->getQueryParams(); // aka $_GET
+        $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
+        $field_ids = $query_params[$name] ?? []; // array of field ids
+        return (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+    }
+
+    private function saveFieldIdsInRequest(): void
+    {
+        $field_id = $this->getFieldIdFromRequest();
+
+        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $field_id);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function getFieldFromRequest(): ilMMItemFacadeInterface
+    {
+        global $DIC;
+        $field_id = $this->getFieldIdFromRequest();
+
+        return $this->repository->getItemFacade($DIC->globalScreen()->identification()->fromSerializedIdentification($field_id));
+        //return $this->facade->fieldFactory()->findById($field_id); // get field from id from the factory
     }
 
     private function delete(): void

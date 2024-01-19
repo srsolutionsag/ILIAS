@@ -55,7 +55,8 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
         parent::__construct($tab_handling);
         $this->table = new TableTopItems(
             $this,
-            new ilMMItemRepository()
+            new ilMMItemRepository(),
+            $this->access
         );
     }
 

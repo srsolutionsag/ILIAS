@@ -7,6 +7,7 @@ use ILIAS\Data\URI;
 use ILIAS\UI\URLBuilderToken;
 use ilMMAbstractItemGUI;
 use ilMMItemRepository;
+use ilObjMainMenuAccess;
 
 /**
  *
@@ -25,12 +26,14 @@ class TableTopItems
     public function __construct(
         private \ilMMTopItemGUI $calling_gui,
         ilMMItemRepository $item_repository,
+        ilObjMainMenuAccess $access
     ) {
         global $DIC;
         $this->ui_factory = $DIC['ui.factory'];
         $this->ui_renderer = $DIC['ui.renderer'];
         $this->ctrl = $DIC['ilCtrl'];
         $this->lng = $DIC['lng'];
+        $this->access = $access;
 
         $this->url_builder = $this->initURIBuilder();
         $columns = $this->initColumns();
@@ -68,7 +71,7 @@ class TableTopItems
     protected function initColumns(): array
     {
         return [
-            'title' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_title')),
+            //'title' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_title')),
             'active' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_active')),
             'subentries' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_subentries')),
             'css_id' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_css_id')),
@@ -79,28 +82,31 @@ class TableTopItems
 
     protected function initActions(): array
     {
-        return [
-            'edit' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMTopItemGUI::CMD_EDIT),
-                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_EDIT)),
-                $this->id_token
-            ),
-            'translate' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMTopItemGUI::CMD_TRANSLATE),
-                $this->url_builder->withURI($this->getURI(\ilMMItemTranslationGUI::CMD_DEFAULT)),
-                $this->id_token
-            ),
-            'delete' => $this->ui_factory->table()->action()->standard(
-                $this->lng->txt(\ilMMTopItemGUI::CMD_DELETE),
-                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_DELETE)),
-                $this->id_token
-            ),
-            'move' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMTopItemGUI::CMD_MOVE . '_to_item'),
-                $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_SELECT_PARENT)),
-                $this->id_token
-            )
-        ];
+        if ($this->access->hasUserPermissionTo('write')) {
+            return [
+                'edit' => $this->ui_factory->table()->action()->single(
+                    $this->lng->txt(\ilMMTopItemGUI::CMD_EDIT),
+                    $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_EDIT)),
+                    $this->id_token
+                ),
+                'translate' => $this->ui_factory->table()->action()->single(
+                    $this->lng->txt(\ilMMTopItemGUI::CMD_TRANSLATE),
+                    $this->url_builder->withURI($this->getURI(\ilMMItemTranslationGUI::CMD_DEFAULT)),
+                    $this->id_token
+                ),
+                'delete' => $this->ui_factory->table()->action()->standard(
+                    $this->lng->txt(\ilMMTopItemGUI::CMD_DELETE),
+                    $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_DELETE)),
+                    $this->id_token
+                ),
+                'move' => $this->ui_factory->table()->action()->single(
+                    $this->lng->txt(\ilMMTopItemGUI::CMD_MOVE . '_to_item'),
+                    $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_SELECT_PARENT)),
+                    $this->id_token
+                )
+            ];
+        }
+        return [];
     }
 
     /**
