@@ -21,6 +21,8 @@ class TableSubItems
     private URLBuilder $url_builder;
     private URLBuilderToken $id_token;
 
+    private ilObjMainMenuAccess $access;
+
     protected array $components = [];
 
     public function __construct(
@@ -39,11 +41,11 @@ class TableSubItems
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrievalSubItems(
-            $item_repository
+            $item_repository, $access
         );
 
         $this->components[] = $this->ui_factory->table()->data(
-            $this->lng->txt('sub_item'),
+            $this->lng->txt(''),
             $columns,
             $data_retrieval
         )->withActions($actions)->withRequest(
@@ -82,7 +84,6 @@ class TableSubItems
 
     protected function initActions(): array
     {
-        if ($this->access->hasUserPermissionTo('write')) {
             return [
             'edit' => $this->ui_factory->table()->action()->single(
                 $this->lng->txt(\ilMMSubItemGUI::CMD_EDIT),
@@ -105,8 +106,6 @@ class TableSubItems
                 $this->id_token
             )
             ];
-        }
-        return [];
     }
 
     /**

@@ -8,6 +8,7 @@ use ILIAS\UI\Component\Table as I;
 use ilMMAbstractItemGUI;
 use ilMMItemRepository;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
+use ilObjMainMenuAccess;
 
 /**
  *
@@ -17,13 +18,15 @@ class DataRetrievalTopItems implements I\DataRetrieval
     use Hasher;
     private \ilLanguage $lng;
     private ilMMItemRepository $item_repository;
-
+    private ilObjMainMenuAccess $access;
 
     public function __construct(
-        ilMMItemRepository $item_repository
+        ilMMItemRepository $item_repository,
+        ilObjMainMenuAccess $access
     ) {
         global $DIC;
         $this->lng = $DIC['lng'];
+        $this->access = $access;
         $this->item_repository = $item_repository;
     }
 
@@ -48,7 +51,11 @@ class DataRetrievalTopItems implements I\DataRetrieval
             $record['css_id'] = "mm_" . $item_facade->identification()->getInternalIdentifier();
             $record['provider'] = $item_facade->getProviderNameForPresentation();
             $row_id = (string) $record['id'];
-            yield $row_builder->buildDataRow($row_id, $record);
+            yield $row_builder->buildDataRow($row_id, $record)
+                ->withDisabledAction("edit",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("translate",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("delete",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("move",!$this->access->hasUserPermissionTo('write'));
         }
     }
 

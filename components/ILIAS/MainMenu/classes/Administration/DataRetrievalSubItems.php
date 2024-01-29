@@ -9,6 +9,7 @@ use ILIAS\UI\Component\Table as I;
 use ilMMAbstractItemGUI;
 use ilMMItemRepository;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
+use ilObjMainMenuAccess;
 
 /**
  *
@@ -18,13 +19,15 @@ class DataRetrievalSubItems implements I\DataRetrieval
     use Hasher;
     private \ilLanguage $lng;
     private ilMMItemRepository $item_repository;
-
+    private ilObjMainMenuAccess $access;
 
     public function __construct(
-        ilMMItemRepository $item_repository
+        ilMMItemRepository $item_repository,
+        ilObjMainMenuAccess $access
     ) {
         global $DIC;
         $this->lng = $DIC['lng'];
+        $this->access = $access;
         $this->item_repository = $item_repository;
     }
 
@@ -51,7 +54,6 @@ class DataRetrievalSubItems implements I\DataRetrieval
             $record['status'] = $item_facade->getStatus();
             $record['provider'] = $item_facade->getProviderNameForPresentation();
             $row_id = (string) $record['id'];
-            yield $row_builder->buildDataRow($row_id, $record);
 
             if ($item_facade->isChild()) {
                 if (!$parent_identification_string ||
@@ -66,6 +68,12 @@ class DataRetrievalSubItems implements I\DataRetrieval
                     $record['parent_id'] = $this->hash($current_parent_item->getProviderIdentification()->serialize());
                 }
             }
+
+            yield $row_builder->buildDataRow($row_id, $record)
+                ->withDisabledAction("edit",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("translate",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("delete",!$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("move",!$this->access->hasUserPermissionTo('write'));
         }
     }
 

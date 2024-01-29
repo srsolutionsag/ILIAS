@@ -20,6 +20,7 @@ class TableTopItems
     private \ilLanguage $lng;
     private URLBuilder $url_builder;
     private URLBuilderToken $id_token;
+    private ilObjMainMenuAccess $access;
 
     protected array $components = [];
 
@@ -39,11 +40,11 @@ class TableTopItems
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrievalTopItems(
-            $item_repository
+            $item_repository, $access
         );
 
         $this->components[] = $this->ui_factory->table()->data(
-            $this->lng->txt('top_item'),
+            $this->lng->txt(''),
             $columns,
             $data_retrieval
         )->withActions($actions)->withRequest(
@@ -82,8 +83,7 @@ class TableTopItems
 
     protected function initActions(): array
     {
-        if ($this->access->hasUserPermissionTo('write')) {
-            return [
+        return [
                 'edit' => $this->ui_factory->table()->action()->single(
                     $this->lng->txt(\ilMMTopItemGUI::CMD_EDIT),
                     $this->url_builder->withURI($this->getURI(\ilMMTopItemGUI::CMD_EDIT)),
@@ -105,8 +105,6 @@ class TableTopItems
                     $this->id_token
                 )
             ];
-        }
-        return [];
     }
 
     /**
