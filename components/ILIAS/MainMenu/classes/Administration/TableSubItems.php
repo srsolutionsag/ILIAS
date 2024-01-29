@@ -74,12 +74,12 @@ class TableSubItems
     protected function initColumns(): array
     {
         return [
-            //'parent' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_parent')),
-            //'title' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_title')),
-            //'type' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_type')),
-            'active' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_active')),
-            'status' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_status')),
-            'provider' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_provider')),
+            'parent' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_parent'))->withIsSortable(false),
+            'title' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_title'))->withIsSortable(false),
+            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_type'))->withIsSortable(false),
+            'active' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_active'))->withIsSortable(false),
+            'status' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_status'))->withIsSortable(false),
+            'provider' => $this->ui_factory->table()->column()->text($this->lng->txt('sub_provider'))->withIsSortable(false),
         ];
     }
 

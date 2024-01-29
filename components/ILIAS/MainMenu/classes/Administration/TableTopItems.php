@@ -73,12 +73,12 @@ class TableTopItems
     protected function initColumns(): array
     {
         return [
-            //'title' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_title')),
-            'active' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_active')),
-            'subentries' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_subentries')),
-            'css_id' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_css_id')),
-            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_type')),
-            'provider' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_provider'))   ,
+            'title' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_title'))->withIsSortable(false),
+            'active' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_active'))->withIsSortable(false),
+            'subentries' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_subentries'))->withIsSortable(false),
+            'css_id' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_css_id'))->withIsSortable(false),
+            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_type'))->withIsSortable(false),
+            'provider' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_provider'))->withIsSortable(false),
         ];
     }
 

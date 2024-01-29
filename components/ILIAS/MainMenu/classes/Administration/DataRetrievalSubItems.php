@@ -6,7 +6,6 @@ use ILIAS\Data\Order;
 use ILIAS\Data\Range;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
 use ILIAS\UI\Component\Table as I;
-use ilMMAbstractItemGUI;
 use ilMMItemRepository;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
 use ilObjMainMenuAccess;
@@ -20,6 +19,13 @@ class DataRetrievalSubItems implements I\DataRetrieval
     private \ilLanguage $lng;
     private ilMMItemRepository $item_repository;
     private ilObjMainMenuAccess $access;
+
+    public const IDENTIFIER = 'identifier';
+    public const F_TABLE_SHOW_INACTIVE = 'table_show_inactive';
+    public const F_TABLE_ENTRY_STATUS = 'entry_status';
+    public const F_TABLE_ALL_VALUE = 1;
+    public const F_TABLE_ONLY_ACTIVE_VALUE = 2;
+    public const F_TABLE_ONLY_INACTIVE_VALUE = 3;
 
     public function __construct(
         ilMMItemRepository $item_repository,
@@ -49,7 +55,7 @@ class DataRetrievalSubItems implements I\DataRetrieval
             $record['id'] = $this->hash($item_facade->getId());
             $record['native_id'] = $item_facade->getId();
             $record['title'] = $item_facade->getDefaultTitle();
-            //$record['parent'] = $this->$item_facade;
+            $record['parent'] = $this->hash($item_facade->getParentIdentificationString());
             $record['type'] = $item_facade->getTypeForPresentation();
             $record['status'] = $item_facade->getStatus();
             $record['provider'] = $item_facade->getProviderNameForPresentation();
@@ -77,9 +83,41 @@ class DataRetrievalSubItems implements I\DataRetrieval
         }
     }
 
+    private function resolveData(): array
+    {
+        global $DIC;
+        $sub_items_for_table = $this->item_repository->getSubItemsForTable();
+
+        // populate with facade
+        array_walk($sub_items_for_table, function (&$item) use ($DIC) {
+            $item_ident = $DIC->globalScreen()->identification()->fromSerializedIdentification($item['identification']);
+            $item_facade = $this->item_repository->repository()->getItemFacade($item_ident);
+            $item['facade'] = $item_facade;
+        });
+
+        // filter active/inactive
+        array_filter($sub_items_for_table, function ($item_facade) {
+            if (!isset($this->filter[self::F_TABLE_ENTRY_STATUS])) {
+                return true;
+            }
+            if ($this->filter[self::F_TABLE_ENTRY_STATUS] !== self::F_TABLE_ALL_VALUE) {
+                return true;
+            }
+            if ($this->filter[self::F_TABLE_ENTRY_STATUS] == self::F_TABLE_ONLY_ACTIVE_VALUE && !$item_facade->isActivated()) {
+                return false;
+            }
+            if ($this->filter[self::F_TABLE_ENTRY_STATUS] == self::F_TABLE_ONLY_INACTIVE_VALUE && $item_facade->isActivated()) {
+                return false;
+            }
+            return true;
+        });
+
+        return $sub_items_for_table;
+    }
+
     protected function getRecords(Order $order): array
     {
-        $records = $this->item_repository->getSubItemsForTable();
+        $records = $this->resolveData();
         [$order_field, $order_direction] = $order->join([], fn($ret, $key, $value) => [$key, $value]);
         usort($records, fn($a, $b) => $a[$order_field] <=> $b[$order_field]);
         if ($order_direction === 'DESC') {
