@@ -40,7 +40,8 @@ class TableTopItems
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrievalTopItems(
-            $item_repository, $access
+            $item_repository,
+            $access
         );
 
         $this->components[] = $this->ui_factory->table()->data(

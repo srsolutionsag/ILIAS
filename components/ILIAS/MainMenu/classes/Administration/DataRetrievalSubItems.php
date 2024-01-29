@@ -70,10 +70,10 @@ class DataRetrievalSubItems implements I\DataRetrieval
             }
 
             yield $row_builder->buildDataRow($row_id, $record)
-                ->withDisabledAction("edit",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("translate",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("delete",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("move",!$this->access->hasUserPermissionTo('write'));
+                ->withDisabledAction("edit", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("translate", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("delete", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("move", !$this->access->hasUserPermissionTo('write'));
         }
     }
 

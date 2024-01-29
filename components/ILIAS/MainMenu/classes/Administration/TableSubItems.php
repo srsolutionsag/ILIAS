@@ -41,7 +41,8 @@ class TableSubItems
         $columns = $this->initColumns();
         $actions = $this->initActions();
         $data_retrieval = new DataRetrievalSubItems(
-            $item_repository, $access
+            $item_repository,
+            $access
         );
 
         $this->components[] = $this->ui_factory->table()->data(
@@ -84,28 +85,28 @@ class TableSubItems
 
     protected function initActions(): array
     {
-            return [
-            'edit' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMSubItemGUI::CMD_EDIT),
-                $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_EDIT)),
-                $this->id_token
-            ),
-            'translate' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMSubItemGUI::CMD_TRANSLATE),
-                $this->url_builder->withURI($this->getURI(\ilMMItemTranslationGUI::CMD_DEFAULT)),
-                $this->id_token
-            ),
-            'delete' => $this->ui_factory->table()->action()->standard(
-                $this->lng->txt(\ilMMSubItemGUI::CMD_DELETE),
-                $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_DELETE)),
-                $this->id_token
-            ),
-            'move' => $this->ui_factory->table()->action()->single(
-                $this->lng->txt(\ilMMSubItemGUI::CMD_MOVE . '_to_top_item'),
-                $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_VIEW_SUB_ITEMS)),
-                $this->id_token
-            )
-            ];
+        return [
+        'edit' => $this->ui_factory->table()->action()->single(
+            $this->lng->txt(\ilMMSubItemGUI::CMD_EDIT),
+            $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_EDIT)),
+            $this->id_token
+        ),
+        'translate' => $this->ui_factory->table()->action()->single(
+            $this->lng->txt(\ilMMSubItemGUI::CMD_TRANSLATE),
+            $this->url_builder->withURI($this->getURI(\ilMMItemTranslationGUI::CMD_DEFAULT)),
+            $this->id_token
+        ),
+        'delete' => $this->ui_factory->table()->action()->standard(
+            $this->lng->txt(\ilMMSubItemGUI::CMD_DELETE),
+            $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_DELETE)),
+            $this->id_token
+        ),
+        'move' => $this->ui_factory->table()->action()->single(
+            $this->lng->txt(\ilMMSubItemGUI::CMD_MOVE . '_to_top_item'),
+            $this->url_builder->withURI($this->getURI(\ilMMSubItemGUI::CMD_VIEW_SUB_ITEMS)),
+            $this->id_token
+        )
+        ];
     }
 
     /**

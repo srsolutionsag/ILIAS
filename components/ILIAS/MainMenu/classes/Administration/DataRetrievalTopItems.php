@@ -52,10 +52,10 @@ class DataRetrievalTopItems implements I\DataRetrieval
             $record['provider'] = $item_facade->getProviderNameForPresentation();
             $row_id = (string) $record['id'];
             yield $row_builder->buildDataRow($row_id, $record)
-                ->withDisabledAction("edit",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("translate",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("delete",!$this->access->hasUserPermissionTo('write'))
-                ->withDisabledAction("move",!$this->access->hasUserPermissionTo('write'));
+                ->withDisabledAction("edit", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("translate", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("delete", !$this->access->hasUserPermissionTo('write'))
+                ->withDisabledAction("move", !$this->access->hasUserPermissionTo('write'));
         }
     }
 
