@@ -21,7 +21,6 @@ class DataRetrievalSubItems implements I\DataRetrieval
     private ilObjMainMenuAccess $access;
 
     public const IDENTIFIER = 'identifier';
-    public const F_TABLE_SHOW_INACTIVE = 'table_show_inactive';
     public const F_TABLE_ENTRY_STATUS = 'entry_status';
     public const F_TABLE_ALL_VALUE = 1;
     public const F_TABLE_ONLY_ACTIVE_VALUE = 2;
@@ -51,16 +50,6 @@ class DataRetrievalSubItems implements I\DataRetrieval
         foreach ($records as $idx => $record) {
             $item_ident = $DIC->globalScreen()->identification()->fromSerializedIdentification($record['identification']);
             $item_facade = $this->item_repository->repository()->getItemFacade($item_ident);
-            $record['identifier'] = $record['identification'];
-            $record['id'] = $this->hash($item_facade->getId());
-            $record['native_id'] = $item_facade->getId();
-            $record['title'] = $item_facade->getDefaultTitle();
-            $record['parent'] = $this->hash($item_facade->getParentIdentificationString());
-            $record['type'] = $item_facade->getTypeForPresentation();
-            $record['status'] = $item_facade->getStatus();
-            $record['provider'] = $item_facade->getProviderNameForPresentation();
-            $row_id = (string) $record['id'];
-
             if ($item_facade->isChild()) {
                 if (!$parent_identification_string ||
                     $parent_identification_string !== $item_facade->getParentIdentificationString()) {
@@ -74,6 +63,15 @@ class DataRetrievalSubItems implements I\DataRetrieval
                     $record['parent_id'] = $this->hash($current_parent_item->getProviderIdentification()->serialize());
                 }
             }
+            $record['identifier'] = $record['identification'];
+            $record['id'] = $this->hash($item_facade->getId());
+            $record['native_id'] = $item_facade->getId();
+            $record['title'] = $item_facade->getDefaultTitle();
+            $record['parent'] = $current_parent_item instanceof hasTitle ? $current_parent_item->getTitle() : "-";
+            $record['type'] = $current_parent_item->getTitle();
+            $record['status'] = $item_facade->getStatus();
+            $record['provider'] = $item_facade->getProviderNameForPresentation();
+            $row_id = (string) $record['id'];
 
             yield $row_builder->buildDataRow($row_id, $record)
                 ->withDisabledAction("edit", !$this->access->hasUserPermissionTo('write'))
