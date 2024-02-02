@@ -74,7 +74,7 @@ class TableTopItems
     {
         return [
             //'title' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_title'))->withIsSortable(false),
-            'active' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_active'))->withIsSortable(false),
+            'active' => $this->ui_factory->table()->column()->status($this->lng->txt('topitem_active'))->withIsSortable(false),
             'subentries' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_subentries'))->withIsSortable(false),
             'css_id' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_css_id'))->withIsSortable(false),
             'type' => $this->ui_factory->table()->column()->text($this->lng->txt('topitem_type'))->withIsSortable(false),

@@ -19,6 +19,8 @@ class DataRetrievalTopItems implements I\DataRetrieval
     private \ilLanguage $lng;
     private ilMMItemRepository $item_repository;
     private ilObjMainMenuAccess $access;
+    private \ILIAS\UI\Renderer $ui_renderer;
+    private \ILIAS\UI\Factory $ui_factory;
 
     public function __construct(
         ilMMItemRepository $item_repository,
@@ -28,6 +30,8 @@ class DataRetrievalTopItems implements I\DataRetrieval
         $this->lng = $DIC['lng'];
         $this->access = $access;
         $this->item_repository = $item_repository;
+        $this->ui_renderer = $DIC->ui()->renderer();
+        $this->ui_factory = $DIC->ui()->factory();
     }
 
     public function getRows(
@@ -51,6 +55,15 @@ class DataRetrievalTopItems implements I\DataRetrieval
             $record['css_id'] = "mm_" . $item_facade->identification()->getInternalIdentifier();
             $record['provider'] = $item_facade->getProviderNameForPresentation();
             $row_id = (string) $record['id'];
+
+            $icon_active = $this->ui_renderer->render($this->ui_factory->symbol()->icon()->custom(
+                $item_facade->isActivated() ? \ilUtil::getImagePath('standard/icon_ok.svg') : \ilUtil::getImagePath('standard/icon_not_ok.svg'),
+                $item_facade->isActivated() ? $this->lng->txt('active') : $this->lng->txt('inactive')
+            ));
+
+            $record['active'] = $icon_active;
+
+
             yield $row_builder->buildDataRow($row_id, $record)
                 ->withDisabledAction("edit", !$this->access->hasUserPermissionTo('write'))
                 ->withDisabledAction("translate", !$this->access->hasUserPermissionTo('write'))
