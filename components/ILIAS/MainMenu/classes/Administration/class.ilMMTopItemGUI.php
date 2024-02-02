@@ -170,7 +170,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
                     throw new ilException("Field not found");
                 }
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_TOP_ITEMS, true);
-                $g = new ilMMItemTranslationGUI($this->getMMItemFromRequest(), $this->repository);
+                $g = new ilMMItemTranslationGUI($this->getFieldFromRequest(), $this->repository);
                 $this->ctrl->forwardCommand($g);
                 break;
             default:
@@ -224,19 +224,21 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
         return $this->table->getHTML();
     }
 
-    protected function getFieldIdFromRequest(): int
+    protected function getFieldIdFromRequest(): string
     {
         $query_params = $this->http->request()->getQueryParams(); // aka $_GET
         $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
         $field_ids = $query_params[$name] ?? []; // array of field ids
-        return (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+        $field_id = (string) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+
+        return $this->unhash($field_id);
     }
 
     private function saveFieldIdsInRequest(): void
     {
         $field_id = $this->getFieldIdFromRequest();
 
-        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $field_id);
+        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $this->hash($field_id));
     }
 
     /**
@@ -295,7 +297,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
      */
     private function edit(Container $DIC): string
     {
-        $f = new ilMMTopItemFormGUI($DIC->ctrl(), $DIC->ui()->factory(), $DIC->ui()->renderer(), $this->lng, $DIC->http(), $this->getMMItemFromRequest(), $this->repository);
+        $f = new ilMMTopItemFormGUI($DIC->ctrl(), $DIC->ui()->factory(), $DIC->ui()->renderer(), $this->lng, $DIC->http(), $this->getFieldFromRequest(), $this->repository);
 
         return $f->getHTML();
     }
@@ -307,7 +309,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
      */
     private function update(Container $DIC): string
     {
-        $item = $this->getMMItemFromRequest();
+        $item = $this->getFieldFromRequest();
         if ($item->isEditable()) {
             $f = new ilMMTopItemFormGUI($DIC->ctrl(), $DIC->ui()->factory(), $DIC->ui()->renderer(), $this->lng, $DIC->http(), $item, $this->repository);
             if ($f->save()) {
@@ -322,7 +324,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
 
     private function delete(): void
     {
-        $item = $this->getMMItemFromRequest();
+        $item = $this->getFieldFromRequest();
         if ($item->isDeletable()) {
             $this->repository->deleteItem($item);
         }
@@ -355,7 +357,7 @@ class ilMMTopItemGUI extends ilMMAbstractItemGUI
         $form = $this->getMoveForm();
         $form = $form->withRequest($this->http->request());
 
-        $item = $this->getMMItemFromRequest();
+        $item = $this->getFieldFromRequest();
 
         $data = $form->getData();
         if ($item->isInterchangeable() && isset($data[0])) {
