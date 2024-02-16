@@ -2773,6 +2773,29 @@
 			</iframe>
 		</xsl:when>
 
+		<!-- Vimeo -->
+		<xsl:when test = "substring-after($data,'vimeo.com') != ''">
+			<xsl:if test="$width = '' and $height = ''">
+				<xsl:attribute name="class">embed-responsive embed-responsive-16by9</xsl:attribute>
+			</xsl:if>
+			<!-- iframe instead of object tag, see bug #21657 -->
+			<iframe frameborder="0" allowfullscreen="1">
+				<xsl:if test="$width != ''">
+					<xsl:attribute name="width"><xsl:value-of select="$width"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$height != ''">
+					<xsl:attribute name="height"><xsl:value-of select="$height"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$width = '' and $height = ''">
+					<xsl:attribute name="class">embed-responsive-item</xsl:attribute>
+				</xsl:if>
+				<xsl:attribute name="src">
+					<xsl:value-of select="$httpprefix"/>//player.vimeo.com/video/<xsl:value-of select="//MediaObject[@Id=$cmobid]/MediaItem[@Purpose=$curPurpose]/Parameter[@Name='id']/@Value" />
+				</xsl:attribute>
+				<xsl:comment>Comment to have separate iframe ending tag</xsl:comment>
+			</iframe>
+		</xsl:when>
+
 		<!-- mp3 (mediaelement.js) -->
 		<xsl:when test = "$type='audio/mpeg' and (substring-before($data,'.mp3') != '' or substring-before($data,'.MP3') != '')">
 			<audio class="ilPageAudio" height="40" preload="meta">
