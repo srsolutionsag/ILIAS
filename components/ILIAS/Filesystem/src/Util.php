@@ -18,7 +18,7 @@
 
 namespace ILIAS\Filesystem;
 
-use ILIAS\Refinery\String\UTFNormal;
+use ILIAS\Refinery\FileName\FileName;
 
 /**
  * This Util class is a collection of static helper methods to provide file system related functionality.
@@ -28,26 +28,11 @@ use ILIAS\Refinery\String\UTFNormal;
  */
 class Util
 {
-    private const FUNKY_WHITESPACES = '#\p{C}+#u';
-    private const ZERO_JOINER = '/\\x{00ad}|\\x{0083}|\\x{200c}|\\x{200d}|\\x{2062}|\\x{2063}/iu';
-    private const SOFT_HYPHEN = "/\\x{00a0}/iu";
-    private const CONTROL_CHARACTER = "/\\x{00a0}/iu";
-
+    /**
+     * @deprecated Use the \ILIAS\Refinery\FileName\FileName transformation instead
+     */
     public static function sanitizeFileName(string $filename): string
     {
-        // remove control characters
-        $filename = preg_replace('/[\x00-\x1F\x7F]/u', '', $filename);
-        $filename = preg_replace(self::CONTROL_CHARACTER, '', $filename);
-
-        // remove other characters
-        $filename = preg_replace(self::FUNKY_WHITESPACES, '', $filename);
-        $filename = preg_replace(self::SOFT_HYPHEN, ' ', $filename);
-        $filename = preg_replace(self::ZERO_JOINER, '', $filename);
-
-        // UTF normalization form C
-        $form_c = (new UTFNormal())->formC();
-        $filename = $form_c->transform($filename);
-
-        return $filename;
+        return (new FileName())->transform($filename);
     }
 }

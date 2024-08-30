@@ -24,6 +24,7 @@ use ILIAS\Refinery\In;
 use ILIAS\Refinery\To;
 use ILIAS\Refinery\Random\Group as RandomGroup;
 use ILIAS\Language\Language;
+use ILIAS\Refinery\FileName\FileName;
 
 class Factory
 {
@@ -155,6 +156,11 @@ class Factory
     public function encode(): Encode\Group
     {
         return new Encode\Group();
+    }
+
+    public function fileName(): FileName
+    {
+        return new FileName();
     }
 
     /**

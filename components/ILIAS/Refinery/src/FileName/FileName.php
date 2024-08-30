@@ -50,9 +50,7 @@ class FileName implements Transformation
         $from = preg_replace(self::ZERO_JOINER, '', $from);
 
         // UTF normalization form C
-        $form_c = (new UTFNormal())->formC();
-
-        return $form_c->transform($from);
+        return (new UTFNormal())->formC()->transform($from);
     }
 
 }

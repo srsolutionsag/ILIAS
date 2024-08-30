@@ -20,6 +20,7 @@ use ILIAS\ResourceStorage\Policy\FileNamePolicy;
 use ILIAS\ResourceStorage\Policy\FileNamePolicyException;
 use ILIAS\FileUpload\Processor\BlacklistExtensionPreProcessor;
 use ILIAS\ResourceStorage\Policy\WhiteAndBlacklistedFileNamePolicy;
+use ILIAS\Refinery\FileName\FileName;
 
 /**
  * Class ilFileServicesPolicy
@@ -43,13 +44,11 @@ class ilFileServicesPolicy extends WhiteAndBlacklistedFileNamePolicy
     ];
     protected int $file_admin_ref_id;
     protected bool $as_ascii = true;
-    protected ilFileServicesSettings $settings;
     protected ilFileServicesFilenameSanitizer $sanitizer;
     protected ?bool $bypass = null;
 
-    public function __construct(ilFileServicesSettings $settings)
+    public function __construct(protected ilFileServicesSettings $settings)
     {
-        $this->settings = $settings;
         parent::__construct($this->settings->getBlackListedSuffixes(), $this->settings->getWhiteListedSuffixes());
         $this->sanitizer = new ilFileServicesFilenameSanitizer($this->settings);
         $this->as_ascii = $this->settings->isASCIIConvertionEnabled();
@@ -73,7 +72,9 @@ class ilFileServicesPolicy extends WhiteAndBlacklistedFileNamePolicy
             $filename = str_replace($src, $tgt, $filename);
         }
 
-        $ascii_filename = htmlentities($filename, ENT_NOQUOTES, 'UTF-8');
+
+        $ascii_filename = (new FileName())->transform($filename);
+        $ascii_filename = htmlentities((string) $ascii_filename, ENT_NOQUOTES, 'UTF-8');
         $ascii_filename = preg_replace('/\&(.)[^;]*;/', '\\1', $ascii_filename);
         $ascii_filename = preg_replace('/[\x7f-\xff]/', '_', $ascii_filename);
 

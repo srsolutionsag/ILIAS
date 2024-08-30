@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace ILIAS\Filesystem\Security\Sanitizing;
 
 use ILIAS\Filesystem\Util;
+use ILIAS\Refinery\FileName\FileName;
 
 /**
  * Standard implementation of the filename sanitizing interface.
@@ -62,13 +63,13 @@ class FilenameSanitizerImpl implements FilenameSanitizer
      */
     public function sanitize(string $filename): string
     {
-        $filename = Util::sanitizeFileName($filename);
+        $filename = (new FileName())->transform($filename);
 
         if ($this->isClean($filename)) {
             return $filename;
         }
 
-        $pathInfo = pathinfo($filename);
+        $pathInfo = pathinfo((string) $filename);
         $basename = $pathInfo['basename'];
         $parentPath = $pathInfo['dirname'] === '.' ? '' : $pathInfo['dirname'];
 

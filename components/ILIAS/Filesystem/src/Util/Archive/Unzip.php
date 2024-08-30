@@ -25,6 +25,7 @@ use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\ResourceStorage\StorageHandler\StorageHandlerFactory;
 use ILIAS\ResourceStorage\Resource\StorableResource;
 use ILIAS\Filesystem\Util;
+use ILIAS\Refinery\FileName\FileName;
 
 /**
  * @author Fabian Schmid <fabian@sr.solutions>
@@ -38,6 +39,7 @@ class Unzip
     public const DS_UNIX = "/";
     public const DS_WIN = "\\";
     public const BASE_DIR = '.';
+    protected FileName $sanitizer;
     protected \ZipArchive $zip;
     protected bool $error_reading_zip = false;
     protected string $path_to_zip;
@@ -47,6 +49,7 @@ class Unzip
         protected UnzipOptions $options,
         protected FileStream $stream
     ) {
+        $this->sanitizer = new FileName();
         $this->path_to_zip = $this->stream->getMetadata(self::URI);
         $this->zip = new \ZipArchive();
         try {
@@ -158,9 +161,13 @@ class Unzip
     {
         $files = [];
         foreach ($this->getPaths() as $path) {
-            if (substr($path, -1) !== self::DS_UNIX && substr($path, -1) !== self::DS_WIN) {
-                $files[] = $path;
+            if (substr($path, -1) === self::DS_UNIX) {
+                continue;
             }
+            if (substr($path, -1) === self::DS_WIN) {
+                continue;
+            }
+            $files[] = $path;
         }
         sort($files);
         yield from $files;
@@ -207,8 +214,8 @@ class Unzip
             case ZipDirectoryHandling::ENSURE_SINGLE_TOP_DIR:
                 // top directory with same name as the ZIP without suffix
                 $zip_path = $this->stream->getMetadata(self::URI);
-                $sufix = '.' . pathinfo($zip_path, PATHINFO_EXTENSION);
-                $top_directory = basename($zip_path, $sufix);
+                $sufix = '.' . pathinfo((string) $zip_path, PATHINFO_EXTENSION);
+                $top_directory = basename((string) $zip_path, $sufix);
 
                 // first we check if the ZIP contains the top directory
                 $has_top_directory = true;
@@ -222,18 +229,16 @@ class Unzip
                 }
                 break;
             case ZipDirectoryHandling::FLAT_STRUCTURE:
-                if (!is_dir($destination_path)) {
-                    if (!mkdir($destination_path, 0777, true) && !is_dir($destination_path)) {
-                        throw new \RuntimeException(sprintf('Directory "%s" was not created', $destination_path));
-                    }
+                if (!is_dir($destination_path) && (!mkdir($destination_path, 0777, true) && !is_dir($destination_path))) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $destination_path));
                 }
 
                 foreach ($this->getStreams() as $stream) {
                     $uri = $stream->getMetadata(self::URI);
-                    if (substr($uri, -1) === self::DIRECTORY_SEPARATOR) {
+                    if (substr((string) $uri, -1) === self::DIRECTORY_SEPARATOR) {
                         continue; // Skip directories
                     }
-                    $file_name = Util::sanitizeFileName($destination_path . self::DIRECTORY_SEPARATOR . basename($uri));
+                    $file_name = $this->sanitizer->transform($destination_path . self::DIRECTORY_SEPARATOR . basename((string) $uri));
                     file_put_contents(
                         $file_name,
                         $stream->getContents()

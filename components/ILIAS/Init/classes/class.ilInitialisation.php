@@ -330,7 +330,7 @@ class ilInitialisation
                 $fileUploadImpl->register(new ilVirusScannerPreProcessor(ilVirusScannerFactory::_getInstance()));
             }
 
-            $fileUploadImpl->register(new FilenameSanitizerPreProcessor());
+            $fileUploadImpl->register(new FilenameSanitizerPreProcessor($c->refinery()));
             $fileUploadImpl->register(
                 new ilFileServicesPreProcessor(
                     $c->fileServiceSettings(),

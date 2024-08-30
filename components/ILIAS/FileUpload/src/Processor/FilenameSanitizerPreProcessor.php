@@ -18,10 +18,12 @@
 
 namespace ILIAS\FileUpload\Processor;
 
+use ILIAS\Refinery\FileName\FileName;
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\FileUpload\DTO\Metadata;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\Filesystem\Util;
+use ILIAS\Refinery\Factory;
 
 /**
  * Class FilenameSanitizerPreProcessor
@@ -34,6 +36,13 @@ use ILIAS\Filesystem\Util;
  */
 final class FilenameSanitizerPreProcessor implements PreProcessor
 {
+    private readonly FileName $trafo;
+
+    public function __construct(Factory $refinery)
+    {
+        $this->trafo = $refinery->fileName();
+    }
+
     /**
      * @inheritDoc
      */
@@ -41,7 +50,7 @@ final class FilenameSanitizerPreProcessor implements PreProcessor
     {
         $filename = $metadata->getFilename();
         // remove some special characters
-        $filename = Util::sanitizeFileName($filename);
+        $filename = $this->trafo->transform($filename);
 
         $metadata->setFilename($filename);
 
@@ -54,7 +63,7 @@ final class FilenameSanitizerPreProcessor implements PreProcessor
         $path = preg_replace('#\p{C}+#u', '', $path);
         $parts = [];
 
-        foreach (explode('/', $path) as $part) {
+        foreach (explode('/', (string) $path) as $part) {
             switch ($part) {
                 case '':
                 case '.':
