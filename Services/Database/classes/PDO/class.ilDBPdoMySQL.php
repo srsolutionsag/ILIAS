@@ -150,20 +150,28 @@ abstract class ilDBPdoMySQL extends ilDBPdo
     {
         $sequence_name = $this->quoteIdentifier($this->getSequenceName($table_name), true);
         $seqcol_name = $this->quoteIdentifier('sequence');
-        $query = "INSERT INTO $sequence_name ($seqcol_name) VALUES (NULL)";
-        try {
-            $this->pdo->exec($query);
-        } catch (PDOException $e) {
-            // no such table check
-        }
 
-        $result = $this->query('SELECT LAST_INSERT_ID() AS next');
-        $value = $result->fetchObject()->next;
+        $atom = new ilAtomQueryLock($this);
+        $atom->addTableLock($sequence_name);
+        $value = null;
+        $atom->addQueryCallable(function (ilDBInterface $db) use ($sequence_name, $seqcol_name, &$value) {
+            $query = "INSERT INTO $sequence_name ($seqcol_name) VALUES (NULL)";
+            try {
+                $this->pdo->exec($query);
+            } catch (PDOException $e) {
+                // no such table check
+            }
 
-        if (is_numeric($value)) {
-            $query = "DELETE FROM $sequence_name WHERE $seqcol_name < $value";
-            $this->pdo->exec($query);
-        }
+            $result = $this->query('SELECT LAST_INSERT_ID() AS next');
+            $value = $result->fetchObject()->next;
+
+            if (is_numeric($value)) {
+                $query = "DELETE FROM $sequence_name WHERE $seqcol_name < $value";
+                $this->pdo->exec($query);
+            }
+        });
+
+        $atom->run();
 
         return (int) $value;
     }
