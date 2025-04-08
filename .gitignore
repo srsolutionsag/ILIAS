@@ -34,7 +34,6 @@
 /install_client.php
 
 # Directories
-/public
 /Customizing/global
 /Customizing/clients
 virtual-data
@@ -55,4 +54,8 @@ phpstan-baseline.neon
 # File Delivery
 override.php
 components/ILIAS/FileHandlingDemo
-public/data/
+public/*
+!public/Customizing/global/plugins/.gitkeep
+
+
+
