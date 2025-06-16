@@ -912,7 +912,7 @@ class ilMailFolderGUI implements ilCtrlSecurityInterface
         $form->addItem($date);
 
         $message = new ilCustomInputGUI($this->lng->txt('message') . ':');
-        $message->setHtml(ilUtil::htmlencodePlainString($mail_data['m_message'] ?? '', true));
+        $message->setHtml(html_entity_decode($this->refinery->string()->markdown()->toHTML()->transform($mail_data['m_message']) ?? ''));
         $form->addItem($message);
 
         if ($mail_data['attachments']) {
@@ -920,7 +920,7 @@ class ilMailFolderGUI implements ilCtrlSecurityInterface
 
             $radiog = new ilRadioGroupInputGUI('', 'filename');
             foreach ($mail_data['attachments'] as $file) {
-                $radiog->addOption(new ilRadioOption($file, md5((string) $file)));
+                $radiog->addOption(new ilRadioOption($file, md5($file)));
             }
 
             $att->setHtml($radiog->render());
@@ -1119,7 +1119,7 @@ class ilMailFolderGUI implements ilCtrlSecurityInterface
         );
 
         $tplprint->setVariable('TXT_MESSAGE', $this->lng->txt('message'));
-        $tplprint->setVariable('MAIL_MESSAGE', nl2br(htmlspecialchars((string) $mail_data['m_message'])));
+        $tplprint->setVariable('MAIL_MESSAGE', html_entity_decode($this->refinery->string()->markdown()->toHTML()->transform($mail_data['m_message'])));
 
         $tplprint->show();
     }
