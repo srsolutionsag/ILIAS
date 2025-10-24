@@ -28,6 +28,7 @@ import $ from 'jquery';
 import il from 'ilias';
 import document from 'document';
 import TextareaFactory from './Textarea/textarea.factory.js';
+import createMustacheVariables from './Textarea/createMustacheVariables.js';
 import MarkdownFactory from './Markdown/markdown.factory.js';
 import TreeSelectFactory from './TreeSelect/TreeSelectFactory.js';
 import JQueryEventListener from '../../../Core/src/JQueryEventListener.js';
@@ -39,6 +40,12 @@ il.UI.Input = il.UI.Input || {};
 
 (function (Input) {
   Input.textarea = new TextareaFactory();
+  Input.mustacheVariables = {
+    init: (textareaComponent, inputElement) => createMustacheVariables(
+      textareaComponent,
+      inputElement,
+    ),
+  };
   Input.markdown = new MarkdownFactory();
   Input.treeSelect = new TreeSelectFactory(
     new JQueryEventListener($),
