@@ -66,13 +66,21 @@ class Renderer extends AbstractComponentRenderer
             $template->setVariable('ASYNC_URL', (string) $async_url);
         }
 
+        $on_update_signal = $component->getOnUpdateSignal();
+        if (null !== $on_update_signal) {
+            $on_update_signal_value = "'{$on_update_signal->getId()}'";
+        } else {
+            $on_update_signal_value = 'null';
+        }
+
         if (null !== $component->getAsyncUrl()) {
             $enriched_component = $component->withAdditionalOnLoadCode(
                 static fn(string $id): string => "
                     const progressbar = il.UI.Progress.Bar.createAsync(
+                        {$component->getAsyncRefreshInterval()->getRefreshIntervalInMs()},
                         document.getElementById('$id'),
                         '{$component->getUpdateSignal()->getId()}',
-                        {$component->getAsyncRefreshInterval()->getRefreshIntervalInMs()},
+                        $on_update_signal_value,
                     );
                     
                     $(document).on('{$component->getResetSignal()}', () => progressBar.reset());
@@ -84,6 +92,7 @@ class Renderer extends AbstractComponentRenderer
                     const progressBar = il.UI.Progress.Bar.create(
                         document.getElementById('$id'),
                         '{$component->getUpdateSignal()->getId()}',
+                        $on_update_signal_value,
                     );
 
                     $(document).on('{$component->getResetSignal()}', () => progressBar.reset());

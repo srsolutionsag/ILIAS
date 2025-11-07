@@ -39,6 +39,7 @@ class Bar implements Progress\Bar
 
     public const MAX_VALUE = 100;
 
+    protected ?Signal $on_update_signal = null;
     protected Signal $update_signal;
     protected Signal $reset_signal;
 
@@ -58,6 +59,18 @@ class Bar implements Progress\Bar
         $clone->update_signal = $this->signal_generator->create();
         $clone->reset_signal = $this->signal_generator->create();
         return $clone;
+    }
+
+    public function withOnUpdate(Signal $signal): static
+    {
+        $clone = clone $this;
+        $clone->on_update_signal = $signal;
+        return $clone;
+    }
+
+    public function getOnUpdateSignal(): ?Signal
+    {
+        return $this->on_update_signal;
     }
 
     public function getUpdateSignal(): Signal

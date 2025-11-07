@@ -28,6 +28,10 @@ use ILIAS\UI\Component\Button\Button;
 use ILIAS\UI\Component\Button\Shy;
 use ILIAS\UI\Component\Legacy\Content;
 use ILIAS\BackgroundTasks\Task\Job;
+use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\UI\Component\Progress\Bar;
+use ILIAS\UI\Component\Component;
+use ILIAS\BackgroundTasks\Task;
 
 /**
  * Class ilBTPopOverGUI
@@ -39,11 +43,13 @@ class ilBTPopOverGUI
 {
     use StateTranslator;
 
+    protected ILIAS\Data\Factory $data_factory;
 
     public function __construct(protected Container $dic)
     {
+        // this is bad, we should inject this.
+        $this->data_factory = new ILIAS\Data\Factory();
     }
-
 
     /**
      * Get the Notification Items. DOES NOT DO ANY PERMISSION CHECKS.
@@ -56,12 +62,11 @@ class ilBTPopOverGUI
         $icon = $ui_factory->symbol()->icon()->standard('bgtk', $this->txt('background_tasks'));
 
         return $this->dic->ui()->factory()
-            ->item()
-            ->notification($title, $icon)
-            ->withDescription("$nr_buckets {$this->txt('background_tasks')}")
-            ->withAggregateNotifications($this->getAggregateItems());
+                         ->item()
+                         ->notification($title, $icon)
+                         ->withDescription("$nr_buckets {$this->txt('background_tasks')}")
+                         ->withAggregateNotifications($this->getAggregateItems());
     }
-
 
     /**
      * @return Notification[]
@@ -78,7 +83,6 @@ class ilBTPopOverGUI
         return $items;
     }
 
-
     public function getItemForObserver(Bucket $observer): Notification
     {
         $redirect_uri = "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
@@ -87,6 +91,8 @@ class ilBTPopOverGUI
 
         $state = $observer->getState();
         $current_task = $observer->getCurrentTask();
+
+        $progress_bar = $this->getProgressbar($observer);
 
         $icon = $f->symbol()->icon()->standard("bgtk", $this->txt("bg_task"));
         $title = $observer->getTitle() . ($state === State::SCHEDULED ? " ({$this->txt('scheduled')})" : "");
@@ -98,21 +104,14 @@ class ilBTPopOverGUI
                 $title = $primary_action->withLabel($title);
             }
             $item = $f->item()->notification($title, $icon);
-
-            //            $item = $item->withProperties([
-            //                $this->dic->language()->txt('nc_mail_prop_time') => \ilDatePresentation::formatDate(
-            //                    new \ilDateTime(time(), IL_CAL_UNIX)
-            //                )
-            //            ]);
-
             $item = $item->withActions($f->dropdown()->standard($actions));
             $input = $current_task->getInput();
             $message = $current_task->getMessage($input);
 
-            if (!empty($message) && $message != null) {
+            if (!empty($message)) {
                 $item = $item->withDescription($message);
             } else {
-                $item = $item->withAdditionalContent($this->getProgressbar($observer));
+                $item = $item->withAdditionalContent($this->getUIComponentAsLegacyContent($progress_bar));
             }
 
             return $item->withCloseAction(
@@ -122,31 +121,32 @@ class ilBTPopOverGUI
 
         $item = $f->item()->notification($title, $icon);
 
-        if ($state === State::RUNNING) {
-            $url = $this->getRefreshUrl($observer);
-            //Running Items probably need to refresh themselves, right?
-            $item = $item->withAdditionalOnLoadCode(fn($id): string => "var notification_item = il.UI.item.notification.getNotificationItemObject($('#$id'));
-                    il.BGTask.refreshItem(notification_item,'$url');");
-
-            $expected = $current_task instanceof Job ? $current_task->getExpectedTimeOfTaskInSeconds() : 0;
-            $possibly_failed = ($observer->getLastHeartbeat() < (time() - $expected));
-            if ($possibly_failed) {
-                $item = $item->withDescription($this->txt('task_might_be_failed'));
-                $item = $item->withCloseAction(
-                    $this->getCloseButtonAction($current_task->getAbortOption(), $redirect_uri, $observer)
-                );
-            }
+        if ($state === State::RUNNING && $this->hasBucketPossiblyFailed($observer)) {
+            $item = $item->withCloseAction(
+                $this->getCloseButtonAction($current_task->getAbortOption(), $redirect_uri, $observer)
+            );
+        }
+        if ($state === State::FINISHED || $state === State::ERROR) {
+            $item = $item->withCloseAction(
+                $this->getCloseButtonAction($current_task->getRemoveOption(), $redirect_uri, $observer)
+            );
         }
 
-        return $item->withAdditionalContent($this->getDefaultCardContent($observer));
+        $
+
+        $item = $item->withAdditionalOnLoadCode(fn(string $id): string => "
+            $(document).on('{$progress_bar->getUpdateSignal()->getId()}', ({ state }) => {
+                if ('determinate' === state || 'indeterminate' === state) {
+                    return;
+                }
+                il.UI.item.notification
+                    .getNotificationItemObject($('#$id'))
+                    ?.replaceContentByAsyncItemContent('{$this->getRefreshNotificationItemUrl($observer)}');
+            });
+        ");
+
+        return $item->withAdditionalContent($this->getUIComponentAsLegacyContent($progress_bar));
     }
-
-
-    private function getDefaultCardContent(Bucket $observer): Content
-    {
-        return $this->getProgressbar($observer);
-    }
-
 
     /**
      * @return Content[]|Shy[]
@@ -185,49 +185,68 @@ class ilBTPopOverGUI
                 $this->addFromUrlToNextRequest($redirect_uri);
 
                 return $factory->button()
-                    ->shy(
-                        $language->txt($option->getLangVar()),
-                        $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_USER_INTERACTION)
-                    );
+                               ->shy(
+                                   $language->txt($option->getLangVar()),
+                                   $ctrl->getLinkTargetByClass(
+                                       [ilBTControllerGUI::class],
+                                       ilBTControllerGUI::CMD_USER_INTERACTION
+                                   )
+                               );
             },
             $options
         );
     }
 
-
-    private function getProgressbar(Bucket $observer): Content
+    private function getProgressbar(Bucket $observer): Bar
     {
-        $percentage = $observer->getOverallPercentage();
+        $progress_bar = $this->dic->ui()->factory()->progress()->bar(
+            'progress',
+            $this->data_factory->uri(ILIAS_HTTP_PATH . '/' . $this->getProgressStateUrl($observer))
+        );
 
-        switch (true) {
-            case ($percentage === 100):
-                $running = "";
-                $content = $this->dic->language()->txt("completed");
-                break;
-            case ($observer->getState() === State::USER_INTERACTION):
-                $running = "";
-                $content = $this->dic->language()->txt("waiting");
-                break;
-            default:
-                $running = "active";
-                $content = "{$percentage}%";
-                break;
-        }
+        // immediately start the progress bar after being rendered
+        $progress_bar = $progress_bar->withAdditionalOnLoadCode(fn($id) => "
+            il.UI.Progress.Bar.indeterminate(
+                '{$progress_bar->getUpdateSignal()}',
+                '{$this->dic->language()->txt('waiting')}',
+            );
+        ");
 
-        return $this->dic->ui()->factory()->legacy()->content(" <div class='progress'>
-                    <div class='progress-bar progress-bar-striped {$running}' role='progressbar' aria-valuenow='{$percentage}'
-                        aria-valuemin='0' aria-valuemax='100' style='width:{$percentage}%'>
-                        {$content}
-                    </div>
-				</div> ");
+        return $progress_bar;
     }
 
+    public function getProgressBarState(Bucket $observer): \ILIAS\UI\Component\Progress\State\Bar\State
+    {
+        $task_not_responding_state = $this->dic->ui()->factory()->progress()->state()->bar()->failure(
+            $this->dic->language()->txt('task_might_be_failed')
+        );
+
+        if ($this->hasBucketPossiblyFailed($observer)) {
+            return $task_not_responding_state;
+        }
+
+        $percentage = $observer->getOverallPercentage();
+        return match (true) {
+            (100 > $percentage) => $this->dic->ui()->factory()->progress()->state()->bar()->determinate(
+                $percentage,
+                ' '
+            ),
+            (100 <= $percentage) => $this->dic->ui()->factory()->progress()->state()->bar()->success(
+                $this->dic->language()->txt('completed')
+            ),
+            default => $task_not_responding_state,
+        };
+    }
 
     private function getCloseButtonAction(Option $option, string $redirect_uri, Bucket $observer): string
     {
         $ctrl = $this->dic->ctrl();
         $persistence = $this->dic->backgroundTasks()->persistence();
-        $ctrl->setParameterByClass(ilBTControllerGUI::class, ilBTControllerGUI::OBSERVER_ID, $persistence->getBucketContainerId($observer));
+        $ctrl->setParameterByClass(
+            ilBTControllerGUI::class,
+            ilBTControllerGUI::OBSERVER_ID,
+            $persistence->getBucketContainerId($observer)
+        );
         $this->addFromUrlToNextRequest($redirect_uri);
         $ctrl->setParameterByClass(ilBTControllerGUI::class, ilBTControllerGUI::IS_ASYNC, "true");
 
@@ -239,30 +258,69 @@ class ilBTPopOverGUI
                 $action = $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_REMOVE);
                 break;
             default:
-                $ctrl->setParameterByClass(ilBTControllerGUI::class, ilBTControllerGUI::SELECTED_OPTION, $option->getValue());
-                $action = $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_USER_INTERACTION);
+                $ctrl->setParameterByClass(
+                    ilBTControllerGUI::class,
+                    ilBTControllerGUI::SELECTED_OPTION,
+                    $option->getValue()
+                );
+                $action = $ctrl->getLinkTargetByClass(
+                    [ilBTControllerGUI::class],
+                    ilBTControllerGUI::CMD_USER_INTERACTION
+                );
                 break;
         }
 
         return $action;
     }
 
+    protected function getUIComponentAsLegacyContent(Component $component): Content
+    {
+        return $this->dic->ui()->factory()->legacy()->content(
+            $this->dic->ui()->renderer()->render($component),
+        );
+    }
 
-    private function getRefreshUrl(Bucket $observer): string
+    protected function hasBucketPossiblyFailed(Bucket $observer): bool
+    {
+        $task = $observer->getCurrentTask();
+        $expected = $task instanceof Job ? $task->getExpectedTimeOfTaskInSeconds() : 0;
+        return ($observer->getLastHeartbeat() < (time() - $expected));
+    }
+
+    private function getProgressStateUrl(Bucket $observer): string
     {
         $ctrl = $this->dic->ctrl();
         $persistence = $this->dic->backgroundTasks()->persistence();
-        $ctrl->setParameterByClass(ilBTControllerGUI::class, ilBTControllerGUI::OBSERVER_ID, $persistence->getBucketContainerId($observer));
+        $ctrl->setParameterByClass(
+            ilBTControllerGUI::class,
+            ilBTControllerGUI::OBSERVER_ID,
+            $persistence->getBucketContainerId($observer)
+        );
 
-        return $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_GET_REPLACEMENT_ITEM);
+        return $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_PROGRESS_BAR_STATE);
     }
 
+    private function getRefreshNotificationItemUrl(Bucket $observer): string
+    {
+        $ctrl = $this->dic->ctrl();
+        $persistence = $this->dic->backgroundTasks()->persistence();
+        $ctrl->setParameterByClass(
+            ilBTControllerGUI::class,
+            ilBTControllerGUI::OBSERVER_ID,
+            $persistence->getBucketContainerId($observer)
+        );
+
+        return $ctrl->getLinkTargetByClass([ilBTControllerGUI::class], ilBTControllerGUI::CMD_REFRESH_NOTIFICATION_ITEM);
+    }
 
     private function addFromUrlToNextRequest(string $redirect_uri): void
     {
-        $this->dic->ctrl()->setParameterByClass(ilBTControllerGUI::class, ilBTControllerGUI::FROM_URL, ilBTControllerGUI::hash($redirect_uri));
+        $this->dic->ctrl()->setParameterByClass(
+            ilBTControllerGUI::class,
+            ilBTControllerGUI::FROM_URL,
+            ilBTControllerGUI::hash($redirect_uri)
+        );
     }
-
 
     private function txt(string $id): string
     {

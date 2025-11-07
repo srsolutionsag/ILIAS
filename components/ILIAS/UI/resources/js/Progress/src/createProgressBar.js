@@ -15,14 +15,20 @@
  * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
 
-import ProgressBar from './ProgressBar';
+import ProgressBar from './ProgressBar.js';
 
 /**
+ * @param {JQueryEventDispatcher} jQueryEventDispatcher
  * @param {Document} document
  * @param {HTMLProgressElement} element
- * @param {string} updateSignal
+ * @param {string|null} onUpdateSignal
  */
-export default function createProgressBar(document, element) {
+export default function createProgressBar(
+  jQueryEventDispatcher,
+  document,
+  element,
+  onUpdateSignal,
+) {
   if (!(element instanceof document.defaultView.HTMLProgressElement)) {
     throw new Error('Progress bar must have a <progress> element.');
   }
@@ -32,5 +38,5 @@ export default function createProgressBar(document, element) {
     throw new Error('Could not find progress bar message element.');
   }
 
-  return new ProgressBar(element, messageElement);
+  return new ProgressBar(jQueryEventDispatcher, element, messageElement, onUpdateSignal);
 }

@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\UI\Implementation\Component\Progress\State\Bar;
+namespace ILIAS\UI\Component\Progress\State\Bar;
 
 /**
  * This enum represents the status of a Progress Bar's underlying process/task, which

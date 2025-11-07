@@ -56,6 +56,14 @@ function server(): string
 
     $progress_bar = $factory->progress()->bar('waiting about 10 seconds', $endpoint_url);
 
+    $progress_bar = $progress_bar->withAdditionalOnLoadCode(static fn(string $id) => "
+        il.UI.Progress.Bar.addUpdateListener('{$progress_bar->getUpdateSignal()}', (update) => {
+            if (update.state === 'success') {
+                alert('Progress Bar is completed!');
+            }
+        });
+    ");
+
     $trigger = $factory->button()->standard('start making progress', '#');
     $trigger = $trigger->withAdditionalOnLoadCode(
         static fn(string $id) => "

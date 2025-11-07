@@ -18,9 +18,10 @@
 import il from 'ilias';
 import document from 'document';
 import AsyncRenderer from '../../Core/src/AsyncRenderer.js';
-import createProgressBar from './createProgressBar';
+import createProgressBar from './createProgressBar.js';
 import createAsyncProgressBar from './createAsyncProgressBar.js';
 import GlobalProgressBarSignalDispatcher from './GlobalProgressBarSignalDispatcher.js';
+import JQueryEventDispatcher from '../../Core/src/jqueryeventdispatcher.js';
 
 const asyncRenderer = new AsyncRenderer(document);
 const signalDispatcher = new GlobalProgressBarSignalDispatcher();
@@ -37,19 +38,19 @@ il.UI.Progress.Bar = {
     progress,
     message,
   ),
-  createAsync: (element, updateSignal, refreshRateInMs) => {
+  createAsync: (refreshRateInMs, element, doUpdateSignal, onUpdateSignal) => {
     const asyncProgressBar = createAsyncProgressBar(
       asyncRenderer,
-      createProgressBar(document, element),
+      createProgressBar(JQueryEventDispatcher, document, element, onUpdateSignal),
       element,
       refreshRateInMs,
     );
-    signalDispatcher.register(asyncProgressBar, updateSignal);
+    signalDispatcher.register(asyncProgressBar, doUpdateSignal);
     return asyncProgressBar;
   },
-  create: (element, updateSignal) => {
-    const progressBar = createProgressBar(document, element);
-    signalDispatcher.register(progressBar, updateSignal);
+  create: (element, doUpdateSignal, onUpdateSignal) => {
+    const progressBar = createProgressBar(JQueryEventDispatcher, document, element, onUpdateSignal);
+    signalDispatcher.register(progressBar, doUpdateSignal);
     return progressBar;
   },
 };

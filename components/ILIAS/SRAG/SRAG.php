@@ -13,28 +13,28 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
- *********************************************************************/
+ */
 
 declare(strict_types=1);
 
 namespace ILIAS;
 
 use ILIAS\Component\Component;
-use ILIAS\Component\Resource\PublicAsset;
-use ILIAS\Component\Resource\ComponentJS;
 
-class BackgroundTasks_ implements Component
+/**
+ * @author Thibeau Fuhrer <thibeau@sr.solutions>
+ */
+class SRAG implements Component
 {
     public function init(
-        array | \ArrayAccess &$define,
-        array | \ArrayAccess &$implement,
-        array | \ArrayAccess &$use,
-        array | \ArrayAccess &$contribute,
-        array | \ArrayAccess &$seek,
-        array | \ArrayAccess &$provide,
-        array | \ArrayAccess &$pull,
-        array | \ArrayAccess &$internal,
+        \ArrayAccess|array &$define,
+        \ArrayAccess|array &$implement,
+        \ArrayAccess|array &$use,
+        \ArrayAccess|array &$contribute,
+        \ArrayAccess|array &$seek,
+        \ArrayAccess|array &$provide,
+        \ArrayAccess|array &$pull,
+        \ArrayAccess|array &$internal,
     ): void {
     }
 }

@@ -17,19 +17,29 @@
  * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
 export default class ProgressBar {
+  /** @var {JQueryEventDispatcher} */
+  #jQueryEventDispatcher;
+
   /** @var {HTMLProgressElement} */
   #progressElement;
 
   /** @var {HTMLDivElement} */
   #messageElement;
 
+  /** @var {string|null} */
+  #onUpdateSignal = null;
+
   /**
+   * @param {JQueryEventDispatcher} jQueryEventDispatcher
    * @param {HTMLProgressElement} progressElement
    * @param {HTMLDivElement} messageElement
+   * @param {string|null} [onUpdateSignal=null]
    */
-  constructor(progressElement, messageElement) {
+  constructor(jQueryEventDispatcher, progressElement, messageElement, onUpdateSignal = null) {
+    this.#jQueryEventDispatcher = jQueryEventDispatcher;
     this.#progressElement = progressElement;
     this.#messageElement = messageElement;
+    this.#onUpdateSignal = onUpdateSignal;
   }
 
   /**
@@ -43,6 +53,7 @@ export default class ProgressBar {
     if (message !== null) {
       this.#showMessage(message);
     }
+    this.#mabybeDispatchUpdateSignal();
   }
 
   /**
@@ -62,6 +73,7 @@ export default class ProgressBar {
     if (message !== null) {
       this.#showMessage(message);
     }
+    this.#mabybeDispatchUpdateSignal();
   }
 
   /**
@@ -117,6 +129,7 @@ export default class ProgressBar {
     this.#progressElement.classList.add(`c-progress-bar--${modifier}`);
 
     this.#showMessage(message);
+    this.#mabybeDispatchUpdateSignal();
   }
 
   /**
@@ -132,5 +145,11 @@ export default class ProgressBar {
     this.#messageElement.classList.remove('visible');
     this.#messageElement.classList.add('invisible');
     this.#messageElement.textContent = '';
+  }
+
+  #mabybeDispatchUpdateSignal() {
+    if (this.#onUpdateSignal === null) {
+      this.#jQueryEventDispatcher.dispatch(this.#progressElement, this.#onUpdateSignal, this);
+    }
   }
 }

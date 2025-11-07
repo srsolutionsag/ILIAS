@@ -33,7 +33,7 @@ class Factory implements C\Factory
 
     public function indeterminate(?string $message = null): State
     {
-        return new State(Status::INDETERMINATE, null, $message);
+        return new State(C\Status::INDETERMINATE, null, $message);
     }
 
     public function determinate(int $visual_progress_value, ?string $message = null): State

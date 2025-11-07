@@ -29,6 +29,12 @@ use ILIAS\UI\Component\Signal;
 interface Bar extends Component, Triggerable, Triggerer
 {
     /**
+     * Get a Progress Bar like this, but provide a Signal which will be
+     * triggered whenever the Progress Bar is updated.
+     */
+    public function withOnUpdate(Signal $signal): static;
+
+    /**
      * Get a Signal which can be used to update the current Progress Bar.
      */
     public function getUpdateSignal(): Signal;

@@ -20,6 +20,25 @@ export default class GlobalProgressBarSignalDispatcher {
   /** @var {Map<string, ProgressBar>} */
   #progressBars = new Map();
 
+  /** @var {Map<string, Set<function>>} */
+  #updateListeners = new Map();
+
+  addUpdateListener(updateSignal, handler) {
+    if (!this.#updateListeners.has(updateSignal)) {
+      this.#updateListeners.set(updateSignal, new Set());
+    }
+    this.#updateListeners.get(updateSignal).add(handler);
+  }
+
+  removeUpdateListener(updateSignal, handler) {
+    if (!this.#updateListeners.has(updateSignal)) {
+      return;
+    }
+    if (this.#updateListeners.get(updateSignal).has(handler)) {
+      this.#updateListeners.get(updateSignal).delete(handler);
+    }
+  }
+
   /**
    * @param {ProgressBar} progressBar
    * @param {string} updateSignal
@@ -61,6 +80,7 @@ export default class GlobalProgressBarSignalDispatcher {
    */
   failure(updateSignal, message) {
     this.#getProgressBarOrAbort(updateSignal).failure(message);
+    this.#invokeUpdateHandlers(updateSignal, 'failure');
   }
 
   /**
@@ -72,5 +92,14 @@ export default class GlobalProgressBarSignalDispatcher {
       throw new Error(`Could not find progress bar component for signal '${updateSignal}'`);
     }
     return this.#progressBars.get(updateSignal);
+  }
+
+  #invokeUpdateHandlers(updateSignal, state, visibleProgress, message) {
+    if (!this.#updateListeners.has(updateSignal)) {
+      return;
+    }
+    this.#updateListeners.get(updateSignal).values().forEach((handler) => {
+      handler(state, visibleProgress, message);
+    });
   }
 }

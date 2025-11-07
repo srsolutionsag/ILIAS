@@ -31,13 +31,13 @@ class State implements Bar\State
     use ComponentHelper;
 
     public function __construct(
-        protected Status $status,
+        protected Bar\Status $status,
         protected ?int $visual_progress_value = null,
         protected ?string $message = null,
     ) {
     }
 
-    public function getStatus(): Status
+    public function getStatus(): Bar\Status
     {
         return $this->status;
     }
