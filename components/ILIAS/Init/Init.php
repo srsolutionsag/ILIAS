@@ -20,6 +20,20 @@ declare(strict_types=1);
 
 namespace ILIAS;
 
+use ILIAS\HTTP\GlobalHttpState;
+use ILIAS\FileDelivery\FileDeliveryServices;
+use ILIAS\FileDelivery\Token\DataSigning;
+use ILIAS\Filesystem\Security\Sanitizing\FilenameSanitizer;
+use ILIAS\Filesystem\Configuration\FilesystemConfig;
+use ILIAS\Filesystem\Filesystems;
+use ILIAS\Filesystem\FileSystems\FilesystemWeb;
+use ILIAS\Filesystem\FileSystems\FilesystemStorage;
+use ILIAS\Filesystem\FileSystems\FilesystemTemp;
+use ILIAS\Filesystem\FileSystems\FilesystemCustomizing;
+use ILIAS\Filesystem\FileSystems\FilesystemLibs;
+use ILIAS\Filesystem\FileSystems\FilesystemNodeModules;
+use ILIAS\ResourceStorage\IRSSServices;
+
 class Init implements Component\Component
 {
     public function init(
@@ -32,34 +46,34 @@ class Init implements Component\Component
         array | \ArrayAccess &$pull,
         array | \ArrayAccess &$internal,
     ): void {
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "register.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "pwassist.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "login.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "index.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "ilias.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "error.php");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "service-worker.js");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\Endpoint =>
             new Component\Resource\Endpoint($this, "sso/index.php", "sso");
 
-        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+        $contribute[Component\Resource\PublicAsset::class] = fn(): \ILIAS\Component\Resource\OfComponent =>
             new Component\Resource\OfComponent($this, ".htaccess", ".");
 
-        $contribute[Component\EntryPoint::class] = static fn() =>
+        $contribute[Component\EntryPoint::class] = static fn(): \ILIAS\Init\AllModernComponents =>
             new Init\AllModernComponents(
                 $pull[\ILIAS\Refinery\Factory::class],
                 $pull[\ILIAS\Data\Factory::class],
@@ -123,6 +137,19 @@ class Init implements Component\Component
                 $pull[\ILIAS\UI\Implementation\Component\Input\UploadLimitResolver::class],
                 $use[\ILIAS\Setup\AgentFinder::class],
                 $pull[\ILIAS\UI\Implementation\Component\Navigation\Factory::class],
+                $use[GlobalHttpState::class],
+                $use[FileDeliveryServices::class],
+                $use[DataSigning::class],
+                $use[FilenameSanitizer::class],
+                $use[FilesystemConfig::class],
+                $use[Filesystems::class],
+                $use[FilesystemWeb::class],
+                $use[FilesystemStorage::class],
+                $use[FilesystemTemp::class],
+                $use[FilesystemCustomizing::class],
+                $use[FilesystemLibs::class],
+                $use[FilesystemNodeModules::class],
+                $use[IRSSServices::class],
             );
     }
 }

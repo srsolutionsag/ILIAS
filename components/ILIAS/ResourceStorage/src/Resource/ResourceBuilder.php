@@ -91,7 +91,8 @@ class ResourceBuilder
         Repositories $repositories,
         private LockHandler $lock_handler,
         private StreamAccess $stream_access,
-        protected FileNamePolicy $file_name_policy = new NoneFileNamePolicy()
+        protected FileNamePolicy $file_name_policy = new NoneFileNamePolicy(),
+        private ?Migrator $migrator = null,
     ) {
         $this->primary_storage_handler = $this->storage_handler_factory->getPrimary();
         $this->revision_repository = $repositories->getRevisionRepository();
@@ -463,11 +464,11 @@ class ResourceBuilder
         }
         $resource = $this->resource_repository->get($identification);
 
-        if ($this->auto_migrate && $resource->getStorageID() !== $this->primary_storage_handler->getID()) {
-            global $DIC;
-            /** @var Migrator $migrator */
-            $migrator = $DIC[\InitResourceStorage::D_MIGRATOR];
-            $migrator->migrate($resource, $this->primary_storage_handler->getID());
+        if ($this->auto_migrate
+            && $this->migrator !== null
+            && $resource->getStorageID() !== $this->primary_storage_handler->getID()
+        ) {
+            $this->migrator->migrate($resource, $this->primary_storage_handler->getID());
             $resource->setStorageID($this->primary_storage_handler->getID());
         }
 
@@ -526,7 +527,6 @@ class ResourceBuilder
 
     /**
      * @description Remove a complete revision. if there are other Stakeholder, only your stakeholder gets removed
-     * @param ResourceStakeholder|null $stakeholder
      * @return bool whether ResourceStakeholders handled this successful
      */
     public function remove(StorableResource $resource, ?ResourceStakeholder $stakeholder = null): bool
@@ -609,7 +609,6 @@ class ResourceBuilder
 
         // check if the root directory exists without a slash at the beginning
         if ($zip->locateName($root . '/') !== false) {
-            $root = $root;
         } elseif ($zip->locateName('/' . $root . '/') !== false) {
             // check if the root directory exists with a slash at the beginning
             $root = '/' . $root;
@@ -753,7 +752,7 @@ class ResourceBuilder
         $revisions = $this->revision_repository->get($resource);
         $resource->setRevisions($revisions);
 
-        foreach ($revisions->getAll(true) as $i => $revision) {
+        foreach ($revisions->getAll(true) as $revision) {
             $information = $this->information_repository->get($revision);
             $revision->setInformation($information);
             $revision->setStorageID($resource->getStorageID());

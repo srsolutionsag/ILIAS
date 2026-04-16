@@ -16,17 +16,16 @@
  *
  *********************************************************************/
 
-use ILIAS\Filesystem\Security\Sanitizing\FilenameSanitizerImpl;
+namespace ILIAS\Filesystem\FileSystems;
 
 /**
- * Class ilFileServicesFilenameSanitizer
- *
- * @author Fabian Schmid <fs@studer-raimann.ch>
+ * @author Fabian Schmid <fabian@sr.solutions>
  */
-class ilFileServicesFilenameSanitizer extends FilenameSanitizerImpl
+class ConfiguredFilesystemStorage extends AbstractConfiguredFilesystem implements FilesystemStorage
 {
-    public function __construct(ilFileServicesSettings $settings)
+    protected function getFQDN(): string
     {
-        parent::__construct(array_diff($settings->getWhiteListedSuffixes(), $settings->getBlackListedSuffixes()));
+        return FilesystemStorage::class;
     }
+
 }
