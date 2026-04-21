@@ -33,7 +33,21 @@ interface Factory
      *     defined concept and lists them one after the other.
      *
      * ---
+     * @param \ILIAS\UI\Component\Listing\Entity\RecordToEntity $entity_mapping
      * @return \ILIAS\UI\Component\Listing\Entity\Standard
      */
     public function standard(RecordToEntity $entity_mapping): Standard;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *     The Entity Listing yields uniform Entities according to a consumer
+     *     defined concept and lists them in a grid.
+     *
+     * ---
+     * @param \ILIAS\UI\Component\Listing\Entity\RecordToEntity $entity_mapping
+     * @return \ILIAS\UI\Component\Listing\Entity\Grid
+     */
+    public function grid(RecordToEntity $entity_mapping): Grid;
 }

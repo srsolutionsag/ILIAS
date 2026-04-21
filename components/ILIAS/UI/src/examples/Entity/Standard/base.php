@@ -53,7 +53,7 @@ function base()
         $f->button()->shy("ILIAS", "https://www.ilias.de"),
         $f->button()->shy("GitHub", "https://www.github.com")
     ];
-    $entity = $entity->withActions(...$actions);
+    $entity = $entity->withManagingActions(...$actions);
 
     /*
     * Logic for Pulling Availabilty Properties to Blocking Conditions
