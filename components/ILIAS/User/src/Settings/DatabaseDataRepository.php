@@ -64,18 +64,20 @@ class DatabaseDataRepository implements DataRepository
 
     public function storeFor(int $user_id, array $settings_array): void
     {
-        $query = 'INSERT INTO ' . self::TABLE_NAME . ' VALUES ' . implode(
-            ', ',
-            array_map(
-                fn(string $v) => '('
-                    . $this->db->quote($user_id, \ilDBConstants::T_INTEGER) . ', '
-                    . $this->db->quote($v, \ilDBConstants::T_TEXT) . ', '
-                    . $this->db->quote($settings_array[$v], \ilDBConstants::T_TEXT)
-                    . ')',
-                array_keys($settings_array)
-            )
-        );
-        $this->db->manipulate($query);
+        // upsert per row: concurrent authenticated requests (e.g. WebDAV Basic Auth)
+        // otherwise race on the preceding DELETE and crash with duplicate-key errors.
+        foreach ($settings_array as $keyword => $value) {
+            $this->db->replace(
+                self::TABLE_NAME,
+                [
+                    'usr_id' => [\ilDBConstants::T_INTEGER, $user_id],
+                    'keyword' => [\ilDBConstants::T_TEXT, (string) $keyword],
+                ],
+                [
+                    'value' => [\ilDBConstants::T_TEXT, (string) $value],
+                ]
+            );
+        }
     }
 
     public function storeSingleFor(
