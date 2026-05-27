@@ -14,10 +14,12 @@ use ILIAS\Data\Range;
 /**
  * ---
  * description: >
- *
+ *      A card-style grid presenting many entity objects side by side.
  *
  * expected output: >
- *   ILIAS shows the rendered Component.
+ *      ILIAS shows a grid of entities looking like cards. Each card has a thumbnail image, title and some video related
+ *      properties and actions. The grid reacts flexibly to the available space. If there is a lot of space, the grid
+ *      will have more columns. With little available space, the cards will stack.
  * ---
  */
 function base(): string
@@ -92,12 +94,12 @@ function base(): string
     $glyph_eye_closed = $f->symbol()->glyph()->eyeclosed();
     $glyph_with_text = $renderer->render($glyph_eye_closed) . " offline";
     $card_data = [
-            ['Snowboarding for beginners - How to avoid falling on your face', 'assets/ui-examples/images/Image/ski.jpg', "Bobby's School of Snowboarding Austria", null, 'This is the perfect start for anyone wanting to get on a snowboard. We talk the best gear and the best locations for a beginner. And no worries - it is not expensive: Renting equipment will work just fine. Then we end with some first exercises to get the stability needed to tackle your first slope', '23 min', false, '01.01.2026'],
-            ['The History of Bridges', 'assets/ui-examples/images/Image/sanfrancisco.jpg', 'BBC England', $glyph_with_text,'One of the most monumental achievements of human kind is the invention of bridges. Crossing streets, rivers and sometimes oceans became a huge pillar for our our modern infrastructure. This documentary looks at the different types of bridges and how they have been developed and engineered throughout different cultures and centuries','90 min', true, "01.11.2026"],
-            ['Mountains through the ages - the formation of giants', 'assets/ui-examples/images/Image/mountains.jpg','ARD/ZDF, Canal Plus', null, "A fascinating look on the forces of nature that are able to move unimaginable tons of rocks. Find out how seemingly immovable landscape has transformed drastically through the incredible forces set free by earthquakes, vulcanos and water. This award-winning documentary traces the movement of the world's greatest mountain ranges throughout millions of years.", "45 min", false, "11.10.2026"],
-            ['Snowboarding for beginners - How to avoid falling on your face', 'assets/ui-examples/images/Image/ski.jpg', "Bobby's School of Snowboarding Austria", null, 'This is the perfect start for anyone wanting to get on a snowboard. We talk the best gear and the best locations for a beginner. And no worries - it is not expensive: Renting equipment will work just fine. Then we end with some first exercises to get the stability needed to tackle your first slope', '23 min', false, "28.02.2026"],
-            ['The History of Bridges', 'assets/ui-examples/images/Image/sanfrancisco.jpg', 'BBC England', $glyph_with_text,'One of the most monumental achievements of human kind is the invention of bridges. Crossing streets, rivers and sometimes oceans became a huge pillar for our our modern infrastructure. This documentary looks at the different types of bridges and how they have been developed and engineered throughout different cultures and centuries','90 min', true, "15.12.2025"],
-            ['Mountains through the ages - the formation of giants', 'assets/ui-examples/images/Image/mountains.jpg','ARD/ZDF, Canal Plus', null, "A fascinating look on the forces of nature that are able to move unimaginable tons of rocks. Find out how seemingly immovable landscape has transformed drastically through the incredible forces set free by earthquakes, vulcanos and water. This award-winning documentary traces the movement of the world's greatest mountain ranges throughout millions of years.", "45 min", false, "09.06.2026"]
+            ['Snowboarding for beginners - How to avoid falling on your face', 'assets/ui-examples/images/Image/ski_widescreen-thumbnail.jpg', "Bobby's School of Snowboarding Austria", null, 'This is the perfect start for anyone wanting to get on a snowboard. We talk the best gear and the best locations for a beginner. And no worries - it is not expensive: Renting equipment will work just fine. Then we end with some first exercises to get the stability needed to tackle your first slope', '23 min', false, '01.01.2026'],
+            ['The History of Bridges', 'assets/ui-examples/images/Image/sanfrancisco_widescreen-thumbnail.jpg', 'BBC England', $glyph_with_text,'One of the most monumental achievements of human kind is the invention of bridges. Crossing streets, rivers and sometimes oceans became a huge pillar for our our modern infrastructure. This documentary looks at the different types of bridges and how they have been developed and engineered throughout different cultures and centuries','90 min', true, "01.11.2026"],
+            ['Mountains through the ages - the formation of giants', 'assets/ui-examples/images/Image/mountains_widescreen-thumbnail.jpg','ARD/ZDF, Canal Plus', null, "A fascinating look on the forces of nature that are able to move unimaginable tons of rocks. Find out how seemingly immovable landscape has transformed drastically through the incredible forces set free by earthquakes, vulcanos and water. This award-winning documentary traces the movement of the world's greatest mountain ranges throughout millions of years.", "45 min", false, "11.10.2026"],
+            ['Snowboarding for beginners - How to avoid falling on your face', 'assets/ui-examples/images/Image/ski_widescreen-thumbnail.jpg', "Bobby's School of Snowboarding Austria", null, 'This is the perfect start for anyone wanting to get on a snowboard. We talk the best gear and the best locations for a beginner. And no worries - it is not expensive: Renting equipment will work just fine. Then we end with some first exercises to get the stability needed to tackle your first slope', '23 min', false, "28.02.2026"],
+            ['The History of Bridges', 'assets/ui-examples/images/Image/sanfrancisco_widescreen-thumbnail.jpg', 'BBC England', $glyph_with_text,'One of the most monumental achievements of human kind is the invention of bridges. Crossing streets, rivers and sometimes oceans became a huge pillar for our our modern infrastructure. This documentary looks at the different types of bridges and how they have been developed and engineered throughout different cultures and centuries','90 min', true, "15.12.2025"],
+            ['Mountains through the ages - the formation of giants', 'assets/ui-examples/images/Image/mountains_widescreen-thumbnail.jpg','ARD/ZDF, Canal Plus', null, "A fascinating look on the forces of nature that are able to move unimaginable tons of rocks. Find out how seemingly immovable landscape has transformed drastically through the incredible forces set free by earthquakes, vulcanos and water. This award-winning documentary traces the movement of the world's greatest mountain ranges throughout millions of years.", "45 min", false, "09.06.2026"]
     ];
 
     $data = new class ($card_data) implements DataRetrieval {
@@ -113,8 +115,8 @@ function base(): string
             ?Range $range,
             ?array $additional_parameters
         ): \Generator {
-            foreach ($this->data as $usr) {
-                yield $mapping->map($usr);
+            foreach ($this->data as $vid) {
+                yield $mapping->map($vid);
             }
         }
     };

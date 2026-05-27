@@ -6,6 +6,9 @@ namespace ILIAS\UI\examples\Listing\Property;
 
 /**
  * ---
+ * description: >
+ *    Example of differently used properties.
+ *
  * expected output: >
  *   ILIAS shows the rendered Component. The following options are showcased at least once:
  *      - Key is a text string, value is a text string

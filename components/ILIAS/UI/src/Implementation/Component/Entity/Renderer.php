@@ -59,6 +59,7 @@ class Renderer extends AbstractComponentRenderer
         $primary_identifier = $component->getPrimaryIdentifier();
         $primary_identifier = is_string($primary_identifier) ? $primary_identifier : $this->maybeRender($default_renderer, $primary_identifier);
         $tpl->setVariable('PRIMARY_IDENTIFIER', $primary_identifier);
+        $tpl->setVariable('PRIMARY_IDENTIFIER_ID', $this->createId());
 
         $tpl->setVariable('BLOCKING_CONDITIONS', $this->maybeRender($default_renderer, ...$component->getBlockingAvailabilityConditions()));
         $tpl->setVariable('FEATURES', $this->maybeRender($default_renderer, ...$component->getFeaturedProperties()));

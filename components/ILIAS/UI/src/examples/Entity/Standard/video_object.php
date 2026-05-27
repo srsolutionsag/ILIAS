@@ -7,26 +7,19 @@ namespace ILIAS\UI\Examples\Entity\Standard;
 /**
  * ---
  * description: >
- *   Full example showing how the entity could be used with all of its features.
+ *   Full example showing how the entity could be used to describe a video object with all of its features.
  *
  * expected output: >
- *   Entities arrange information about e.g. an object into semantic groups;
- *   this example focusses on the possible contents of those groups and shows
- *   a possible representation of a made up event.
- *   From top to bottom, left to right:
- *   - There is a precondition; it links to ilias.de.
- *   - An action-dropdown is available with two entries linking to ilias/github.
- *   - An icon indents the following.
- *   - Prominently featured is the event's date proptery.
- *   - Only after that, the title of the event is displayed in bold.
- *   - A progress meter ("in progress") is followed by detailed properties:
- *     - Room information
- *     - Description
- *     - in one line: Available seats and availability of the event
- *     - in the next line: duration and the information of available redording
- *   - The bottom "row" shows two tags on the left
- *   - and two glyphs on the right, the first one with status counter, the second one with
- *     both status- and novelty counter.
+ *  This example shows a representation of a made up video object.
+ *  - A thumbnail is shown as a secondary identifier that indents all following elements
+ *  - the title as primary identifier
+ *  - a dropdown with managing options
+ *  - upload date and publisher as Featured Property
+ *  - Workflow buttons
+ *  - duration adn a description as main details
+ *  Below is an example workflow that was given to the entity to generate the workflow buttons on this entity.
+ *  Two of the four steps are marked as not completed and available. These two options are rendered as buttons inside
+ *  the entity.
  * ---
  */
 function video_object()

@@ -144,10 +144,14 @@ class Renderer extends AbstractComponentRenderer
                 $tpl->setVariable("ID_SHOW_MORE_TOGGLE", $this->createId());
                 $tpl->setVariable("MORE", $this->txt("show_more"));
                 $tpl->setVariable("LESS", $this->txt("show_less"));
-                $tpl->setVariable("VALUE", $this->convertSpecialCharacters($value));
+                $tpl->setVariable("LONG_VALUE", $this->convertSpecialCharacters($value));
+                $tpl->parseCurrentBlock();
             }
-            if ($value instanceof Component) {
-                $tpl->setVariable("VALUE", $default_renderer->render($value));
+            elseif (is_string($value)) {
+                $tpl->setVariable("SHORT_VALUE", $this->convertSpecialCharacters($value));
+            }
+            elseif ($value instanceof Component) {
+                $tpl->setVariable("SHORT_VALUE", $default_renderer->render($value));
             }
             $tpl->parseCurrentBlock();
         }

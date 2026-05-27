@@ -711,24 +711,11 @@ table.mceToolbar tbody, table.mceToolbar tr, table.mceToolbar td {
 	Technical discussion can be found in https://mantis.ilias.de/view.php?id=21583
 	The background/gradient fallback can be removed as soon as all browsers support line-clamp.
  */
-.t-text-more-less__toggle {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
 .t-text-more-less__toggle:checked + .t-text-more-less__label .t-text-more-less__label__more {
   display: none;
 }
 .t-text-more-less__toggle:not(:checked) + .t-text-more-less__label .t-text-more-less__label__less {
   display: none;
-}
-.t-text-more-less__toggle:focus-visible + .t-text-more-less__label {
-  outline: #0078D7 3px solid;
 }
 .t-text-more-less__label {
   color: #4c6586;
@@ -829,6 +816,44 @@ table.mceToolbar tbody, table.mceToolbar tr, table.mceToolbar td {
       display: none;
     }
   }
+}
+
+input[type=checkbox].t-text-more-less__toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+input[type=checkbox].t-text-more-less__toggle:focus {
+  border: inherit;
+  box-shadow: inherit;
+  outline: none;
+  outline-offset: 0px;
+}
+input[type=checkbox].t-text-more-less__toggle:focus-visible {
+  border: inherit;
+  box-shadow: inherit;
+  outline: none;
+  outline-offset: 0px;
+}
+input[type=checkbox].t-text-more-less__toggle:focus ~ label, input[type=checkbox].t-text-more-less__toggle:focus-visible ~ label {
+  position: relative;
+  outline: 2px solid #FFFFFF;
+  outline-offset: 5px;
+}
+input[type=checkbox].t-text-more-less__toggle:focus ~ label::after, input[type=checkbox].t-text-more-less__toggle:focus-visible ~ label::after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #FFFFFF;
+  outline: 3px solid #0078D7;
 }
 
 /*
@@ -2260,21 +2285,19 @@ fieldset[disabled] input[type=checkbox] {
   cursor: not-allowed;
 }
 
-input[type=file]:focus,
+input[type=file]:focus, input[type=file]:focus-visible,
 input[type=radio]:focus,
-input[type=checkbox]:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-input[type=file]:focus-visible,
 input[type=radio]:focus-visible,
+input[type=checkbox]:focus,
 input[type=checkbox]:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-input[type=file]:focus-visible::after,
+input[type=file]:focus::after, input[type=file]:focus-visible::after,
+input[type=radio]:focus::after,
 input[type=radio]:focus-visible::after,
+input[type=checkbox]:focus::after,
 input[type=checkbox]:focus-visible::after {
   content: " ";
   position: absolute;
@@ -2332,6 +2355,37 @@ img {
     /* height: auto; messes e.g. survey progress bar */
     max-width: 100%;
   }
+}
+
+a:has(img) {
+  display: inline-block;
+}
+a:has(img):focus {
+  border: inherit;
+  box-shadow: inherit;
+  outline: none;
+  outline-offset: 0px;
+}
+a:has(img):focus-visible {
+  border: inherit;
+  box-shadow: inherit;
+  outline: none;
+  outline-offset: 0px;
+}
+a:has(img):focus, a:has(img):focus-visible {
+  position: relative;
+  outline: 2px solid #FFFFFF;
+  outline-offset: 5px;
+}
+a:has(img):focus::after, a:has(img):focus-visible::after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #FFFFFF;
+  outline: 3px solid #0078D7;
 }
 
 script {
@@ -15364,16 +15418,12 @@ div.ilc_va_icont_VAccordICont {
   border-bottom: 1px solid #dddddd;
   background-color: white;
 }
-.ilAwarenessItem > div[role=button]:focus-visible:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-.ilAwarenessItem > div[role=button]:focus-visible:focus-visible {
+.ilAwarenessItem > div[role=button]:focus-visible:focus, .ilAwarenessItem > div[role=button]:focus-visible:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-.ilAwarenessItem > div[role=button]:focus-visible:focus-visible::after {
+.ilAwarenessItem > div[role=button]:focus-visible:focus::after, .ilAwarenessItem > div[role=button]:focus-visible:focus-visible::after {
   content: " ";
   position: absolute;
   top: -2px;
@@ -17212,16 +17262,12 @@ p#copg-auto-save {
   position: static;
 }
 
-.ilPageVideo button:focus, .ilPageAudio button:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-.ilPageVideo button:focus-visible, .ilPageAudio button:focus-visible {
+.ilPageVideo button:focus, .ilPageVideo button:focus-visible, .ilPageAudio button:focus, .ilPageAudio button:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-.ilPageVideo button:focus-visible::after, .ilPageAudio button:focus-visible::after {
+.ilPageVideo button:focus::after, .ilPageVideo button:focus-visible::after, .ilPageAudio button:focus::after, .ilPageAudio button:focus-visible::after {
   content: " ";
   position: absolute;
   top: -2px;
@@ -18275,18 +18321,15 @@ a.mailunread, a.mailunread:visited {
   background-image: url("../images/media/bigplay.svg");
 }
 
-.mejs__overlay-button:focus,
-.ilPlayerPreviewPlayButton:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-.mejs__overlay-button:focus-visible,
+.mejs__overlay-button:focus, .mejs__overlay-button:focus-visible,
+.ilPlayerPreviewPlayButton:focus,
 .ilPlayerPreviewPlayButton:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-.mejs__overlay-button:focus-visible::after,
+.mejs__overlay-button:focus::after, .mejs__overlay-button:focus-visible::after,
+.ilPlayerPreviewPlayButton:focus::after,
 .ilPlayerPreviewPlayButton:focus-visible::after {
   content: " ";
   position: absolute;
@@ -18298,16 +18341,12 @@ a.mailunread, a.mailunread:visited {
   outline: 3px solid #0078D7;
 }
 
-.mejs__time-total:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-.mejs__time-total:focus-visible {
+.mejs__time-total:focus, .mejs__time-total:focus-visible {
   position: relative;
   outline: 1px solid #FFFFFF;
   outline-offset: 2px;
 }
-.mejs__time-total:focus-visible::after {
+.mejs__time-total:focus::after, .mejs__time-total:focus-visible::after {
   content: " ";
   position: absolute;
   top: -1px;
@@ -20369,18 +20408,15 @@ a.ilMediaLightboxClose:hover {
 #ilTab > li > .c-tooltip__container > a:focus-visible::after {
   content: none;
 }
-#ilTab > li > a:focus,
-#ilTab > li > .c-tooltip__container > a:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-#ilTab > li > a:focus-visible,
+#ilTab > li > a:focus, #ilTab > li > a:focus-visible,
+#ilTab > li > .c-tooltip__container > a:focus,
 #ilTab > li > .c-tooltip__container > a:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-#ilTab > li > a:focus-visible::after,
+#ilTab > li > a:focus::after, #ilTab > li > a:focus-visible::after,
+#ilTab > li > .c-tooltip__container > a:focus::after,
 #ilTab > li > .c-tooltip__container > a:focus-visible::after {
   content: " ";
   position: absolute;
@@ -20451,18 +20487,15 @@ a.ilMediaLightboxClose:hover {
 #ilSubTab > li > .c-tooltip__container > a:focus-visible::after {
   content: none;
 }
-#ilSubTab > li > a:focus,
-#ilSubTab > li > .c-tooltip__container > a:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-#ilSubTab > li > a:focus-visible,
+#ilSubTab > li > a:focus, #ilSubTab > li > a:focus-visible,
+#ilSubTab > li > .c-tooltip__container > a:focus,
 #ilSubTab > li > .c-tooltip__container > a:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-#ilSubTab > li > a:focus-visible::after,
+#ilSubTab > li > a:focus::after, #ilSubTab > li > a:focus-visible::after,
+#ilSubTab > li > .c-tooltip__container > a:focus::after,
 #ilSubTab > li > .c-tooltip__container > a:focus-visible::after {
   content: " ";
   position: absolute;
@@ -20625,16 +20658,12 @@ img.ilUserXXSmall {
 .webdav-view-control {
   text-align: center;
 }
-.webdav-view-control:focus {
-  outline: none;
-  outline-offset: 0px;
-}
-.webdav-view-control:focus-visible {
+.webdav-view-control:focus, .webdav-view-control:focus-visible {
   position: relative;
   outline: 2px solid #FFFFFF;
   outline-offset: 5px;
 }
-.webdav-view-control:focus-visible::after {
+.webdav-view-control:focus::after, .webdav-view-control:focus-visible::after {
   content: " ";
   position: absolute;
   top: -2px;

@@ -6,13 +6,17 @@ namespace ILIAS\UI\Examples\Entity\Standard;
 
 /**
  * ---
+ * description: >
+ *   The different semantic locations on an entity.
  * expected output: >
  *   This example shows/identifies the semantic groups of entites;
  *   from top to bottom, left to right, the order of groups is this:
- *   - blocking conditions (left) and actions in a dropdown (right)
  *   - secondary indentifier (it indents all the latter) and featured properties
+ *   - blocking conditions (left) and actions in a dropdown (right)
  *   - primary identifier
+ *   - featured properties
  *   - personal status
+ *   - a workflow step button
  *   - main details
  *   - availability
  *   - details

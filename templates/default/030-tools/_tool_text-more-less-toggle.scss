@@ -7,10 +7,6 @@
 
 .t-text-more-less {
   &__toggle {
-    @include t-sr.sr-only();
-
-  }
-  &__toggle {
     &:checked + .t-text-more-less__label {
       .t-text-more-less__label__more {
         display: none;
@@ -20,9 +16,6 @@
       .t-text-more-less__label__less {
         display: none;
       }
-    }
-    &:focus-visible + .t-text-more-less__label {
-      outline: s.$il-focus-color t-focus.$il-focus-outline-inner-width solid;
     }
   }
   &__label {
@@ -45,3 +38,8 @@
   }
 }
 
+input[type="checkbox"].t-text-more-less__toggle {
+  @include t-sr.sr-only();
+  @include t-focus.clear-focus-for-override();
+  @include t-focus.il-focus($apply-to-child: "~ label");
+}

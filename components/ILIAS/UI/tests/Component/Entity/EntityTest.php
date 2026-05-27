@@ -118,7 +118,7 @@ class EntityTest extends ILIAS_UI_TestBase
     public function testEntityWorkflowButtons(): void
     {
         $workflow_factory = $this->getUIFactory()->listing()->workflow();
-        $dummy_step = $workflow_factory->step('','');
+        $dummy_step = $workflow_factory->step('', '');
 
         // Creating Workflow Steps
         $steps = [
@@ -134,26 +134,15 @@ class EntityTest extends ILIAS_UI_TestBase
 
         $video_workflow = $workflow_factory->linear("Video Curation", $steps);
 
-        $expected_buttons = [
-            $this->getUIFactory()->button()->standard("Cut video", "#"),
-            $this->getUIFactory()->button()->standard("Add subtitles", "#"),
-        ];
-
         $entity = $this->getEntityFactory()->standard('primary', 'secondary')
             ->withWorkflow($video_workflow);
 
         $rendered_entity = $this->getDefaultRenderer()->render($entity);
 
-        // extracting only the buttons from the entity
-        preg_match('#<div class="c-entity__workflow-actions">(.*?)</div>#s', $rendered_entity, $matches);
-        $buttons_on_entity = $matches[1];
-
-        $rendered_expected_buttons = $this->getDefaultRenderer()->render($expected_buttons);
-
-        $this->assertEquals(
-            $this->brutallyTrimHTML($rendered_expected_buttons),
-            $this->brutallyTrimHTML($buttons_on_entity)
-        );
+        $this->assertStringContainsString("Cut video</button>", $rendered_entity);
+        $this->assertStringContainsString("Add subtitles</button>", $rendered_entity);
+        $this->assertStringNotContainsString("Upload video file</button>", $rendered_entity);
+        $this->assertStringNotContainsString("Publish</button>", $rendered_entity);
     }
 
     public function getUIFactory(): NoUIFactory
@@ -192,49 +181,48 @@ class EntityTest extends ILIAS_UI_TestBase
         $r = $this->getDefaultRenderer();
         $html = $this->brutallyTrimHTML($r->render($entity));
         $expected = $this->brutallyTrimHTML('
-<div class="c-entity__container">
-  <div class="c-entity__featured-headerbar l-bar__container">
-    <div class="l-bar__space-keeper l-bar__space-keeper--space-between">
-      <div class="l-bar__group">
-        <div class="l-bar__element">
-          <div class="c-entity__blocking-conditions l-bar__element">bc</div>
-          <div class="c-entity__primary-identifier">primary</div>
-        </div>
+<section aria-labelledby="id_1" class="c-entity__container">
+   <div class="c-entity__featured-headerbar l-bar__container">
+      <div class="l-bar__space-keeper l-bar__space-keeper--space-between">
+         <div class="l-bar__group">
+            <div class="l-bar__element">
+               <div class="c-entity__blocking-conditions l-bar__element">bc</div>
+               <div id="id_1" class="c-entity__primary-identifier">primary</div>
+            </div>
+         </div>
+         <div class="c-entity__actions-container l-bar__group">
+            <div class="c-entity__actions-manage l-bar__element">
+               <div class="dropdown" id="id_10">
+                  <button class="btn btn-default dropdown-toggle" type="button" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_10_menu"><span class="caret"></span></button>
+                  <ul id="id_10_menu" class="dropdown-menu">
+                     <li><button class="btn btn-link" data-action="#" id="id_8">shy</button></li>
+                     <li><button class="btn btn-link" data-action="#" id="id_9">shy</button></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
       </div>
-      <div class="c-entity__actions-container l-bar__group">
-        <div class="c-entity__actions-manage l-bar__element">
-          <div class="dropdown" id="id_9">
-            <button class="btn btn-default dropdown-toggle" type="button" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_9_menu"><span class="caret"></span></button>
-            <ul id="id_9_menu" class="dropdown-menu">
-              <li><button class="btn btn-link" data-action="#" id="id_7">shy</button></li>
-              <li><button class="btn btn-link" data-action="#" id="id_8">shy</button></li>
-            </ul>
-          </div>
-        </div>
+   </div>
+   <div class="c-entity__secondary-identifier --string ">secondary</div>
+   <div class="c-entity__featured l-bar__element">fp</div>
+   <div class="c-entity__personal-status">ps</div>
+   <div class="c-entity__main-details">md</div>
+   <div class="c-entity__availability">a</div>
+   <div class="c-entity__details">d</div>
+   <div class="c-entity__reactionbar l-bar__container">
+      <div class="l-bar__space-keeper l-bar__space-keeper--space-between">
+         <div class="l-bar__group">
+            <div class="l-bar__element">
+               <div class="c-entity__reactions"><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a></div>
+            </div>
+         </div>
+         <div class="l-bar__group">
+            <div class="c-entity__featured-reactions"><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a><button class="btn btn-tag btn-tag-relevance-veryhigh" data-action="#" id="id_11">tag</button></div>
+         </div>
       </div>
-    </div>
-  </div>
-  <div class="c-entity__secondary-identifier --string ">secondary</div>
-  <div class="c-entity__featured l-bar__element">fp</div>
-  <div class="c-entity__personal-status">ps</div>
-  <div class="c-entity__main-details">md</div>
-  <div class="c-entity__availability">a</div>
-  <div class="c-entity__details">d</div>
-  <div class="c-entity__reactionbar l-bar__container">
-    <div class="l-bar__space-keeper l-bar__space-keeper--space-between">
-      <div class="l-bar__group">
-        <div class="l-bar__element">
-          <div class="c-entity__reactions"><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a></div>
-        </div>
-      </div>
-      <div class="l-bar__group">
-        <div class="c-entity__featured-reactions"><a class="glyph" aria-label="some glyph"><span class="glyphicon il-glyphicon-laugh" aria-hidden="true"></span></a><button class="btn btn-tag btn-tag-relevance-veryhigh" data-action="#" id="id_10">tag</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-        ');
+   </div>
+</section>
+');
         $this->assertEquals($expected, $html);
     }
 }
