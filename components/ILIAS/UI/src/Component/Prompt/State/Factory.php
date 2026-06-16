@@ -55,17 +55,21 @@ interface Factory
     ): State;
 
     /**
-     * @param Component\Entity\Entity[] $entities
-     * @param string                    $question
-     * @param URLBuilder                $post_url
-     * @param URLBuilderToken           $post_parameter
+     * @param Component\Entity\EntityRetrieval $entity_retrieval
+     * @param URLBuilder                       $post_url
+     * @param URLBuilderToken                  $post_parameter
+     * @param array                            $entity_ids
+     * @param string                           $question
+     * @param string                           $title
      * @return State
      */
     public function confirm(
-        array $entities,
-        string $question,
+        Component\Entity\EntityRetrieval $entity_retrieval,
         URLBuilder $post_url,
         URLBuilderToken $post_parameter,
+        array $entity_ids,
+        string $question,
+        string $title,
     ): State;
 
     /**

@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Listing\Entity;
 
+use ILIAS\UI\Component\Entity\EntityRetrieval;
+
 /**
  * This is what a factory for EntityListings looks like
  */
@@ -33,7 +35,8 @@ interface Factory
      *     defined concept and lists them one after the other.
      *
      * ---
+     * @param \ILIAS\UI\Component\Entity\EntityRetrieval $entity_retrieval
      * @return \ILIAS\UI\Component\Listing\Entity\Standard
      */
-    public function standard(RecordToEntity $entity_mapping): Standard;
+    public function standard(EntityRetrieval $entity_retrieval): Standard;
 }
