@@ -35,6 +35,11 @@ use ILIAS\UI\Component\Link\Standard as StandardLink;
  */
 interface Entity extends Component
 {
+    /**
+     * Returns the technical identifier of this entity.
+     */
+    public function getId(): string|int;
+
     //Priority Areas
 
     /**

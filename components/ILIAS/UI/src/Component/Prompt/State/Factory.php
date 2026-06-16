@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Prompt\State;
 
+use ILIAS\UI\URLBuilderToken;
+use ILIAS\UI\URLBuilder;
 use ILIAS\UI\Component;
 use ILIAS\Data\URI;
 
@@ -45,10 +47,25 @@ interface Factory
      *   - The Prompt State is used for Prompts.
      *
      * ---
+     * @param \ILIAS\UI\Component\Prompt\IsPromptContent $content
      * @return \ILIAS\UI\Component\Prompt\State\State
      */
     public function show(
         \ILIAS\UI\Component\Prompt\IsPromptContent $content
+    ): State;
+
+    /**
+     * @param Component\Entity\Entity[] $entities
+     * @param string                    $question
+     * @param URLBuilder                $post_url
+     * @param URLBuilderToken           $post_parameter
+     * @return State
+     */
+    public function confirm(
+        array $entities,
+        string $question,
+        URLBuilder $post_url,
+        URLBuilderToken $post_parameter,
     ): State;
 
     /**
