@@ -65,6 +65,7 @@ class ComponentRendererFSLoaderTest extends TestCase
         $this->icon_renderer = $this->createMock(I\Render\RendererFactory::class);
         $messagebox_renderer = $this->createMock(I\Render\RendererFactory::class);
         $form_renderer = $this->createMock(I\Render\RendererFactory::class);
+        $listing_renderer = $this->createMock(I\Render\RendererFactory::class);
 
         $field_renderer = $this->createMock(I\Render\RendererFactory::class);
         return new FSLoader(
@@ -74,6 +75,7 @@ class ComponentRendererFSLoaderTest extends TestCase
             $field_renderer,
             $messagebox_renderer,
             $form_renderer,
+            $listing_renderer,
         );
     }
 
