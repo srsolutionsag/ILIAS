@@ -20,6 +20,7 @@ Rules/
   Security/       ILIAS\Scripts\PHPStan\Rules\Security       — no eval / scope injection
   Environment/    ILIAS\Scripts\PHPStan\Rules\Environment    — no global runtime mutation
   Session/        ILIAS\Scripts\PHPStan\Rules\Session        — no direct $_SESSION access
+  Deprecations/   ILIAS\Scripts\PHPStan\Rules\Deprecations   — no forbidden static calls (deprecated ilUtil, ...)
   LegacyUI/       ILIAS\Scripts\PHPStan\Rules\LegacyUI       — legacy UI component rules
 Attributes/       ILIAS\Scripts\PHPStan\Attributes           — the AllowRuleViolation exemption attribute + checker
 ```
@@ -63,6 +64,12 @@ appends to the GitHub step summary.
 | `NoScopeInjectionRule` | `ilias.scopeInjection` | No `extract()`; no `parse_str()` without a result array or into a superglobal. Injecting variables into scope / mutating the request is forbidden. |
 | `NoEnvironmentMutationRule` | `ilias.environmentMutation` | No `ini_set()` / `putenv()` / `setlocale()` / `date_default_timezone_set()`. Configure the environment through the ILIAS bootstrap instead. |
 | `NoSessionAccessRule` | `ilias.sessionAccess` | No direct `$_SESSION` access. Use the `ilSession` wrapper. |
+| `NoDeprecatedIlUtilRule` | `ilias.deprecatedIlUtil` | No calls to a curated set of deprecated `ilUtil::` helpers (each error names the replacement). Extends `AbstractForbiddenStaticCallRule`. |
+
+To forbid further `Class::method()` calls (deprecated helpers moving to services),
+add a rule extending `Deprecations\AbstractForbiddenStaticCallRule` — supply the
+`Class::method` map, an identifier and a name; matching, messages and exemptions are
+handled by the base.
 
 ### Adding a policy rule
 
