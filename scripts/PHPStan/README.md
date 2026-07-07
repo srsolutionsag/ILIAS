@@ -19,6 +19,7 @@ Rules/
   Globals/        ILIAS\Scripts\PHPStan\Rules\Globals        — no `global` / no `$GLOBALS[…] =` except $DIC
   Security/       ILIAS\Scripts\PHPStan\Rules\Security       — no eval / scope injection
   Environment/    ILIAS\Scripts\PHPStan\Rules\Environment    — no global runtime mutation
+  Session/        ILIAS\Scripts\PHPStan\Rules\Session        — no direct $_SESSION access
   LegacyUI/       ILIAS\Scripts\PHPStan\Rules\LegacyUI       — legacy UI component rules
 Attributes/       ILIAS\Scripts\PHPStan\Attributes           — the AllowRuleViolation exemption attribute + checker
 ```
@@ -61,6 +62,7 @@ appends to the GitHub step summary.
 | `NoEvalRule` | `ilias.eval` | No `eval()` — executes arbitrary code, critical security risk. |
 | `NoScopeInjectionRule` | `ilias.scopeInjection` | No `extract()`; no `parse_str()` without a result array or into a superglobal. Injecting variables into scope / mutating the request is forbidden. |
 | `NoEnvironmentMutationRule` | `ilias.environmentMutation` | No `ini_set()` / `putenv()` / `setlocale()` / `date_default_timezone_set()`. Configure the environment through the ILIAS bootstrap instead. |
+| `NoSessionAccessRule` | `ilias.sessionAccess` | No direct `$_SESSION` access. Use the `ilSession` wrapper. |
 
 ### Adding a policy rule
 

@@ -9,6 +9,7 @@ rules:
     - ILIAS\Scripts\PHPStan\Rules\Security\NoEvalRule
     - ILIAS\Scripts\PHPStan\Rules\Security\NoScopeInjectionRule
     - ILIAS\Scripts\PHPStan\Rules\Environment\NoEnvironmentMutationRule
+    - ILIAS\Scripts\PHPStan\Rules\Session\NoSessionAccessRule
 services:
     errorFormatter.stepSummary:
         class: ILIAS\Scripts\PHPStan\ErrorFormatter\StepSummaryFormatter
