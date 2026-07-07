@@ -17,6 +17,7 @@ matching namespace) per topic, and are autoloaded via composer PSR-4
 Rules/
   SuperGlobals/   ILIAS\Scripts\PHPStan\Rules\SuperGlobals   — no-superglobal-write rule
   Globals/        ILIAS\Scripts\PHPStan\Rules\Globals        — no `global` / no `$GLOBALS[…] =` except $DIC
+  Security/       ILIAS\Scripts\PHPStan\Rules\Security       — no eval / scope injection
   LegacyUI/       ILIAS\Scripts\PHPStan\Rules\LegacyUI       — legacy UI component rules
 Attributes/       ILIAS\Scripts\PHPStan\Attributes           — the AllowRuleViolation exemption attribute + checker
 ```
@@ -56,6 +57,8 @@ appends to the GitHub step summary.
 | `SuperglobalAssignRule`, `SuperglobalAssignOpRule`, `SuperglobalAssignRefRule` | `ilias.superglobalWrite` | No writing to request-input superglobals (`$_GET`, `$_POST`, `$_REQUEST`, `$_COOKIE`, `$_FILES`). The request is immutable — use the HTTP service / request wrapper instead. |
 | `NoForeignGlobalRule` | `ilias.foreignGlobal` | No `global` statement for any variable other than `$DIC`. Inject dependencies instead; `global $DIC` is tolerated only as a temporary bridge. |
 | `GlobalsAssignRule`, `GlobalsAssignOpRule`, `GlobalsAssignRefRule` | `ilias.globalsWrite` | No writing to `$GLOBALS[…]` for any key other than `DIC`. Same container-injection anti-pattern as `global $ilDB` — register in the bootstrap / inject instead. |
+| `NoEvalRule` | `ilias.eval` | No `eval()` — executes arbitrary code, critical security risk. |
+| `NoScopeInjectionRule` | `ilias.scopeInjection` | No `extract()`; no `parse_str()` without a result array or into a superglobal. Injecting variables into scope / mutating the request is forbidden. |
 
 ### Adding a policy rule
 
