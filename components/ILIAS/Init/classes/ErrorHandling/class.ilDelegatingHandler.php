@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use Whoops\Handler\Handler;
 use Whoops\Handler\HandlerInterface;
+use ILIAS\Scripts\PHPStan\Attributes\AllowSuperglobalWrite;
 
 /**
  * A Whoops error handler that delegates calls on it self to another handler that is created only in the
@@ -32,6 +33,7 @@ use Whoops\Handler\HandlerInterface;
  * in ilErrorHandling, so this class acts rather dump and asks ilErrorHandling for a handler.
  * @author Richard Klees <richard.klees@concepts-and-training.de>
  */
+#[AllowSuperglobalWrite('The error handler needs to write to SuperGlobals to remove secret data.')]
 final class ilDelegatingHandler extends Handler
 {
     private ?HandlerInterface $current_handler = null;
