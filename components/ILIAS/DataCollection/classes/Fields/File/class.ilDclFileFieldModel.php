@@ -21,13 +21,19 @@ declare(strict_types=1);
 /**
  * @noinspection AutoloadingIssuesInspection
  */
+
+use ILIAS\DataCollection\Validation\File\FileValidationCollection;
+use ILIAS\DataCollection\Validation\File\SuffixFileValidation;
+
 class ilDclFileFieldModel extends ilDclBaseFieldModel
 {
+    private FileValidationCollection $validations;
     protected ilFileServicesSettings $file_settings;
 
     public function __construct(int $a_id = 0)
     {
         global $DIC;
+        $this->validations = $DIC[FileValidationCollection::class];
         $this->file_settings = $DIC->fileServiceSettings();
         parent::__construct($a_id);
     }
@@ -39,7 +45,7 @@ class ilDclFileFieldModel extends ilDclBaseFieldModel
 
     public function getValidFieldProperties(): array
     {
-        return [ilDclBaseFieldModel::PROP_SUPPORTED_FILE_TYPES];
+        return iterator_to_array($this->validations->getAllPostVars());
     }
 
     public function getSupportedExtensions(): array
@@ -60,11 +66,16 @@ class ilDclFileFieldModel extends ilDclBaseFieldModel
 
     protected function getExtensions(): array
     {
-        $types = $this->getProperty(ilDclBaseFieldModel::PROP_SUPPORTED_FILE_TYPES);
+        $validation = $this->validations->get(SuffixFileValidation::class);
+        if ($validation === null) {
+            return [];
+        }
+
+        $types = $this->getProperty($validation->getConfigKey());
         if ($types === null) {
             return [];
-        } else {
-            return explode(',', str_replace(' ', '', $types));
         }
+
+        return explode(',', str_replace(' ', '', $types));
     }
 }

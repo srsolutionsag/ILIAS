@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace ILIAS\Init;
 
 use ILIAS\WebDAV\Environment;
+use ILIAS\DataCollection\Validation\File\FileValidationCollection;
 
 /**
  * This entry point can be thought of as a list of all modern components.
@@ -101,6 +102,7 @@ class AllModernComponents implements \ILIAS\Component\EntryPoint
         protected \ILIAS\UI\Implementation\Render\JavaScriptBinding $ui_java_script_binding,
         protected \ILIAS\UI\Implementation\Component\SignalGeneratorInterface $ui_signal_generator,
         protected \ILIAS\UI\Implementation\Render\TemplateFactory $ui_template_factory,
+        protected FileValidationCollection $dcl_file_validation_collection
     ) {
     }
 
@@ -182,6 +184,7 @@ class AllModernComponents implements \ILIAS\Component\EntryPoint
         $DIC['ui.javascript_binding'] = fn() => $this->ui_java_script_binding;
         $DIC['ui.signal_generator'] = fn() => $this->ui_signal_generator;
         $DIC['ui.template_factory'] = fn() => $this->ui_template_factory;
+        $DIC[FileValidationCollection::class] = fn() => $this->dcl_file_validation_collection;
     }
 
     public function getName(): string

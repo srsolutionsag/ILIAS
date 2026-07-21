@@ -18,12 +18,43 @@
 
 declare(strict_types=1);
 
+use ILIAS\DataCollection\Validation\File\FileValidation;
+use ILIAS\DataCollection\Validation\File\FileValidationCollection;
+use ILIAS\FileUpload\Processor\PreProcessorManagerImpl;
+use ILIAS\FileUpload\Processor\PreProcessorManager;
+
 class ilDclFileFieldRepresentation extends ilDclBaseFieldRepresentation
 {
+    private FileValidationCollection $validations;
+    private PreProcessorManager $pre_processor_manager;
+
+    public function __construct(ilDclBaseFieldModel $field)
+    {
+        parent::__construct($field);
+        global $DIC;
+        $this->validations = $DIC[FileValidationCollection::class];
+        $this->pre_processor_manager = $DIC['upload.processor-manager'];
+    }
+
     public function getInputField(
         ilPropertyFormGUI $form,
         ?int $record_id = null
     ): ilFileInputGUI {
+        // Register PreProcessor
+        $pre_processors = $this->validations->getAllPreProcessors(
+            function (FileValidation $validation): mixed {
+                if (($config_key = $validation->getConfigKey()) === null) {
+                    return null;
+                }
+                return $this->getField()->getProperty($config_key);
+            }
+        );
+
+        foreach ($pre_processors as $pre_processor) {
+            $this->pre_processor_manager->with($pre_processor);
+        }
+
+        // Build FormOrm Input
         $input = new ilFileInputGUI(
             $this->getField()->getTitle(),
             'field_' . $this->getField()->getId()
@@ -69,14 +100,20 @@ class ilDclFileFieldRepresentation extends ilDclBaseFieldRepresentation
         string $mode = 'create'
     ): ilRadioOption {
         $opt = parent::buildFieldCreationInput($dcl, $mode);
+        foreach ($this->validations->getValidations() as $validation) {
+            $input = $validation->getConfigurationInput();
+            if ($input === null) {
+                continue;
+            }
 
-        $prop_filetype = new ilTextInputGUI(
-            $this->lng->txt('dcl_supported_filetypes'),
-            'prop_' . ilDclBaseFieldModel::PROP_SUPPORTED_FILE_TYPES
-        );
-        $prop_filetype->setInfo($this->lng->txt('dcl_supported_filetypes_desc'));
+            // PostVars must start with prop_
+            $post_var = $input->getPostVar();
+            if (!str_starts_with($post_var, 'prop_')) {
+                $input->setPostVar('prop_' . $validation->getConfigKey());
+            }
 
-        $opt->addSubItem($prop_filetype);
+            $opt->addSubItem($input);
+        }
 
         return $opt;
     }

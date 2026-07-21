@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS;
 
+use ILIAS\DataCollection\Validation\File\FileValidationCollection;
+
 class Init implements Component\Component
 {
     public function init(
@@ -127,6 +129,7 @@ class Init implements Component\Component
                 $pull[\ILIAS\UI\Implementation\Render\JavaScriptBinding::class],
                 $pull[\ILIAS\UI\Implementation\Component\SignalGeneratorInterface::class],
                 $pull[\ILIAS\UI\Implementation\Render\TemplateFactory::class],
+                $pull[FileValidationCollection::class]
             );
     }
 }
