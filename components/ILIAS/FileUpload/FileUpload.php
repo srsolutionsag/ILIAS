@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace ILIAS;
 
 use ILIAS\Component\Component;
+use ILIAS\FileUpload\Activities\FileParameter;
+use ILIAS\FileUpload\Activities\TempFileStore;
 
 class FileUpload implements Component
 {
@@ -34,6 +36,20 @@ class FileUpload implements Component
         array | \ArrayAccess &$pull,
         array | \ArrayAccess &$internal,
     ): void {
-        // ...
+        $internal[TempFileStore::class] = static fn(): TempFileStore => new TempFileStore();
+
+        /**
+         * How an activity takes a file: the description of the parameters and
+         * the reading of them. Uploading is no activity of its own - a user does
+         * not want a handle, they want a file somewhere - so the bytes travel
+         * with the activity that uses them, and this is the code doing that,
+         * shared by all of them. See src/Activities/README.md.
+         */
+        $internal[FileParameter::class] = static fn(): FileParameter => new FileParameter(
+            $internal[TempFileStore::class],
+        );
+
+        $provide[FileParameter::class] = static fn(): FileParameter => $internal[FileParameter::class];
+        $provide[TempFileStore::class] = static fn(): TempFileStore => $internal[TempFileStore::class];
     }
 }
