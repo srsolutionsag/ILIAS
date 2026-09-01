@@ -25,6 +25,7 @@ use ILIAS\Setup\Agent;
 use ILIAS\Refinery\Factory;
 use ILIAS\Component\Resource\PublicAsset;
 use ILIAS\Component\Resource\Endpoint;
+use ILIAS\FileDelivery\Activities\FilePayloadFactory;
 
 class FileDelivery implements Component
 {
@@ -45,5 +46,14 @@ class FileDelivery implements Component
 
         $contribute[PublicAsset::class] = fn(): Endpoint =>
             new Endpoint($this, "deliver.php");
+
+        /**
+         * Every activity that delivers a file builds its result with this, so
+         * all of them look alike to their consumers - see the activities of the
+         * ResourceStorage.
+         */
+        $internal[FilePayloadFactory::class] = static fn(): FilePayloadFactory => new FilePayloadFactory();
+        $provide[FilePayloadFactory::class] = static fn(): FilePayloadFactory =>
+            $internal[FilePayloadFactory::class];
     }
 }
