@@ -5,20 +5,54 @@ How an activity takes a file, and why it takes it the way it does.
 ## The starting point
 
 An [Activity](../../../Component/src/Activities/README.md) describes its input as a `FormInput` of
-the UI framework, so that the same description serves a form, a webservice and a workflow tool.
+the UI framework, so that the same description serves a form, a webservice and a workflow tool. For
+a file that promise does not hold today, and the two fields below are the consequence, not a
+preference. This chapter says exactly why, because it is the first question anybody asks.
 
-Forms, however, never carry the bytes of a file. `Field\File` takes an `UploadHandler`, the browser
-sends the file to `$handler->getUploadURL()`, and what ends up in the form is an *identifier* of
-whatever that endpoint made of the upload - in the ILIAS handlers the serialised `rid` of a resource:
+### What `Field\File` is
+
+Forms never carry the bytes of a file. `Field\File` takes an `UploadHandler`, the browser sends the
+file to `$handler->getUploadURL()`, and what ends up in the form is an *identifier* of whatever that
+endpoint made of the upload - in the ILIAS handlers the serialised `rid` of a resource:
 
 ```php
 // AbstractCtrlAwareIRSSUploadHandler::getUploadResult()
 $identifier = $this->irss->manage()->upload($result, $this->stakeholder)->serialize();
 ```
 
-So a form always uploads in two steps, and the first step is an endpoint of its own.
+Five things follow from how that is built. They are worth naming one by one, because together they
+say something different than "the upload happens asynchronously":
 
-## Why activities do not do that
+1. **The field has no file element at all.** `UI/src/templates/default/Input/tpl.file.html` contains
+   no `<input type="file">`, only a dropzone container and a `<template>`. The element is created by
+   JavaScript. Without JavaScript the field cannot be used - not "used with less comfort".
+2. **Its value is a list of strings in hidden inputs.** `File::createDynamicInputsTemplate()` builds
+   `$field_factory->hidden()`, and `File::isClientSideValueOk()` accepts nothing but arrays of
+   strings.
+3. **The input layer never reads an uploaded file.** There is no `$_FILES` and no
+   `getUploadedFiles()` anywhere under `UI/src/Implementation/Component/Input/`.
+4. **The declared limits are hints for the browser, not validation.**
+   `Renderer::initClientsideFileInput()` passes `getMaxFiles()`, `getMaxFileSize()` and
+   `getAcceptedMimeTypes()` into the JavaScript call and into a help block. Server side the field
+   checks that the value is an array of strings, and with `withRequired` that it is not empty -
+   nothing else. The real checks live in the upload endpoint, where
+   `AbstractCtrlAwareIRSSUploadHandler::getUploadResult()` runs `$upload->process()` with its
+   preprocessors and its blacklist.
+5. **The handler is bound to `ilCtrl`.** All three of its URLs come from
+   `ilCtrl::getLinkTargetByClass()`, and the chunking protocol is the one of the JavaScript library
+   (`dzuuid`, `dzchunkindex`, `dztotalchunkcount`, read in
+   `AbstractCtrlAwareUploadHandler::readChunkedInformation()`).
+
+So `Field\File` describes a *widget*, not an input. Everything that makes an upload an upload -
+receiving the bytes, checking them, naming them - sits outside the input, in an endpoint that only a
+GUI can address. That single fact explains three symptoms at once: a client without JavaScript
+cannot use the field, removing a file again is fragile because it is a second endpoint the form does
+not control, and a caller over REST or SOAP cannot satisfy the description at all.
+
+## The second reason: an endpoint of our own would be worse
+
+The section above says an activity *cannot* use that field. This one says that copying its model -
+adding an upload endpoint of our own, per transport - would be the wrong answer anyway.
 
 An upload endpoint accepts files without knowing what they are for. Every call creates something,
 and nothing forces a second call to ever use it. In a GUI that is bounded by the form the user is
@@ -148,16 +182,36 @@ and `release()` removes the file and its folder again.
 
 ## What this is deliberately not
 
-* **Not a `Field\File`.** That field presupposes the separate endpoint this design does without. The
-  price is that the input description here is two ordinary fields and that the limits are enforced
-  by `FileParameter` instead of by the framework.
+* **Not a `Field\File`.** That field presupposes the separate endpoint this design does without, and
+  its handler would put a `ilCtrl` link into a domain object. Using it here would also *weaken* the
+  activity rather than strengthen it: as shown above the field validates neither size nor type
+  server side, so an activity would have to check both itself anyway - which is what
+  `FileParameter` does. The price of not using it is that the input description here is two ordinary
+  fields.
 * **Not a `rid` parameter.** A resource identification is not a capability, and a client that could
   name one would be naming something it does not own. See
   `ILIAS\ResourceStorage\Activities\DeliverResource` for the two doors that follow from this.
 
-## Open towards upstream
+## What would have to change upstream
 
-The UI framework has no way to describe content that arrives *with* the call - `Field\File` always
-means "the bytes are already somewhere else". An input for inline content, with the same limits a
-file field carries, would let these activities describe themselves properly and would make a GUI
-form for them possible. Until then this is what `FileParameter` fills in.
+`FileParameter` is not a second file field. It plays the role of the **handler** - take the bytes,
+check them, name them - and borrows two plain fields to describe itself, because the framework has
+no field for content that arrives *with* the call.
+
+The fix is not "build the asynchronous upload differently". It is to give `Field\File` a defined
+server-side value, in two shapes:
+
+* **Base**: the bytes come with the request as `multipart/form-data`. The input takes them from the
+  PSR-7 request, checks amount, size and type itself, and its value is a file object.
+* **Enhanced**: JavaScript uploads them beforehand, the value is a list of identifiers, and the
+  input resolves them through the handler into the same file object.
+
+Then a form works without JavaScript, a webservice works at all - the base shape is exactly the case
+described here - chunking stays what it is, an enhancement on top of the base, and the limits are
+enforced in one place instead of three. Two things have to move for that: `InputData` and
+`PostDataFromServerRequest` must carry uploaded files, and `UploadHandler` has to lose its `ilCtrl`
+coupling so that the endpoint can be named per channel.
+
+That is a change to the UI framework with a migration for every user of `$f->file()`, so it is not
+done on the side. Until it happens, `FileParameter` is the transport-side counterpart of an
+`UploadHandler`, and these two fields are what an activity can honestly promise.
