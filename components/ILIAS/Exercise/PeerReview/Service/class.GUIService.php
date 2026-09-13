@@ -22,6 +22,7 @@ namespace ILIAS\Exercise\PeerReview;
 
 use ILIAS\Exercise\InternalDomainService;
 use ILIAS\Exercise\InternalGUIService;
+use ILIAS\Exercise\PeerReview\Criteria\CriteriaCatalogueTableBuilder;
 
 class GUIService
 {
@@ -43,6 +44,20 @@ class GUIService
         return new \ilExPeerReviewGUI(
             $exc,
             $submission
+        );
+    }
+
+    public function criteriaCatalogueTableBuilder(
+        int $exc_id,
+        object $parent_gui,
+        string $parent_cmd
+    ): CriteriaCatalogueTableBuilder {
+        return new CriteriaCatalogueTableBuilder(
+            $this->domain_service,
+            $this->gui_service,
+            $exc_id,
+            $parent_gui,
+            $parent_cmd
         );
     }
 }

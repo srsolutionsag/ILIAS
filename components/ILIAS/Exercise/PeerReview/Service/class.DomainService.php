@@ -23,6 +23,7 @@ namespace ILIAS\Exercise\PeerReview;
 use ILIAS\Exercise\InternalDomainService;
 use ILIAS\Exercise\PeerReview\Criteria\CriteriaFileManager;
 use ILIAS\Exercise\InternalRepoService;
+use ILIAS\Exercise\PeerReview\Criteria\CriteriaCatalogueRetrieval;
 
 class DomainService
 {
@@ -48,6 +49,11 @@ class DomainService
             return new \ilExPeerReview($ass);
         }
         return null;
+    }
+
+    public function criteriaCatalogueRetrieval(int $exc_id): CriteriaCatalogueRetrieval
+    {
+        return new CriteriaCatalogueRetrieval($this->domain_service, $exc_id);
     }
 
 }
