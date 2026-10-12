@@ -1375,6 +1375,7 @@ function sendAndLoad( url, data, callback, user, password, headers ){
 function sendJSONRequest (url, data, callback, user, password, headers) 
 {
 	function unloadChrome() {
+		try {
 		if (navigator.userAgent.indexOf("Chrom") > -1) {
 			if (
                    (
@@ -1427,6 +1428,9 @@ function sendJSONRequest (url, data, callback, user, password, headers)
                 ) {
 				return true;
 			}
+		}
+		} catch (e) {
+			// the resource frame is of another origin (guest frame, see ScormAicc README)
 		}
 		return false;
 	}
@@ -1664,6 +1668,7 @@ function launchNavType(navType, isUserCurrentlyInteracting) {
 	//if suspendAll set cmi.exit to suspend for active SCO
 	if (navType=='SuspendAll') {
 		err=currentAPI.SetValueIntern("cmi.exit","suspend");
+		scormBridge.setIntern("cmi.exit", "suspend");
 		//sync
 		activities[msequencer.mSeqTree.mCurActivity.mActivityID].exit="suspend";
    	}
@@ -1862,9 +1867,7 @@ function loadPage(src) {
 		} 
 		
 		RESOURCE_NAME= "SPECIALPAGE";
-		var resContainer = window.document.getElementById("res");
-		resContainer.src=src;
-		resContainer.name=RESOURCE_NAME;
+		showSpecialPage(src); // see bridge.js
 		onWindowResize();
 		ieForceRender();
 
@@ -1929,9 +1932,7 @@ function setResource()
 		{
 			h = self.innerHeight-60;
 		} 
-		var resContainer = window.document.getElementById("res");
-		resContainer.src=url;
-		resContainer.name=RESOURCE_NAME;
+		scormBridge.deliver(url, deliveredCmiItem); // see bridge.js
 	// } 
 	// else 
 	// {			
@@ -1953,9 +1954,7 @@ function removeResource(callback)
 	{
 		removeClass(guiItem, "ilc_rte_tlink_RTETreeCurrent");
 	}
-	var resContainer = window.document.getElementById("res");
-	resContainer.src="about:blank";
-	resContainer.name=RESOURCE_NAME;
+	scormBridge.unload(); // see bridge.js
 	if (typeof(callback) === 'function') 
 	{	
 		callback();
@@ -2173,6 +2172,7 @@ function init(config)
 	}
 	this.config = config;
 	gConfig=config;
+	scormBridge.start(config); // see bridge.js
 	setInfo('loading');
 	setState('loading');
 	
@@ -3199,6 +3199,7 @@ function onItemDeliverDo(item, wasSuspendAll) // onDeliver called from sequencin
 {
 	var url = item.href, v;
 	currentAPI = window[Runtime.apiname] = null;
+	deliveredCmiItem = null;
 	// create api if associated resouce is of adl:scormType=sco
 	if (item.sco)
 	{
@@ -3340,6 +3341,7 @@ function onItemDeliverDo(item, wasSuspendAll) // onDeliver called from sequencin
 		data.cmi.exit="";
 
 		currentAPI = window[Runtime.apiname] = new Runtime(data, onCommit, onTerminate);
+		deliveredCmiItem = data; // the runtime of the SCO is created from it in the guest frame, see bridge.js
 	}
 	// deliver resource (sco)
 	// customize GUI

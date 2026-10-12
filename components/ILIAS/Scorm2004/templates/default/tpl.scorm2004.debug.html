@@ -199,7 +199,11 @@
 
     function switchRecording() {
         recording = !recording;
-        window.opener.logActive = recording;
+        if (typeof window.opener.setLogActive === 'function') {
+            window.opener.setLogActive(recording); // reaches the runtime in the guest frame as well
+        } else {
+            window.opener.logActive = recording;
+        }
         document.getElementById("state").src = recording ? stopImg : recordImg;
         document.getElementById("state").title = recording ? "{STOP_RECORDING}" : "{START_RECORDING}";
         if (!recording) {

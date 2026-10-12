@@ -420,6 +420,8 @@ class ilSCORM13PlayerGUI
         $config['post_log_url'] = $DIC->ctrl()->getLinkTarget($this, 'postLogEntry');
         $config['livelog_url'] = $DIC->ctrl()->getLinkTarget($this, 'liveLogContent');
         $config['package_url'] = $this->getDataDirectory() . "/";
+        // the SCO and the runtime run in a guest frame on the origin of the package, see ScormAicc README
+        $config['bridge_guest_frame'] = (new \ILIAS\ScormAicc\GuestFrame\GuestFrame(ILIAS_HTTP_PATH))->getURL($config['package_url']);
 
         //editor
         $config['envEditor'] = 0;
@@ -521,6 +523,9 @@ class ilSCORM13PlayerGUI
         $this->increase_attemptAndsave_module_version();
         $this->resetSharedData();
 
+        // content on the content domain must not get hold of this window (and
+        // thereby of the guest frame with the SCORM API) by opening it
+        header('Cross-Origin-Opener-Policy: same-origin');
         $this->tpl->printToStdout("DEFAULT", false);
     }
 

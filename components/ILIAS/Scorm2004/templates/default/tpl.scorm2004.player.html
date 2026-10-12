@@ -67,13 +67,18 @@
 			<div id="dragbar" class="dragbar ilc_rte_drag_RTEDragBar"></div>
 			<div id="tdResource">
 				<iframe id="res" style="width: 100%; height:100%;" frameborder="0"></iframe>
+				<iframe id="specialPage" style="width: 100%; height:100%; display: none;" frameborder="0"></iframe>
 			</div>
 		</div>
 
 		<script type="text/javascript" src="./components/ILIAS/Scorm2004/scripts/rteconfig.js"></script>
 		<script type="text/javascript" src="{TREE_JS}"></script>
 
+		<script type="text/javascript">window.il = window.il || {};</script>
+		<script type="text/javascript" src="./assets/js/postmessage-channel.js"></script>
+		<script type="text/javascript" src="./assets/js/scorm-guest-frame-host.js"></script>
 		<script type="text/javascript" src="{JS_SCRIPTS}"></script>
+		<script type="text/javascript" src="./components/ILIAS/Scorm2004/scripts/rtemain/bridge.js"></script>
 		<script type="text/javascript">
 		//<![CDATA[
 			init_cp_data={INIT_CP_DATA};

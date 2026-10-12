@@ -789,7 +789,8 @@ function Runtime(cmiItem, onCommit, onTerminate, onDebug)
 	{
 		if (errCode>-1) 
 		{
-			top.status = [(new Date()).toLocaleTimeString(), errCode, errInfo].join(", ");
+			// top is of another origin if the runtime runs in the guest frame (see ScormAicc README)
+			try {top.status = [(new Date()).toLocaleTimeString(), errCode, errInfo].join(", ");} catch (e) {}
 		}
 		error = errCode;
 		diagnostic = (typeof(errInfo)=='string') ? errInfo : '';

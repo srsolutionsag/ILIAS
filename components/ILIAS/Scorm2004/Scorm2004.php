@@ -44,6 +44,10 @@ class Scorm2004 implements Component\Component
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\Endpoint($this, "storeScorm.php");
 
+        // runs in the guest frame next to the SCO, see ScormAicc README
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/scorm2004-guest.js");
+
         $contribute[Component\Resource\PublicAsset::class] = static fn() => new class () implements Component\Resource\PublicAsset {
             public function getSource(): string
             {
