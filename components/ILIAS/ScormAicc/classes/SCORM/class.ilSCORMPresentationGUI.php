@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\ScormAicc\GuestFrame\GuestFrame;
+
 /**
 * Class ilSCORMPresentationGUI
 *
@@ -459,12 +461,27 @@ class ilSCORMPresentationGUI
         }
 
         header('Content-Type: text/javascript; charset=UTF-8');
-        print("function iliasApi() {\r\n");
-        $js_data = file_get_contents("../components/ILIAS/ScormAicc/scripts/basisAPI.js");
-        echo $js_data;
-        $js_data = file_get_contents("../components/ILIAS/ScormAicc/scripts/SCORM1_2standard.js");//want to give opportunities to different files (Uwe Kohnle)
-        echo $js_data;
-        print("}\r\n");
+
+        // The runtime (basisAPI.js, SCORM1_2standard.js) runs next to the SCO in
+        // a guest frame, so it keeps working when the package is served from the
+        // content domain, see README. This page only gets the data and the
+        // configuration of the guest frame, see scorm12-host.js.
+        $store = 'storeScorm.php?package_id=' . $this->slm->getId() . '&ref_id=' . $this->refId
+            . '&client_id=' . CLIENT_ID;
+        $presentation = 'ilias.php?baseClass=ilSAHSPresentationGUI&ref_id=' . $this->refId;
+        print("IliasScormBridge=" . json_encode([
+            'guestFrame' => (new GuestFrame(ILIAS_HTTP_PATH))->getURL(
+                $this->slm->getDataDirectory("output") . '/'
+            ),
+            'apiName' => $this->slm->getAPIAdapterName(),
+            'urls' => [
+                'store' => $store . '&do=store',
+                'unload' => $store . '&do=unload',
+                'message' => $presentation . '&cmd=logMessage',
+                'warning' => $presentation . '&cmd=logWarning',
+                'ping' => $presentation . '&cmd=pingSession',
+            ],
+        ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) . ";\r\n");
 
         print("IliasScormVars=" . ilObjSCORMInitData::getIliasScormVars($this->slm) . ";\r\n");
 
@@ -477,12 +494,6 @@ class ilSCORMPresentationGUI
         //prevdata
         print("IliasScormData=" . ilObjSCORMInitData::getIliasScormData($this->slm->getId()) . ";\r\n");
 
-        // set alternative API name - not necessary for scorm
-        if ($this->slm->getAPIAdapterName() !== "API") {
-            print('var ' . $this->slm->getAPIAdapterName() . '=new iliasApi();');
-        } else {
-            print('var API=new iliasApi();');
-        }
     }
 
     public function pingSession(): bool

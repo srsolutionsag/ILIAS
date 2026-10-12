@@ -32,6 +32,18 @@ class ScormAicc implements Component\Component
         array | \ArrayAccess &$pull,
         array | \ArrayAccess &$internal,
     ): void {
+        // SCORM runtime in a guest frame next to the SCO, see README
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\OfComponent($this, "guest-frame/guest-frame.html", "assets/scorm");
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/guest-frame/dist/scorm-guest-frame-host.js");
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/guest-frame/dist/scorm-guest-frame.js");
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/scorm12-host.js");
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/scorm12-guest.js");
+
         $contribute[Component\Resource\PublicAsset::class] = static fn() => new class () implements Component\Resource\PublicAsset {
             public function getSource(): string
             {
